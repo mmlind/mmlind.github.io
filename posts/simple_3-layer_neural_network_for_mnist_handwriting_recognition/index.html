@@ -144,7 +144,7 @@
 The size of the network (number of neurons per layer) is dynamic.
 It&rsquo;s accuracy in classifying the handwritten digits in the MNIST database improved from 85% to &gt;91%.</p>
 <p><img src="/images/mnist-3lnn-logo.jpg" alt=""></p>
-<p>In a previous blog post I introduced a simple <a href="../Simple_1-Layer_Neural_Network_for_MNIST_Handwriting_Recognition/">1-Layer neural network for MNIST handwriting recognition</a>.
+<p>In a previous blog post I introduced a simple <a href="../simple_1-layer_neural_network_for_mnist_handwriting_recognition/">1-Layer neural network for MNIST handwriting recognition</a>.
 It was based on a single layer of perceptrons whose connection weights are adjusted during a supervised learning process.
 The result was an 85% accuracy in classifying the digits in the MNIST testing dataset.</p>
 <p>The network did not use a <em>real</em> activation function (only simple linear &ldquo;normalization&rdquo;) and no weighted error back propagation.
@@ -381,7 +381,7 @@ The training algorithm uses the following steps:</p>
 <span class="ln">5</span>4. Classify the image (*guess* what digit is presented in the image)
 <span class="ln">6</span>
 </code></pre></div><h3 id="1-feeding-data-into-the-network">1. Feeding Data into the Network</h3>
-<p>As outlined in my <a href="../Simple_1-Layer_Neural_Network_for_MNIST_Handwriting_Recognition/">previous MNIST code example</a> the data we want to feed into the network exists in the form of a <code>MNIST_Image</code> structure which holds a 28*28 pixel image.</p>
+<p>As outlined in my <a href="../simple_1-layer_neural_network_for_mnist_handwriting_recognition/">previous MNIST code example</a> the data we want to feed into the network exists in the form of a <code>MNIST_Image</code> structure which holds a 28*28 pixel image.</p>
 <p>In order to maintain a standardized interface for this neural network code, I don&rsquo;t want to feed the <code>MNIST_Image</code> object directly into the network.
 Instead, I first convert it to a neutral <code>Vector</code> structure.</p>
 <p>The <code>Vector</code> makes again use of C&rsquo;s <em>flexible array member</em> functionality so that it can be of dynamic size.</p>
@@ -425,7 +425,7 @@ Instead, I first convert it to a neutral <code>Vector</code> structure.</p>
 <span class="ln">3</span>    <span class="n">calcLayer</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">OUTPUT</span><span class="p">);</span>
 <span class="ln">4</span><span class="p">}</span>
 </code></pre></div><p><em>Feed forward</em> means calculating the output values of each node by multiplying its weights with the output values of the previous layer&rsquo;s nodes that it is connected to.
-This mechanism is the same as in my simple <a href="../Simple_1-Layer_Neural_Network_for_MNIST_Handwriting_Recognition/">1-Layer NN MNIST code</a> so feel free to check there if below is not clear.</p>
+This mechanism is the same as in my simple <a href="../simple_1-layer_neural_network_for_mnist_handwriting_recognition//">1-Layer NN MNIST code</a> so feel free to check there if below is not clear.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1</span><span class="kt">void</span> <span class="nf">calcLayer</span><span class="p">(</span><span class="n">Network</span> <span class="o">*</span><span class="n">nn</span><span class="p">,</span> <span class="n">LayerType</span> <span class="n">ltype</span><span class="p">){</span>
 <span class="ln">2</span>    <span class="n">Layer</span> <span class="o">*</span><span class="n">l</span><span class="p">;</span>
 <span class="ln">3</span>    <span class="n">l</span> <span class="o">=</span> <span class="n">getLayer</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">ltype</span><span class="p">);</span>
