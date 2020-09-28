@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Machine Learning in C</title>
+    <link>https://mmlind.github.io/</link>
+    <description>Recent content on Machine Learning in C</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>2015–2020 by Matt Lind</copyright>
+    <lastBuildDate>Tue, 26 Dec 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Using logistic regression to classify images</title>
+      <link>https://mmlind.github.io/posts/using_logistic_regression_to_solve_mnist/</link>
+      <pubDate>Tue, 26 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/using_logistic_regression_to_solve_mnist/</guid>
+      <description>In this blog post I show how to use logistic regression to classify images. Logistic regression is a statistical method for binary classification, i.e. for analyzing the dependency of a binary outcome on one or more independent variables.
+In a previous blog post I described linear regression. If you&amp;rsquo;re not familiar with linear regression read that post first.
+Linear Regression vs Logistic Regression Let&amp;rsquo;s briefly recap:
+Linear Regression Linear regression is a statistical method for predicting the value of a continuous dependent variable based on one or several explanatory variables.</description>
+    </item>
+    
+    <item>
+      <title>Understanding linear regression</title>
+      <link>https://mmlind.github.io/posts/linear_regression/</link>
+      <pubDate>Sun, 05 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/linear_regression/</guid>
+      <description>Regression represents one of the cornerstones of machine learning. Comprehending its logic and math provides a solid foundation for learning more advanced machine learning techniques such as neural networks.
+Linear regression is a statistical method for modeling the relationship between variables. It&amp;rsquo;s used for analyzing dependencies and predicting values.
+The underlying idea of linear regression is simple: given a dataset, we want to find the dependency of one of the variables in the dataset on one, some or all of the other variables.</description>
+    </item>
+    
+    <item>
+      <title>Deep neural network for MNIST handwriting recognition</title>
+      <link>https://mmlind.github.io/posts/deep_neural_network_for_mnist_handwriting_recognition/</link>
+      <pubDate>Fri, 12 Feb 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/deep_neural_network_for_mnist_handwriting_recognition/</guid>
+      <description>I finally found some time to enhance my neural network to support deep learning. The network now masters a variable number of layers and is capable of running convolutional layers. The architecture is generic, light weight (very small memory footprint) and super fast. :-)
+In a previous blog post I wrote about a simple 3-Layer neural network for MNIST handwriting recognition that I built. Its architecture &amp;ndash; a 3-layer structure with exactly 1 hidden layer &amp;ndash; was fix.</description>
+    </item>
+    
+    <item>
+      <title>Simple 3-layer neural network for MNIST handwriting recognition</title>
+      <link>https://mmlind.github.io/posts/simple_3-layer_neural_network_for_mnist_handwriting_recognition/</link>
+      <pubDate>Sun, 09 Aug 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/simple_3-layer_neural_network_for_mnist_handwriting_recognition/</guid>
+      <description>I&amp;rsquo;ve extended my simple 1-Layer neural network to include a hidden layer and use the back propagation algorithm for updating connection weights. The size of the network (number of neurons per layer) is dynamic. It&amp;rsquo;s accuracy in classifying the handwritten digits in the MNIST database improved from 85% to &amp;gt;91%.
+In a previous blog post I introduced a simple 1-Layer neural network for MNIST handwriting recognition. It was based on a single layer of perceptrons whose connection weights are adjusted during a supervised learning process.</description>
+    </item>
+    
+    <item>
+      <title>Simple 1-layer neural network for MNIST handwriting recognition</title>
+      <link>https://mmlind.github.io/posts/simple_1-layer_neural_network_for_mnist_handwriting_recognition/</link>
+      <pubDate>Wed, 15 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/simple_1-layer_neural_network_for_mnist_handwriting_recognition/</guid>
+      <description>In this post I&amp;rsquo;ll explore how to use a very simple 1-layer neural network to recognize the handwritten digits in the MNIST database.
+In my previous blog post I gave a brief introduction how neural networks basically work. In this post I want to apply this know-how and write some code to recognize handwritten digits in images.
+Image Recognition For the computer an image is just a collection of pixels with different colors.</description>
+    </item>
+    
+    <item>
+      <title>What is a neural network?</title>
+      <link>https://mmlind.github.io/posts/what_is_a_neural_network/</link>
+      <pubDate>Thu, 09 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/what_is_a_neural_network/</guid>
+      <description>When people talk about artificial intelligence and machine learning, they most often refer to (artificial) neural networks (ANN or NN). Let&amp;rsquo;s explore some machine learning basics, without excessive math, purely from a programmer&amp;rsquo;s perspective.
+A neural network is a computation model imaging the brain where individual nodes (neurons) form an organism (a network) to process information. In order to understand what this means and how this is special, let&amp;rsquo;s start by looking at how a computer normally works.</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://mmlind.github.io/about/</link>
+      <pubDate>Wed, 01 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/about/</guid>
+      <description>Hi. I&amp;rsquo;m Matt Lind, CTO and passionate software engineer. Azure cloud and M365 global admin. Command line and powershell geek. Excited about parellel processing and distributed systems. AI enthusiast with special interest in natural language processing (NLP). Explorer of alternative paths to machine intelligence, other than deep learning. Curious researcher and eternal student.
+Contact d n i l t t a m @ o u t l o o k .</description>
+    </item>
+    
+    <item>
+      <title>Up and running!</title>
+      <link>https://mmlind.github.io/posts/up_and_running/</link>
+      <pubDate>Wed, 01 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/up_and_running/</guid>
+      <description>Finally! I launched my new blog about my hacking adventures in the world of artificial intelligence and machine learning.
+Following a recommendation on Andrej Karpathy&amp;rsquo;s blog I decided to use Jekyll and host it on Github.
+Thanks to Barry Clark&amp;rsquo;s post it took only a few minutes to setup.</description>
+    </item>
+    
+  </channel>
+</rss>

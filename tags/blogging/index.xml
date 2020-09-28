@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>blogging on Machine Learning in C</title>
+    <link>https://mmlind.github.io/tags/blogging/</link>
+    <description>Recent content in blogging on Machine Learning in C</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>2015–2020 by Matt Lind</copyright>
+    <lastBuildDate>Wed, 01 Jul 2015 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/tags/blogging/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Up and running!</title>
+      <link>https://mmlind.github.io/posts/up_and_running/</link>
+      <pubDate>Wed, 01 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/up_and_running/</guid>
+      <description>Finally! I launched my new blog about my hacking adventures in the world of artificial intelligence and machine learning.
+Following a recommendation on Andrej Karpathy&amp;rsquo;s blog I decided to use Jekyll and host it on Github.
+Thanks to Barry Clark&amp;rsquo;s post it took only a few minutes to setup.</description>
+    </item>
+    
+  </channel>
+</rss>

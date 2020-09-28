@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Math on Machine Learning in C</title>
+    <link>https://mmlind.github.io/tags/math/</link>
+    <description>Recent content in Math on Machine Learning in C</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>2015–2020 by Matt Lind</copyright>
+    <lastBuildDate>Tue, 26 Dec 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/tags/math/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Using logistic regression to classify images</title>
+      <link>https://mmlind.github.io/posts/using_logistic_regression_to_solve_mnist/</link>
+      <pubDate>Tue, 26 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/using_logistic_regression_to_solve_mnist/</guid>
+      <description>In this blog post I show how to use logistic regression to classify images. Logistic regression is a statistical method for binary classification, i.e. for analyzing the dependency of a binary outcome on one or more independent variables.
+In a previous blog post I described linear regression. If you&amp;rsquo;re not familiar with linear regression read that post first.
+Linear Regression vs Logistic Regression Let&amp;rsquo;s briefly recap:
+Linear Regression Linear regression is a statistical method for predicting the value of a continuous dependent variable based on one or several explanatory variables.</description>
+    </item>
+    
+    <item>
+      <title>Understanding linear regression</title>
+      <link>https://mmlind.github.io/posts/linear_regression/</link>
+      <pubDate>Sun, 05 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/linear_regression/</guid>
+      <description>Regression represents one of the cornerstones of machine learning. Comprehending its logic and math provides a solid foundation for learning more advanced machine learning techniques such as neural networks.
+Linear regression is a statistical method for modeling the relationship between variables. It&amp;rsquo;s used for analyzing dependencies and predicting values.
+The underlying idea of linear regression is simple: given a dataset, we want to find the dependency of one of the variables in the dataset on one, some or all of the other variables.</description>
+    </item>
+    
+  </channel>
+</rss>

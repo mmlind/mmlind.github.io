@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="500"
+   height="500"
+   viewBox="0 0 499.99999 499.99999"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="htm_cell3.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.106"
+     inkscape:cx="250"
+     inkscape:cy="250"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1276"
+     inkscape:window-height="755"
+     inkscape:window-x="4"
+     inkscape:window-y="1"
+     inkscape:window-maximized="1"
+     inkscape:snap-global="true"
+     inkscape:snap-nodes="true"
+     units="px"
+     inkscape:snap-text-baseline="true" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-552.36223)">
+    <rect
+       style="fill:#00ffff;fill-rule:evenodd;stroke:#000000;stroke-width:1.00378156;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="HTMCell"
+       width="158.99622"
+       height="158.99622"
+       x="161.71994"
+       y="746.15405"
+       inkscape:label="#rect3336" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="216.18347"
+       y="828.23804"
+       id="text4219"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4223"
+         x="216.18347"
+         y="828.23804">Cell</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="339.67627"
+       y="775.14069"
+       id="text4246"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4466"
+         x="339.67627"
+         y="775.14069">Dendrite</tspan><tspan
+         sodipodi:role="line"
+         id="tspan4468"
+         x="339.67627"
+         y="793.89069">Segment</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4252"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="translate(51.218062,620.22026)"><flowRegion
+         id="flowRegion4254"><rect
+           id="rect4256"
+           width="1.9030058"
+           height="87.538269"
+           x="112.27734"
+           y="-275.56705" /></flowRegion><flowPara
+         id="flowPara4258" /></flowRoot>    <g
+       id="g4173-8"
+       transform="matrix(0,2.3997191,2.3997191,0,-1116.8735,128.18405)">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4169-2"
+         d="m 290.42933,532.35911 -0.18244,-14.74695 0,0 0,0"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.49991822;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <circle
+         r="9.7401123"
+         inkscape:label="#path4171"
+         cy="508.57623"
+         cx="290"
+         id="DistDendrite-2"
+         style="fill:#00ffff;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <g
+       id="g4173-8-8"
+       transform="matrix(0,2.3997191,-2.3997191,0,1598.7042,128.18405)">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4169-2-7"
+         d="m 290.42933,532.35911 -0.18244,-14.74695 0,0 0,0"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.49991822;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <circle
+         r="9.7401123"
+         inkscape:label="#path4171"
+         cy="508.57623"
+         cx="290"
+         id="DistDendrite-2-0"
+         style="fill:#00ffff;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 401.30848,821.30525 60.03616,-47.73961 0,0 0,0"
+       id="path4399"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 401.30848,821.85368 60.03616,47.73961 0,0 0,0"
+       id="path4399-4"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="397.90247"
+       y="890.34094"
+       id="text4246-3"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4464"
+         x="397.90247"
+         y="890.34094">Synapses</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.75px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="251.27048"
+       y="569.8089"
+       id="text4219-1"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4637"
+         x="251.27048"
+         y="569.8089">Single HTM Cell with 4 Distal Dendrite Segments</tspan><tspan
+         sodipodi:role="line"
+         id="tspan4639"
+         x="251.27048"
+         y="593.2464">and 8 Distal Synapses per Dendrite Segment</tspan></text>
+    <g
+       transform="matrix(-1,0,0,1,411.08791,-57.86618)"
+       id="g4510-2">
+      <g
+         transform="translate(4.3826187,20.660916)"
+         id="g4411-2">
+        <path
+           style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 325.49729,858.51052 60.03616,-47.73961 0,0 0,0"
+           id="path4399-1"
+           inkscape:connector-curvature="0" />
+        <path
+           style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 384.23146,827.84144 0,0 0,0 -58.44485,30.66908 58.15552,-16.49187"
+           id="path4407-5"
+           inkscape:connector-curvature="0" />
+        <path
+           style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 325.78661,858.79985 56.70886,-4.05064"
+           id="path4409-0"
+           inkscape:connector-curvature="0" />
+      </g>
+      <g
+         id="g4411-0-7"
+         transform="matrix(1,0,0,-1,4.3826148,1738.2304)">
+        <path
+           style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 325.49729,858.51052 60.03616,-47.73961 0,0 0,0"
+           id="path4399-4-2"
+           inkscape:connector-curvature="0" />
+        <path
+           style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 384.23146,827.84144 0,0 0,0 -58.44485,30.66908 58.15552,-16.49187"
+           id="path4407-4-2"
+           inkscape:connector-curvature="0" />
+        <path
+           style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 325.78661,858.79985 56.70886,-4.05064"
+           id="path4409-5-2"
+           inkscape:connector-curvature="0" />
+      </g>
+    </g>
+  </g>
+</svg>
