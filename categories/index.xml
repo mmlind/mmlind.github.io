@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on Machine Intelligence</title>
+    <title>Categories on Matt&#39;s Tech Blog</title>
     <link>https://mmlind.github.io/categories/</link>
-    <description>Recent content in Categories on Machine Intelligence</description>
+    <description>Recent content in Categories on Matt&#39;s Tech Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>2015–2020 by Matt Lind</copyright><atom:link href="https://mmlind.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
