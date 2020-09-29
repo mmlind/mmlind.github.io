@@ -6,7 +6,18 @@
     <description>Recent content on Matt&#39;s Tech Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>2015–2020 by Matt Lind</copyright>
-    <lastBuildDate>Tue, 26 Dec 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 29 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Migrating my GitHub pages blog from Jekyl to Hugo</title>
+      <link>https://mmlind.github.io/posts/migrating_blog_from_jekyl_hugo/</link>
+      <pubDate>Tue, 29 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/migrating_blog_from_jekyl_hugo/</guid>
+      <description>It&amp;rsquo;s been more than 5 years that I setup this blog on GitHub Pages. Technology has moved on and there are a few new interesting options available.
+I ended up choosing Hugo because it works well with GitHub Pages, renders static websites at a great performance, offers lots of templates to choose from, and was relatively simple to setup. Its customization though was a bit tricker than I hoped.
+The Clarity theme includes a convenient switching between light- and dark-mode (at the top-right of the page), plus the ability to add topic tags which is a useful feature.</description>
+    </item>
+    
     <item>
       <title>Using logistic regression to classify images</title>
       <link>https://mmlind.github.io/posts/using_logistic_regression_to_solve_mnist/</link>
@@ -89,7 +100,8 @@ Contact d n i l t t a m @ o u t l o o k .</description>
       <guid>https://mmlind.github.io/posts/up_and_running/</guid>
       <description>Finally! I launched my new blog about my hacking adventures in the world of artificial intelligence and machine learning.
 Following a recommendation on Andrej Karpathy&amp;rsquo;s blog I decided to use Jekyll and host it on Github.
-Thanks to Barry Clark&amp;rsquo;s post it took only a few minutes to setup.</description>
+Thanks to Barry Clark&amp;rsquo;s post it took only a few minutes to setup.
+&amp;ndash;</description>
     </item>
     
   </channel>

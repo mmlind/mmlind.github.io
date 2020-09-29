@@ -6,7 +6,16 @@
     <description>Recent content in Tags on Matt&#39;s Tech Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>2015–2020 by Matt Lind</copyright>
-    <lastBuildDate>Tue, 26 Dec 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 29 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>blogging</title>
+      <link>https://mmlind.github.io/tags/blogging/</link>
+      <pubDate>Tue, 29 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/tags/blogging/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Computer Vision</title>
       <link>https://mmlind.github.io/tags/computer-vision/</link>
@@ -31,15 +40,6 @@
       <pubDate>Tue, 26 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>https://mmlind.github.io/tags/math/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>blogging</title>
-      <link>https://mmlind.github.io/tags/blogging/</link>
-      <pubDate>Wed, 01 Jul 2015 00:00:00 +0000</pubDate>
-      
-      <guid>https://mmlind.github.io/tags/blogging/</guid>
       <description></description>
     </item>
     
