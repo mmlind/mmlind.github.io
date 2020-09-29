@@ -50,15 +50,5 @@ In my previous blog post I gave a brief introduction how neural networks basical
 Image Recognition For the computer an image is just a collection of pixels with different colors.</description>
     </item>
     
-    <item>
-      <title>What is a neural network?</title>
-      <link>https://mmlind.github.io/posts/what_is_a_neural_network/</link>
-      <pubDate>Thu, 09 Jul 2015 00:00:00 +0000</pubDate>
-      
-      <guid>https://mmlind.github.io/posts/what_is_a_neural_network/</guid>
-      <description>When people talk about artificial intelligence and machine learning, they most often refer to (artificial) neural networks (ANN or NN). Let&amp;rsquo;s explore some machine learning basics, without excessive math, purely from a programmer&amp;rsquo;s perspective.
-A neural network is a computation model imaging the brain where individual nodes (neurons) form an organism (a network) to process information. In order to understand what this means and how this is special, let&amp;rsquo;s start by looking at how a computer normally works.</description>
-    </item>
-    
   </channel>
 </rss>
