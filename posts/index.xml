@@ -14,8 +14,7 @@
       
       <guid>https://mmlind.github.io/posts/migrating_blog_from_jekyl_hugo/</guid>
       <description>It&amp;rsquo;s been more than 5 years that I setup this blog on GitHub Pages. Technology has moved on and there are a few new interesting options available.
-I ended up choosing Hugo because it works well with GitHub Pages, renders static websites at a great performance, offers lots of templates to choose from, and was relatively simple to setup. Its customization though was a bit tricker than I hoped.
-The Clarity theme includes a convenient switching between light- and dark-mode (at the top-right of the page), plus the ability to add topic tags which is a useful feature.</description>
+I ended up choosing Hugo because it works well with GitHub Pages, renders static websites at a great performance, offers lots of templates to choose from, and was relatively simple to setup. Its customization though was a bit tricker than I had hoped.</description>
     </item>
     
     <item>
