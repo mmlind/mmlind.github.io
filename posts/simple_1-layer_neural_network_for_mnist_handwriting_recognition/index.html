@@ -362,7 +362,7 @@ I.e. our cell&rsquo;s input values should be the same 724 long sequence of 0s an
 <p>Mathematically each cell&rsquo;s output is calculated by summing all of its 724 <em>weighted inputs</em>.</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>output = sum (input * weight)
 </code></pre></div><p>Let&rsquo;s understand this in more detail. The input is binary [0,1] and the weight is scalar [0-1].
-Thus, a cell&rsquo;s output would be somewhere in the range of [0-794].
+Thus, a cell&rsquo;s output would be somewhere in the range of [0-784].
 The more pixels in an image are switched ON, the higher its output value.</p>
 <p>The code to do this looks like this</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="nf">calcCellOutput</span><span class="p">(</span><span class="n">Cell</span> <span class="o">*</span><span class="n">c</span><span class="p">){</span>
@@ -375,7 +375,7 @@ The more pixels in an image are switched ON, the higher its output value.</p>
 <span class="ln"> 8</span>    
 <span class="ln"> 9</span>    <span class="n">c</span><span class="o">-&gt;</span><span class="n">output</span> <span class="o">/=</span> <span class="p">(</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">);</span>             <span class="c1">// normalize output (0-1)
 </span><span class="ln">10</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>Please note that we need to <em>normalize</em> our output to enforce a value [0-1] instead of [0-794].</p>
+</code></pre></div><p>Please note that we need to <em>normalize</em> our output to enforce a value [0-1] instead of [0-784].</p>
 <p>The logic behind is as follows:
 A cell&rsquo;s output can be regarded as its distance or closeness to being the target cell.
 I.e. the higher a cell&rsquo;s output the more likely the index of this cell represents the desired target output.
@@ -464,16 +464,23 @@ Once I switch the rendering off the program runs less than 10 seconds &hellip; w
   <section class="sidebar_inner">
     <h2>Matt Lind</h2>
     <div>
-      CTO and passionate software engineer. Azure cloud and M365 global admin. Excited about parellel processing and distributed systems. AI enthusiast with special interest in natural language processing (NLP)...
+      CTO, freelancer, and passionate software engineer. Azure cloud and M365 global admin. Excited about parellel processing and distributed systems. AI enthusiast with special interest in natural language processing (NLP)...
     </div>
     <a href = 'https://mmlind.github.io/about/' class="button mt-1" role="button">Read More</a>
     <h2 class="mt-4">Featured Posts</h2>
     <ul>
     
+      <li>
+        <a href="https://mmlind.github.io/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/" class="nav-link">How to simultaneously write to shared memory with multiple processes</a>
+      </li>
+    
     </ul>
     <h2 class="mt-4">Recent Posts</h2>
     <ul class="flex-column">
       
+      <li>
+        <a href="https://mmlind.github.io/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/" class="nav-link">How to simultaneously write to shared memory with multiple processes</a>
+      </li>
       <li>
         <a href="https://mmlind.github.io/posts/migrating_blog_from_jekyl_hugo/" class="nav-link">Migrating my GitHub pages blog from Jekyl to Hugo</a>
       </li>
@@ -491,9 +498,6 @@ Once I switch the rendering off the program runs less than 10 seconds &hellip; w
       </li>
       <li>
         <a href="https://mmlind.github.io/posts/what_is_a_neural_network/" class="nav-link">What is a neural network?</a>
-      </li>
-      <li>
-        <a href="https://mmlind.github.io/posts/up_and_running/" class="nav-link">Up and running!</a>
       </li>
     </ul> 
     
@@ -523,6 +527,16 @@ Once I switch the rendering off the program runs less than 10 seconds &hellip; w
         <a href='https://mmlind.github.io/tags/math/' class=" post_tag button button_translucent">
           MATH
           <span class='button_tally'>2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/c/' class=" post_tag button button_translucent">
+          C
+          <span class='button_tally'>1</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/multiprocessing/' class=" post_tag button button_translucent">
+          MULTIPROCESSING
+          <span class='button_tally'>1</span>
         </a>
         
         

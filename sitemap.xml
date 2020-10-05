@@ -4,7 +4,32 @@
   
   <url>
     <loc>https://mmlind.github.io/</loc>
-    <lastmod>2020-09-29T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mmlind.github.io/tags/c/</loc>
+    <lastmod>2020-10-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mmlind.github.io/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/</loc>
+    <lastmod>2020-10-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mmlind.github.io/tags/multiprocessing/</loc>
+    <lastmod>2020-10-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mmlind.github.io/posts/</loc>
+    <lastmod>2020-10-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mmlind.github.io/tags/</loc>
+    <lastmod>2020-10-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -14,16 +39,6 @@
   
   <url>
     <loc>https://mmlind.github.io/posts/migrating_blog_from_jekyl_hugo/</loc>
-    <lastmod>2020-09-29T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mmlind.github.io/posts/</loc>
-    <lastmod>2020-09-29T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mmlind.github.io/tags/</loc>
     <lastmod>2020-09-29T00:00:00+00:00</lastmod>
   </url>
   

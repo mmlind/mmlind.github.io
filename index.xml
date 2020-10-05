@@ -6,7 +6,17 @@
     <description>Recent content on Matt&#39;s Tech Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>2015–2020 by Matt Lind</copyright>
-    <lastBuildDate>Tue, 29 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 05 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to simultaneously write to shared memory with multiple processes</title>
+      <link>https://mmlind.github.io/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/</link>
+      <pubDate>Mon, 05 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/</guid>
+      <description>Most of our modern day computers have more than one processing unit. They are often referred to as cores. For a developer, effectively using multiple cores simultaneously to speed up program execution by parallel processing comes with challenges. One of them is changing the value of a variable in shared memory.
+In this blog post I introduce one of the two most common methods to overcome this problem by synchronizing access to shared memory: fork and semaphores.</description>
+    </item>
+    
     <item>
       <title>Migrating my GitHub pages blog from Jekyl to Hugo</title>
       <link>https://mmlind.github.io/posts/migrating_blog_from_jekyl_hugo/</link>
@@ -87,7 +97,7 @@ A neural network is a computation model imaging the brain where individual nodes
       <pubDate>Wed, 01 Jul 2015 00:00:00 +0000</pubDate>
       
       <guid>https://mmlind.github.io/about/</guid>
-      <description>Hi. I&amp;rsquo;m Matt Lind, CTO and passionate software engineer. Azure cloud and M365 global admin. Command line and powershell geek. Excited about parellel processing and distributed systems. AI enthusiast with special interest in natural language processing (NLP). Explorer of alternative paths to machine intelligence, other than deep learning. Curious researcher and eternal student.
+      <description>Hi. I&amp;rsquo;m Matt Lind, CTO, freelancer, and passionate software engineer. Azure cloud and M365 global admin. Command line and powershell geek. Excited about parellel processing and distributed systems. AI enthusiast with special interest in natural language processing (NLP). Explorer of alternative paths to machine intelligence, other than deep learning. Curious researcher and eternal student.
 Contact d n i l t t a m @ o u t l o o k .</description>
     </item>
     
