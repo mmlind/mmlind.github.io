@@ -499,8 +499,16 @@ Only a small subset of all software effectively leverages the enourmous computin
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>Sum of all frequencies (single process) :        100,000 (13 sec)
 <span class="ln">2</span>Sum of all frequencies (multiprocessing):        100,000 (7 sec)
 </code></pre></div><p>Voila! The multiprocessing result is still correct (i.e. memory synchronization via <code>semaphores</code> works) <em>and</em> we see some performance improvement from <em>multiprocessing</em> compared to a single process.</p>
-<h3 id="conclusion">Conclusion</h3>
+<h2 id="conclusion">Conclusion</h2>
 <p><em>Multiprocessing</em> requires a completely new consideration, or redesign, of the application logic. Processes need to communicate with each other (IPC) to share the result of their work. When <em>shared memory</em> is used for IPC, memory access needs to be <em>synchronized</em> to avoid unpredictable outcomes caused by <em>race conditions</em>. Synchronization, no matter whether via <code>semaphores</code> or <code>mutexes</code>, comes at a cost that often negatively compensates any performance gain from <em>multiprocessing</em>. To reduce the cost a developer has to carefully weigh different options for the <em>design</em> of <code>semaphores</code> (or <code>mutexes</code>).</p>
+<h1 id="heading-1"></h1>
+<h6 id="sources-and-further-references">Sources and further references</h6>
+<ul>
+<li><a href="http://beej.us/guide/bgipc/html/multi/index.html">Beej&rsquo;s Guide to Unix IPC</a></li>
+<li><a href="https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html">POSIX thread (pthread) libraries</a></li>
+<li><a href="http://users.cs.cf.ac.uk/Dave.Marshall/C/node29.html">Threads: Basic Theory and Libraries</a></li>
+<li><a href="https://barrgroup.com/embedded-systems/how-to/rtos-mutex-semaphore">Mutexes and Semaphores Demystified</a></li>
+</ul>
 <p>&ndash;</p>
 
     <script src="https://utteranc.es/client.js"
