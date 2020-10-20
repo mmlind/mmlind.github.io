@@ -144,12 +144,12 @@
 
     
     <h1 id="heading"></h1>
-<p>I was about to do some basic natural language processing (NLP) task on a large text file: create a dictionary of unique words and count how many times each word occurs. Easy peasy. This should only take me a minute. So I thought. While coding <em>did</em> not take more than 2 zips of coffee, I needed to wait almost an hour for the task to complete. That was unacceptable. There must be a way to accelerate this process. So I detoured, digging into parallel processing with multi-core computers. Along the way, I learned about semaphores, mutexes, pipes, and parallel hash tables. I knew I was cracking the nut with a sledgehammer. But hey, data files are only getting bigger. Remember anyone complaining &ldquo;Hey, that data source is too big for our model!&rdquo;? Me neither.</p>
+<p>I was about to do some basic natural language processing (NLP) task on a large text file: create a dictionary of unique words and count how many times each word occurs. Easy peasy. This should only take me a minute. So I thought. While coding <em>did</em> not take more than 2 zips of coffee, I needed to wait almost an hour for the task to complete. That was unacceptable. There must be a way to accelerate this process. So I detoured, digging into parallel processing with multi-core computers. Along the way, I learned about semaphores, mutexes, pipes, and parallel hash tables. I knew I was cracking the nut with a sledgehammer. But hey, data files are only getting bigger. Remember anyone complaining &ldquo;Hey, that data source is <em>too big</em> for our model!&rdquo;? Me neither.</p>
 <p><img src="/images/nlp.png" alt=""></p>
 <p>A friend asked me for help to assess a new algorithm for building word embeddings. Remember those numerical representations of words that allow you to do arithmetic calculations such as the (in)famous</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>King - Man + Woman = Queen
 </code></pre></div><p>equation? In a typical machine learning manner, he emphasized that we would need a <em><strong>very</strong></em> large text corpus for building and training the model. Otherwise, the algorithm wouldn&rsquo;t work.</p>
-<p>So, off I go to look for freely available large text corpora. One of the first potential sources that comes to my mind is &hellip; Wikipedia. As of October 2020, the English Wikipedia text spans <a href="http://wikicount.net">more than 6 million articles</a>. With an average of 1,324 words per article the whole corpus should provide us with 8 billion words. That seemed like a good start.</p>
+<p>So, off I go to look for freely available large text corpora. One of the first potential sources that come to my mind is &hellip; Wikipedia. As of October 2020, the English Wikipedia text spans <a href="http://wikicount.net">more than 6 million articles</a>. With an average of 1,324 words per article the whole corpus should provide us with 8 billion words. That seemed like a good start.</p>
 <p><a href="http://wikicount.net"><img src="/images/wikicount_202010.png" alt=""></a></p>
 <h2 id="reading-large-wikipedia-files">Reading large Wikipedia files</h2>
 <p>Regular backups are available at <a href="https://dumps.wikimedia.org/">dumps.wikimedia.org</a>, and the latest dumps of the <em>English</em> site can be downloaded <a href="https://dumps.wikimedia.org/enwiki/latest/">here</a>. Simply look for a file <em>enwiki-latest-pages-articles.xml.bz2</em> which includes all current articles.</p>
@@ -159,7 +159,7 @@
 <p>After conversion to plain text, the dump file of the English Wikipedia still weighs a staggering 17.3 GB. (After decompression, the original dump file exploded to 78 GB of XML which then get stripped down to 17 GB.) I call it <code>enwiki.txt</code>. This is the file that I am going to work on.</p>
 <p>My first task is to build a dictionary of its unique words and count their respective occurrences. The tool I&rsquo;m using to create the dictionary is <em>Python</em>, the de facto weapon of choice nowadays for many machine learning practitioners, data scientists, and anyone else who wants to get stuff done quickly.</p>
 <h3 id="processing-with-python">Processing with Python</h3>
-<p>Python is amazing. It enables a developer to achieve complex tasks with little code. Creating a dictionary from a text corpus requires only a few lines:</p>
+<p>Python is amazing. The language empowers a developer to achieve complex tasks with little code. Creating a dictionary from a text corpus requires only a few lines:</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ln"> 1</span><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="ln"> 2</span>
 <span class="ln"> 3</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
@@ -182,7 +182,7 @@
 <span class="ln">20</span><span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">top</span><span class="p">:</span>
 <span class="ln">21</span>    <span class="k">print</span><span class="p">(</span><span class="n">word</span><span class="p">,</span><span class="n">dic</span><span class="p">[</span><span class="n">word</span><span class="p">])</span>
 </code></pre></div><p>Yes, this is elementary school syntax. Hold on. We&rsquo;re just getting started. If you&rsquo;re a devoted Pythonista you must know at least 27.5 other ways to do this. If you want to highlight any method in particular, please leave a comment below.</p>
-<p>Running this script on my computer takes 3,430 seconds to complete. That&rsquo;s me waiting more than 53 mins. Or almost one hour. Just to tell me the following:</p>
+<p>Running this script on my computer takes 3,430 seconds to complete. That&rsquo;s me waiting for more than 53 mins. Or almost one hour. Just to tell me the following:</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln"> 1</span>Execution time: 3,430 seconds
 <span class="ln"> 2</span>
 <span class="ln"> 3</span>Number of words in the dictionary: 9,969,783
@@ -199,7 +199,7 @@
 <span class="ln">14</span>on    22,621,322
 <span class="ln">15</span>as    22,363,717
 </code></pre></div><p>Huh. I&rsquo;m going to end up with a caffeine addiction if I don&rsquo;t speed this up. Come on, Python. You can do better than that.</p>
-<p>The simple <code>split()</code> method doesn&rsquo;t cut it. And I would like to do some pre-processing such as converting all words to lower case. So I try the <a href="https://stackoverflow.com/questions/35857519/efficiently-count-word-frequencies-in-python">following method</a> next, using Python&rsquo;s <code>counter</code> function.</p>
+<p>The simple <code>split()</code> method doesn&rsquo;t cut it. And, I want to include some pre-processing such as converting all words to lower case. So I plugin the <a href="https://stackoverflow.com/questions/35857519/efficiently-count-word-frequencies-in-python">following method</a> next, using Python&rsquo;s <code>counter</code> function.</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ln"> 1</span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="ln"> 2</span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
 <span class="ln"> 3</span><span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">punctuation</span>
@@ -224,7 +224,7 @@
 <span class="ln">22</span>
 <span class="ln">23</span><span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">top</span><span class="p">:</span>
 <span class="ln">24</span>    <span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-</code></pre></div><p>That&rsquo;s a few libraries to import, but it&rsquo;s concise, elegant and even includes some pre-processing. Nice. And more importantly, this method performs better, taking <em>only</em> 1,402 seconds or about 23+ minutes on my computer to complete. Yeah. This saves me half an hour.</p>
+</code></pre></div><p>That&rsquo;s a few libraries to import, but it&rsquo;s concise, elegant, and even covers the pre-processing. Nice. And more importantly, this method performs better, taking <em>only</em> 1,402 seconds or about 23+ minutes on my computer to complete. Yeah. This saves me half an hour.</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln"> 1</span>Execution time: 1,402 seconds
 <span class="ln"> 2</span>
 <span class="ln"> 3</span>Number of words in the dictionary: 10,148,725
@@ -241,21 +241,21 @@
 <span class="ln">14</span>(&#39;on&#39;,   22,619,230)
 <span class="ln">15</span>(&#39;as&#39;,   22,363,452)
 </code></pre></div><blockquote>
-<p>Both methods return the top 10 words are the same, although the exact token counts differ from the first method since they use different word boundaries.</p>
+<p>Both methods return the same top 10 words. The exact token counts yet differ because they use different word boundaries.</p>
 </blockquote>
-<p>I&rsquo;m grateful for the additional half an hour that my life just gained. I&rsquo;m celebrating for a few seconds, then my mind wonders off. Come on. It&rsquo;s 2020. Almost every home computer comes with multiple cores, running at &gt;3 Ghz. The Mac Mini I&rsquo;m using to write this blog on boats 6 cores. With that much computing power is it not possible to speed up the processing of large text files? And how can I effectively use <em><strong>all</strong></em> cores and process the file <em>in parallel</em>?</p>
-<p>Questions demand anwers. I decide to do some investigation into multiprocessing and multithreading. I want to assess how any of these techniques could help me to process the Wikipedia file faster.</p>
+<p>I&rsquo;m grateful for the additional half an hour that my life just gained. I&rsquo;m celebrating for a few seconds, then my mind wanders off. Come on. It&rsquo;s 2020. Almost every home computer comes with multiple cores, running at &gt;3 Ghz. The Mac Mini I&rsquo;m using to write this blog on boasts 6 cores. With that much computing power is it not possible to speed up the processing of large text files? And how can I effectively use <em><strong>all</strong></em> cores and process the file <em>in parallel</em>?</p>
+<p>Questions demand answers. I decide to do some investigation into multiprocessing and multithreading. I want to assess how any such techniques could help me to process the Wikipedia file faster.</p>
 <h3 id="sequential-processing-with-c">Sequential processing with C</h3>
 <p>I start my investigation by developing a simple C program that processes the text corpus on a single core, sequentially.</p>
-<p>Writing C code is clearly not as efficient and elegant as coding in Python. The idea of the sledgehammer begins to form. But hey, for this kind of operation I need a scalpel not a kitchen knife. And I just love the power and precision of this language.</p>
-<p>I break down the algorithm for creating the dictionary into 5 main steps:</p>
+<p>Writing C code is clearly not as efficient and elegant as coding in Python. The idea of the sledgehammer begins to form. But hey, for this kind of operation I need a scalpel, not a kitchen knife. And I just love the power and precision of the C language.</p>
+<p>I break down the algorithm for creating the dictionary into 4 main steps:</p>
 <ol>
 <li>Map the corpus file to memory</li>
 <li>Read the corpus word by word</li>
 <li>Deduplicate all words</li>
 <li>Sort the words by count in descending order</li>
 </ol>
-<p>Wow. Just mapping out the to-list already takes more lines of writing than coding the whole piece in Python. This better works.</p>
+<p>Wow. Just mapping out my to-do list already takes more lines of writing than coding the whole piece in Python. This better works.</p>
 <h4 id="1-map-the-corpus-file-to-memory">1. Map the corpus file to memory</h4>
 <p>Given the monstrous size of Wikipedia dump files, I want to ensure they can be read on computers that do not have sufficient memory to load the complete file at once. Therefore, I use <code>mmap</code> to map the physical file into memory. The loading into memory happens dynamically and the operating system helps to cache pages which further improves performance.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="o">*</span><span class="nf">map_shared_file</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fname</span><span class="p">,</span> <span class="n">size_t</span> <span class="o">*</span><span class="n">fsize</span><span class="p">){</span>
@@ -280,7 +280,7 @@
 <span class="ln">20</span><span class="p">}</span>
 </code></pre></div><p>Using <code>mmap</code> is simple and straight forward. I create the above function <code>map_shared_file()</code> to do and hide all the usual error handling. The function returns a pointer which allows reading the file simply by accessing the pointer. The function also returns the file size of the corpus which I will need later.</p>
 <blockquote>
-<p>BTW: I also tested loading the corpus into memory. Surprisingly, this did <em><strong>not</strong></em> result in any measurable performance improvement. On the contrary, in some scenarios loading the file into memory was somewhat slower than mapping the file to memory.</p>
+<p>BTW: I also tested loading the corpus file into memory. Surprisingly, this did <em><strong>not</strong></em> result in any measurable performance improvement. On the contrary, in some scenarios loading the file into memory was somewhat slower than mapping the file.</p>
 </blockquote>
 <h4 id="2-read-the-corpus-word-by-word">2. Read the corpus word by word</h4>
 <p>To process the corpus word by word, I first introduce an object for representing a <em>word</em> that I can use throughout the program. I call it the <code>corpus_token_t</code>:</p>
@@ -290,9 +290,9 @@
 </span><span class="ln">4</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">len</span><span class="p">;</span>                    <span class="c1">// length of the token, not null-terminated
 </span><span class="ln">5</span><span class="c1"></span>    <span class="n">size_t</span> <span class="n">count</span><span class="p">;</span>               <span class="c1">// counter for how many times this token is found
 </span><span class="ln">6</span><span class="c1"></span><span class="p">}</span> <span class="n">corpus_token_t</span><span class="p">;</span>
-</code></pre></div><p>If you have worked on NLP you&rsquo;re familiar with the <em>token</em> terminology. It&rsquo;s neither a coin nor a password. And has no relationship to cryptocurrencies. It&rsquo;s just that in some languages, such as Chinese or other Asian languages for example, the most basic element of a sentence or a text is not a <em>word</em> but a <em>character</em>. A <em>token</em> represents an element of the written language: either a single <em>character</em> or a series of characters, i.e. a <em>word</em>.</p>
+</code></pre></div><p>If you have worked on NLP you&rsquo;re familiar with the <em>token</em> terminology. It&rsquo;s neither a coin nor a password. And has no relationship to cryptocurrencies. In some languages, such as Chinese or other Asian languages, the most basic element of a sentence or a text is not a <em>word</em> but a <em>character</em>. A <em>token</em> represents an element of the written language: either a single <em>character</em> or a series of characters, i.e. a <em>word</em>.</p>
 <p>To maximize performance my <code>corpus_token_t</code> object does <em><strong>not</strong></em> include a <code>string</code> or the actual character representation of the token. (Yes, I know. C doesn&rsquo;t have a <code>string</code> in the first place. But you know what I mean.) Instead, I only store the <em>offset</em> of the first occurrence of this token in the corpus. Plus its <em>length</em> and a <em>count</em>er for how many times this token appeared in the corpus.</p>
-<p>Now, I can stroll along and read the corpus. But wait. What&rsquo;s that? I see 2 bumps in this walk in the park: multi-byte sequences and word boundaries.</p>
+<p>Now, I can stroll along and read the file. But wait. What&rsquo;s that? I see 2 bumps in this walk in the park: multi-byte sequences and word boundaries.</p>
 <h5 id="multi-byte-sequences">Multi-byte sequences</h5>
 <p>I want to be able to read Wikipedia dumps (or any other text files for that matter) of <em>any</em> language. Therefore, I can&rsquo;t read the file simply <code>char</code> by <code>char</code> because in many languages a single &lsquo;letter&rsquo;, or character, uses more than a single byte <code>char</code>.</p>
 <p><em>UTF8</em> has become a de facto standard in the digital world. Unfortunately, in <em>UTF8</em> there is no fixed character length. Characters may range in size from 1 to 4 bytes which makes handling UTF8 in C a bit of a pain.</p>
@@ -344,7 +344,7 @@
 <span class="ln">43</span><span class="p">}</span>
 </code></pre></div><p>Good. This takes care of bump #1. Moving on.</p>
 <h5 id="word-boundaries">Word boundaries</h5>
-<p>What constitutes a <em>&lsquo;word&rsquo;</em>? In most Western languages one obvious answer is a whitespace between two characters. Sure. But there are plenty of other characters and cases to consider. I put all that I want to include in a list and wrap them in function <code>is_token delimiter</code>. Whenever a <em>token delimiter</em> is read, the end, or boundary, of a token has been reached.</p>
+<p>What constitutes a <em>&lsquo;word&rsquo;</em>? In most Western languages one obvious answer is a whitespace between two characters. Sure. But there are plenty of other characters and cases to consider. I wrap all such characters into a function <code>is_token delimiter</code>. Whenever a <em>token delimiter</em> is read, the end, or boundary, of a token has been reached.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">bool</span> <span class="nf">is_token_delimiter</span><span class="p">(</span><span class="n">u_int32_t</span> <span class="n">utf_code</span><span class="p">){</span>
 <span class="ln"> 2</span>    
 <span class="ln"> 3</span>    <span class="k">return</span> <span class="p">(</span><span class="kt">bool</span><span class="p">)</span> <span class="p">(</span>
@@ -403,9 +403,9 @@
 <span class="ln">56</span>    
 <span class="ln">57</span><span class="p">}</span>
 </code></pre></div><blockquote>
-<p>The definition of <em>token delimiters</em> impacts the number of tokens put into the dictionary, and their respective counts. If the raw text version of the Wikipedia dump file does not include punctuation then you don&rsquo;t need this many token delimiters because most of these characters have already been removed during XML to TXT conversion.</p>
+<p>The definition of <em>token delimiters</em> impacts the number of tokens put into the dictionary and their respective counts. If the raw text version of the Wikipedia dump file does not include punctuation then you don&rsquo;t need this many token delimiters because most of these characters have already been removed during XML to TXT conversion.</p>
 </blockquote>
-<p>Equipped with these two functions I can now loop through the file and pickup all its tokens as follows:</p>
+<p>Equipped with these two functions I can now loop through the file and pick up all its tokens as follows:</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">char</span> <span class="n">CORPUS_FILE_NAME</span><span class="p">[</span><span class="mi">100</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;enwiki.txt&#34;</span>
 <span class="ln"> 2</span>
 <span class="ln"> 3</span><span class="n">size_t</span> <span class="n">corpus_fsize</span><span class="p">;</span>
@@ -429,8 +429,8 @@
 <span class="ln">21</span><span class="p">}</span>
 </code></pre></div><p>Straight forward and painless. So far, so good. What&rsquo;s next? What do I <em>do</em> with the tokens read from the corpus?</p>
 <h4 id="3-deduplicate-all-words">3. Deduplicate all words</h4>
-<p>A dictionary is a list of all the <em>unique</em> words, or tokens, in a text. Therefore, I need to <em>deduplicate</em> the tokens. And ideally so so at the speed of light.</p>
-<p>Enter hash tables. One of the most efficient tools for deduplication and quick lookups is a <a href="https://en.wikipedia.org/wiki/Hash_table"><em>hash table</em></a>. The <em>string</em> of a token shall serve as my hash key. I&rsquo;m sketching down what I need to do to implement this:</p>
+<p>A dictionary is a list of all the <em>unique</em> words, or tokens, in a text. Therefore, I need to <em>deduplicate</em> the tokens. And do so at the speed of light.</p>
+<p>Enter hash tables. One of the most efficient tools for deduplication and quick lookups is a <a href="https://en.wikipedia.org/wiki/Hash_table"><em>hash table</em></a>. The <em>string</em> of a token shall serve as my hash key. I&rsquo;m sketching down the main steps I need to implement:</p>
 <ol>
 <li>Create the hash table</li>
 <li>Hash a string</li>
@@ -439,8 +439,8 @@
 </ol>
 <h5 id="create-the-hash-table">Create the hash table</h5>
 <p>The hash table itself is nothing but an <em>array</em> of <code>corpus_token_t</code> objects. Not a fan of dynamically resized arrays, I wonder about its size. There is no agreed definition of the <em>ideal</em> or <em>best</em> size of a hash table. <a href="https://stackoverflow.com/questions/22741966/how-to-choose-size-of-hash-table">Some</a> argue its load factor &ndash; the share of hash table entries, or buckets, that are filled &ndash; should not exceed 70%. Sounds like a reasonable metric to start from.</p>
-<p>But wait. The size of the hash table depends on the size of the dictionary, which in return depends on the size of the corpus. Would it not be ideal to link the size of the hash table directly to &hellip; say &hellip; file size? After all, if the table is too big, I&rsquo;ll be wasting lots of memory. If it&rsquo;s too small, I&rsquo;ll have lots of hash &lsquo;misses&rsquo; which will slow down performance.</p>
-<p>I decide tp sacrifice a few bits for the sake of performance, and come up with the following, somewhat arbitrary, formula that defines hash size based on file size:</p>
+<p>But wait. The size of the hash table depends on the size of the dictionary, which in return depends on the size of the corpus text. Would it not be ideal to link the size of the hash table directly to &hellip; say &hellip; corpus file size? After all, if the table is too big, I&rsquo;ll be wasting lots of memory. If it&rsquo;s too small, I&rsquo;ll have lots of hash &lsquo;misses&rsquo; which will slow down performance.</p>
+<p>I decide to sacrifice a few bits for the sake of performance, and come up with the following, somewhat arbitrary, formula that defines hash size based on file size:</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1</span><span class="n">MAX_HASH_LENGTH</span> <span class="o">=</span> <span class="mi">30000</span> <span class="o">*</span> <span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">log10</span><span class="p">(</span><span class="n">corpus_fsize</span><span class="p">));</span>
 <span class="ln">2</span><span class="c1">//    MAX_HASH_LENGTH = 13727587;
 </span><span class="ln">3</span><span class="c1">//    MAX_HASH_LENGTH = 18303449;
@@ -449,7 +449,7 @@
 </span><span class="ln">6</span><span class="c1">//    MAX_HASH_LENGTH = 80000023;
 </span><span class="ln">7</span><span class="c1"></span>
 <span class="ln">8</span><span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">tok_htab</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">MAX_HASH_SIZE</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">corpus_token_t</span><span class="p">));</span>
-</code></pre></div><p>I also added, as comments, some of the fixed sizes that I used. They&rsquo;re all prime numbers which arguably make better hashes. And if you wonder how do I get a prime number above, say, 50 million? No, I didn&rsquo;t calculate them. I used <a href="http://compoasso.free.fr/primelistweb/page/prime/liste_online_en.php">this online tool</a> to simply look them up.</p>
+</code></pre></div><p>The function includes, as comments, some of the <em>fixed</em> sizes that I used. They&rsquo;re all prime numbers which arguably make better hashes. And if you wonder how do I get a prime number above, say, 50 million? No, I didn&rsquo;t calculate them. I used <a href="http://compoasso.free.fr/primelistweb/page/prime/liste_online_en.php">this online tool</a> to simply look them up.</p>
 <h5 id="hash-a-string">Hash a string</h5>
 <p>Next, I need to hash each token to obtain a unique code. Remember that our <code>corpus_token_t</code> object does not include the actual character representation (aka <code>string</code>) of this token?</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="nf">get_token_string</span><span class="p">(</span><span class="n">corpus_token_t</span> <span class="n">tok</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">){</span>
@@ -516,7 +516,7 @@
 <span class="ln">28</span><span class="p">}</span>
 </code></pre></div><p>The above function does that efficiently using <em>pointers</em> only.</p>
 <h5 id="insert-a-token-into-the-hash-table">Insert a token into the hash table</h5>
-<p>At last, I insert the token into the hash table. If the token already exists, its counter will be incremented. If the seat on the hash bus is taken already, move on and find the next empty spot.</p>
+<p>At last, I insert the token into the hash table. If the token already exists, its counter will be incremented. If the assigned seat number on the hash table bus is taken already, let the token move on and find the next empty spot.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="nf">insert_token</span><span class="p">(</span><span class="n">corpus_token_t</span> <span class="n">tok</span><span class="p">,</span> <span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">htab</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">){</span>
 <span class="ln"> 2</span>    
 <span class="ln"> 3</span>    <span class="n">size_t</span> <span class="n">hidx</span> <span class="o">=</span> <span class="n">get_token_hash</span><span class="p">(</span><span class="n">tok</span><span class="p">,</span> <span class="n">corpus</span><span class="p">);</span>
@@ -547,7 +547,7 @@
 <span class="ln">28</span>    
 <span class="ln">29</span><span class="p">}</span>
 </code></pre></div><blockquote>
-<p>Note to self: The function does not check whether the hash table size if sufficient to fit all tokens. In fact, if there were more tokens to put in the dictionary than there are buckets in the hash table the loop would run infinitely. @todo</p>
+<p>Note to self: The function does not check whether the hash table is large enough to fit all tokens. In fact, if there were more tokens to put in the dictionary than there are buckets in the hash table the loop would run infinitely. @todo</p>
 </blockquote>
 <p>After all tokens are placed, the number of filled buckets tells me the number of unique tokens in the dictionary.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="n">size_t</span> <span class="nf">get_htab_token_count</span><span class="p">(</span><span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">htab</span><span class="p">){</span>
@@ -561,7 +561,7 @@
 <span class="ln"> 9</span><span class="p">}</span>
 <span class="ln">10</span>
 </code></pre></div><h4 id="4-sort-the-words-by-count-in-descending-order">4. Sort the words by count in descending order</h4>
-<p>Almost there. I have read and deduplicated all tokens, and popped them into a gargantuan, sparsely populated hash. I also calculated the word count. But how do I sort a hash table?</p>
+<p>Almost there. I have read and deduplicated all tokens, and popped them into a gargantuan, sparsely populated hash table. I also calculated the word count. But how do I sort a hash table?</p>
 <p>You don&rsquo;t. Instead, I first copy all unique tokens into a more compact representation: an <code>array</code> of tokens, a.k.a. the dictionary.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="n">corpus_token_t</span> <span class="o">*</span><span class="nf">create_dictionary</span><span class="p">(</span><span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">htab</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">dict_tok_count</span><span class="p">,</span> <span class="n">size_t</span> <span class="o">*</span><span class="n">corpus_tok_count</span><span class="p">){</span>
 <span class="ln"> 2</span>    
@@ -600,7 +600,7 @@
 <span class="ln">14</span>    <span class="n">qsort</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span> <span class="n">dict_tok_count</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">corpus_token_t</span><span class="p">),</span> <span class="n">compare_token_counters</span><span class="p">);</span>
 <span class="ln">15</span>
 <span class="ln">16</span><span class="p">}</span>   
-</code></pre></div><p>That&rsquo;s it. The moment of truth. I put all the above together: process the corpus, deduplicate tokens, count their occurrences, and sort the dictionary. And while I&rsquo;m add it, I print out the top 10. Because I&rsquo;m curious.</p>
+</code></pre></div><p>That&rsquo;s it. The moment of truth. I put all the above together: process the corpus, deduplicate tokens, count their occurrences, and sort the dictionary. And while I&rsquo;m at it, I print out the top 10. Because I&rsquo;m curious.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="nf">text2dict</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
 <span class="ln"> 2</span>
 <span class="ln"> 3</span>    <span class="n">size_t</span> <span class="n">corpus_fsize</span><span class="p">;</span>
@@ -651,9 +651,9 @@
 <span class="ln">14</span># 8:   23,133,852 = for
 <span class="ln">15</span># 9:   22,621,486 = on
 <span class="ln">16</span>#10:   22,363,826 = as
-</code></pre></div><p>I&rsquo;m getting pumped. Creating the dictionary sequentially via C takes 756 seconds, compared to 3,430 from the first Python script, and 1,402 seconds from the second Python script. Omg. From now on, I will have to wait <em>only</em> 12 minutes each time I create the dictionary. Life is beautiful. Mine just extended another 10 minutes.</p>
+</code></pre></div><p>I&rsquo;m getting pumped. Creating the dictionary sequentially via C takes 756 seconds, compared to 3,430 seconds from the first Python script, and 1,402 seconds from the second Python script. OMG. From now on, I will have to wait <em>only</em> 12 minutes each time I create the dictionary. Life is beautiful. Mine just extended another 10 minutes.</p>
 <h2 id="parallel-processing-of-text-corpora">Parallel processing of text corpora</h2>
-<p>After a short moment of rejoice I recall my original objective: utilizing <em>multiple</em> cores. Alright. Let&rsquo;s do this. I&rsquo;m rolling up the sleeves. What hardware shall I use for the ride?</p>
+<p>After a short moment of rejoicing, I recall my original objective: utilizing <em>multiple</em> cores. Alright. Let&rsquo;s do this. I&rsquo;m rolling up the sleeves. What hardware shall I use for the ride?</p>
 <h3 id="the-hardware">The hardware</h3>
 <p>The first machine is my Mac Mini. I ordered it with full specs: 6 cores, 64 GB RAM.</p>
 <p><img src="/images/mac_sysinfo.png" alt=""></p>
@@ -663,7 +663,7 @@
 <p>Anyway. 6 or 12, not much of a difference, I&rsquo;m thinking. If I want to investigate the <em>scalability</em> of parallel processing I better prepare a bit more firepower.</p>
 <h3 id="utilizing-azure-cloud-servers">Utilizing Azure cloud servers</h3>
 <p>Enter Azure cloud servers. Microsoft&rsquo;s Azure cloud offering is immense. You can order servers ranging from 1 to 416 cores. Yes, that&rsquo;s <em>four hundred sixteen cores</em>.  And not only does the &lsquo;M416ms_v2&rsquo; come with a whopping 416 cores, but it also boasts 11 TB of RAM. What?! Yes, that&rsquo;s not a typo. It&rsquo;s a T, not a G. That&rsquo;s more than 5 times my hard drive capacity &hellip; in RAM.</p>
-<p>Naturally, I want to include this beast in my testing and reach out to Azure support to get my hands on it. I am, however, advised that these servers require a corporate account. Why? Well, for one, I guess, because this machine runs at $95k per month. Oops. I know some people like <a href="https://mijailovic.net/2020/03/28/azure-money-burning/">burning money on Azure</a> but this exceeds by budget just a tiny little bit.</p>
+<p>Naturally, I want to include this beast in my testing and reach out to Azure support to get my hands on it. I am, however, advised that these servers require a corporate account. Why? Well, for one, I guess, because this machine runs at $95k per month. That&rsquo;s &ldquo;k&rdquo; as in kilo. Oops. I know some people like <a href="https://mijailovic.net/2020/03/28/azure-money-burning/">burning money on Azure</a> but this exceeds my budget just a tiny little bit.</p>
 <p>Instead, I pick 2 other models. The first one is the &ldquo;F64s_v2&rdquo; with 64 cores and 128 GB RAM, running Debian Buster. I call it my &ldquo;VM64&rdquo;. I fire it up and print some system info from the console:</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>$ lscpu
 <span class="ln"> 2</span>
@@ -735,9 +735,9 @@
 <span class="ln">3</span>              total        used        free      shared  buff/cache   available
 <span class="ln">4</span>Mem:           <span class="m">2164</span>           <span class="m">8</span>        <span class="m">2155</span>           <span class="m">0</span>           <span class="m">0</span>        <span class="m">2150</span>
 <span class="ln">5</span>Swap:             <span class="m">0</span>           <span class="m">0</span>           <span class="m">0</span>
-</code></pre></div><p>All set. Equipped with my cute Mac Mini and 2 terrifying cloud monsters, I&rsquo;m ready to take on the parallel processing of Wikipedia.</p>
+</code></pre></div><p>All set. Equipped with my cute Mac Mini and 2 potent cloud titans, I&rsquo;m ready to take on the parallel processing of Wikipedia.</p>
 <h3 id="the-basic-design">The basic design</h3>
-<p>I first assess each step of the overall algorithm from 2 perspectives: how does it impact performance, and how easy or difficult is it to run this step in parallel.</p>
+<p>I first assess each step of the overall algorithm from 2 angles: how does it impact performance, and how easy or difficult is it to run this step in parallel.</p>
 <table>
 <thead>
 <tr>
@@ -771,14 +771,17 @@
 </table>
 <p>Good. Fortunately, the steps with a <em>high</em> impact on performance (reading the corpus, and inserting words into a hash table) are not difficult to parallelize. The steps with a <em>low</em> impact on performance (copying the words into an array and sorting the array) are not worthwhile spending a lot of extra time on. I just leave them as they are.</p>
 <h3 id="reading-text-in-parallel">Reading text &lsquo;in parallel&rsquo;</h3>
-<p>To read the corpus &lsquo;in parallel, via multiple cores, I need to divide the text into multiple segments and have each core read a different segment. Therefore, I define an object <code>range_t</code> that represents a corpus segment by its start and end <em><strong>offset</strong></em>.</p>
+<p>To read the corpus in parallel, via multiple cores, I need to divide the text into multiple segments and have each core read a different segment. Therefore, I define an object <code>range_t</code> that represents a corpus segment by its start and end <em><strong>offset</strong></em>.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1</span><span class="c1">// defines a segment via its first and last offset
 </span><span class="ln">2</span><span class="c1"></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">range_t</span><span class="p">{</span>
 <span class="ln">3</span>    <span class="n">size_t</span> <span class="n">from</span><span class="p">;</span>    <span class="c1">// included
 </span><span class="ln">4</span><span class="c1"></span>    <span class="n">size_t</span> <span class="n">to</span><span class="p">;</span>      <span class="c1">// excluded
 </span><span class="ln">5</span><span class="c1"></span><span class="p">}</span> <span class="n">range_t</span><span class="p">;</span>
-</code></pre></div><p>Yes. Both <code>from</code> and <code>to</code> are <em>offsets</em> to the corpus text and not memory addresses or pointers. Beware that while the <code>from</code> offset is included in the range, i.e. it&rsquo;s <em>part</em> of the segment, the <code>to</code> offset is not.</p>
-<p>Next, I divide the corpus into as many segments as there are cores, or actually processes, so that each process can work independently on a different text segment.</p>
+</code></pre></div><p>Yes. Both <code>from</code> and <code>to</code> are <em>offsets</em> relative to the corpus text and not memory addresses or pointers.</p>
+<blockquote>
+<p>Beware that while the <code>from</code> offset is included in the range, i.e. it&rsquo;s <em>part</em> of the segment, the <code>to</code> offset is not.</p>
+</blockquote>
+<p>Next, I divide the corpus into as many segments as there are cores, or processes, so that each process can work independently on a different text segment.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="n">range_t</span> <span class="o">*</span><span class="nf">create_segments</span><span class="p">(</span><span class="n">size_t</span> <span class="n">total_size</span><span class="p">,</span> <span class="kt">long</span> <span class="n">nsegs</span><span class="p">){</span>
 <span class="ln"> 2</span>    
 <span class="ln"> 3</span>    <span class="k">if</span> <span class="p">(</span><span class="n">total_size</span> <span class="o">&lt;</span> <span class="n">nsegs</span><span class="p">){</span><span class="n">perror</span><span class="p">(</span><span class="s">&#34;Error creating segments. ABORT&#34;</span><span class="p">);</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);}</span>
@@ -800,7 +803,7 @@
 <span class="ln">19</span>    
 <span class="ln">20</span>    <span class="k">return</span> <span class="n">segs</span><span class="p">;</span>
 <span class="ln">21</span><span class="p">}</span>
-</code></pre></div><p>The problem with this approach is that I may mistakenly chop text in the middle of a word, or possibly even in the middle of a character. Remember multi-byte characters in UTF8? Therefore, I have to adjust the split points between segments by simply moving each point forward to the beginning of the next token.</p>
+</code></pre></div><p>The problem with this approach is that I may mistakenly chop the file in the middle of a word, or possibly even in the middle of a character. Remember multi-byte characters in UTF8? Therefore, I adjust the split points between segments by simply moving each point forward to the beginning of the next token.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="n">range_t</span> <span class="o">*</span><span class="nf">create_corpus_segments</span><span class="p">(</span><span class="n">size_t</span> <span class="n">corpus_size</span><span class="p">,</span> <span class="kt">long</span> <span class="n">nsegs</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">){</span>
 <span class="ln"> 2</span>    
 <span class="ln"> 3</span>    <span class="c1">// first use default, i.e. divide into equally-sized segments
@@ -828,7 +831,7 @@
 </code></pre></div><p>Ok. So far, so good. To read the text in parallel I won&rsquo;t need much else. I can reuse the other functions I built before. One critical piece though is missing.</p>
 <h3 id="multiprocessing-and-multithreading">Multiprocessing and multithreading</h3>
 <p>The 2 main technical options for a developer to implement parallel processing are <code>multiprocessing</code> and <code>multithreading</code>. Both execute multiple tasks simultaneously by spinning-off separate <code>processes</code> or <code>threads</code> that run independently of the main process.</p>
-<p>For spinning-off multiple processes, I use the following general <code>fork</code> boilerplate code. All I need to add is the <code>get_next_token</code> function into the loop.</p>
+<p>For spinning-off multiple processes, I use the following general <code>fork</code> boilerplate code. All I need to add is my <code>get_next_token</code> function and tuck it into the loop.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span>    <span class="kt">int</span> <span class="n">nproc</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
 <span class="ln"> 2</span>    
 <span class="ln"> 3</span>    <span class="kt">int</span> <span class="n">pid</span><span class="p">;</span>
@@ -858,8 +861,8 @@
 <p>Beware that in the above <code>fork</code> boilerplate code <code>nproc</code> represents the number of <em>processes</em>, not the number of <em>processors</em>. You could run more processes than there are actual processing units or cores.</p>
 </blockquote>
 <h4 id="creating-the-dictionary-in-parallel">Creating the dictionary in parallel</h4>
-<p>So. I finished reading the text, and feel tempted to pat myself on the back. After all, this was the heavy lifting, wasn&rsquo;t it? Surely not. I just enjoyed my appetizer, and am moving on to the main course now.</p>
-<p>When multiple processes simultaneously make changes to the same variable (a.k.a. they need to <a href="/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/"><em><strong>write</strong></em> to the same shared memory</a>), they may conflict, or overlap, with each other. So called <em>race conditions</em> between processes will cause unpredictable results. Oh.</p>
+<p>So. I finished reading the text, and feel tempted to pat myself on the back. After all, this was the heavy lifting, wasn&rsquo;t it? Surely not. I just enjoyed my appetizer, and am moving on to the main course.</p>
+<p>When multiple processes simultaneously make changes to the same variable (a.k.a. they need to <a href="/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/"><em><strong>write</strong></em> to the same shared memory</a>), they may conflict, or overlap, with each other. So-called <em>race conditions</em> between processes will cause unpredictable results. Oh.</p>
 <h4 id="how-to-address-race-conditions-between-multiple-tasks">How to address <em>race conditions</em> between multiple tasks?</h4>
 <p>I can resolve the problem of <em>race conditions</em> in 3 ways:</p>
 <ul>
@@ -873,7 +876,7 @@
 <p><em><strong>Communicate</strong></em> between different processes in other ways than through memory sharing, such as sending messages or <em>signals</em> to each other. (Note to self: remember this nice tutorial on IPC called <a href="http://beej.us/guide/bgipc/html/multi/">Beej&rsquo;s Guide to Unix IPC</a>.)</p>
 </li>
 </ul>
-<p>I choose to test and compare all three, via different technical implementations. After some initial research, I jot down the following 4 methods for me to investigate: multiple hash tables (<em>avoid</em>), semaphores and mutexes (<em>synchronize</em>), and pipes (<em>communicate</em>). In particular, I want to examine these 4 methods across two dimensions: performance and scalability.</p>
+<p>I choose to test and compare all three, via different technical implementations. After some initial research, I jot down the following 4 methods for me to investigate: multiple hash tables (<em>avoid</em>), semaphores and mutexes (<em>synchronize</em>), and pipes (<em>communicate</em>). In particular, I want to examine these 4 methods from 2 perspectives: performance and scalability.</p>
 <table>
 <thead>
 <tr>
@@ -911,12 +914,12 @@
 </tbody>
 </table>
 <h3 id="methods-for-parallel-text-processing">Methods for parallel text processing</h3>
-<p>Off I go to implement the four techniques one by one. First main dish:</p>
+<p>Off I go to implement the four techniques one by one.</p>
 <h4 id="1-multiprocessing-with-separate-hashes">1. Multiprocessing with separate hashes</h4>
-<p>The easiest option to address <em>race conditions</em> is to avoid them. Instead of letting multiple processes write to the <em>same</em> memory, I can have each process write into its own <em>separate</em> hash table first and then merge the hash tables into one later. As easy as ABC. I only need to make 3 modifications to the previous code: (A) create <em>multiple</em> hash tables, (B) make each process insert tokens into a <em>different</em> hash table, and (C) merge all hash tables into <em>one</em> at the end.</p>
+<p>The easiest option to address <em>race conditions</em> is to avoid them. Instead of letting multiple processes write to the <em>same</em> memory, I can have each process write into its own <em>separate</em> hash table first and then merge the hash tables later. As easy as ABC. I only need to make 3 modifications to the previous code: (A) create <em>multiple</em> hash tables, (B) make each process insert tokens into a <em>different</em> hash table, and (C) merge all hash tables into <em>one</em> at the end.</p>
 <h4 id="create-multiple-hash-tables">Create multiple hash tables</h4>
 <p>Before I create more than one hash table I need to assess the memory impact. The length of the hash table I used before ranges from 14 to 80 million buckets. If a single <code>corpus_token_t</code> element occupies up to 24 bytes, my little friend <code>htab</code> demands a humongous 1.8 GB of RAM. And that&rsquo;s just for one. If I breed 12 of these guys, I&rsquo;ll have to kiss goodbye to 22 GB of memory. Running 128 processes? 230 GB of memory. Ouch.</p>
-<p>A few seconds of silence. &hellip; &ldquo;So what!&rdquo; This is not my Sanyo MBC 550 anymore, coding Pascal on 128 KB of RAM. In only a few years, the average Mac or Surface laptop probably ships with at least few TB of RAM. Let&rsquo;s face it. Memory is &lsquo;cheap&rsquo;, and the machines I use for this exercise certainly can handle this much. While this certainly limits any broader usage of this option, I give it go.</p>
+<p>A few seconds of silence. &hellip; &ldquo;So what!&rdquo; This is not my Sanyo MBC 550 anymore, coding Pascal on 128 KB of RAM. In only a few years, the average Mac or Surface laptop ships with at least several TB of RAM. Let&rsquo;s face it. Memory is &lsquo;cheap&rsquo;, and the machines I use for this exercise surely can handle the magnitude. I give it a go.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1</span><span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">htabs</span> <span class="o">=</span> <span class="n">map_shared_memory</span><span class="p">(</span><span class="n">PROCESS_COUNT</span> <span class="o">*</span> <span class="n">MAX_HASH_LENGTH</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">corpus_token_t</span><span class="p">));</span>
 </code></pre></div><p>This time, I cannot create the hash table simply via <code>malloc</code>. Instead, I define all of them as <em>shared</em> memory so that the parent process can later consolidate all individual tables into a single one.</p>
 <h4 id="make-each-process-insert-tokens-into-a-different-hash-table">Make each process insert tokens into a different hash table</h4>
@@ -959,7 +962,7 @@
 </blockquote>
 <h4 id="merge-all-hash-tables-into-one">Merge all hash tables into one</h4>
 <p>After all processes have finished reading their corpus segment and adding the respective tokens into their process-specific hash table, I need to consolidate all hash tables into one.</p>
-<p>For merging hash tables I cannot simply copy over the tokens and sum up their counts. The hash index of a token in one table may be different from the hash index of the same token in another table. Why? Remember that in case of a collision, the insert function moves the hash index gradually forward until an empty bucket is found. Therefore, the hash index for any given token depends on the timing. Specifically, it depends on what other tokens have been processed so far. I, therefore, merge the tables by simply using the previous <code>insert_token</code> function.</p>
+<p>For merging hash tables I cannot simply copy over the tokens and sum up their counts. The hash index of a token in one table may differ from the hash index of the same token in another table. Why? Remember that in case of a collision, the insert function moves the hash index gradually forward until an empty bucket is found. Therefore, the hash index for any given token depends on the timing. Specifically, it depends on what other tokens have been processed so far. I, therefore, merge the tables by simply using the previous <code>insert_token</code> function.</p>
 <p>But how long is this going to take? Can I not <em>parallelize</em> the merging to further speed up the whole process? Sure. I divide the table into multiple segments, similar to what I did with the corpus text before. Then, I have each process merge tokens of a specific segment only. This ensures that there are no overlaps when a token is added. My merge function looks like this:</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="n">corpus_token_t</span> <span class="o">*</span><span class="nf">merge_hashtables</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">,</span> <span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">htabs</span><span class="p">){</span>
 <span class="ln"> 2</span>
@@ -995,8 +998,8 @@
 <span class="ln">32</span>    <span class="k">return</span> <span class="n">htab</span><span class="p">;</span>
 <span class="ln">33</span><span class="p">}</span>
 </code></pre></div><p>Done. I&rsquo;m putting the pieces together and am dying to see the result. How long will my first method for creating the dictionary via parallel processing take? I run the algorithm on my computer using all of its 12 virtual cores.</p>
-<p>Yippee! 111 seconds. Wow! That&rsquo;s about 6 times faster than the single process C program and about 11 times faster than the second Python script. My wait time for creating a Wikipedia dictionary got slashed from 57 minutes, to 23 minutes, to 13 minutes, to now less than 2 minutes. <em>Performance</em> &hellip; check. What about <em>scalability</em>? I continue and deploy my code on the 2 Azure cloud servers.<br>
-Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak performance at 32 processes with an execution time of 50 seconds. Adding more cores, either in the VM64 or in the VM128, does <em>not</em> yield better performance. At some point, the cost of managing memory seems to gobble up all benefits of multiprocessing. Scalability &hellip; X, beep.</p>
+<p>Yippee! 111 seconds. Wow! That&rsquo;s about 6 times faster than the single process C program and about 11 times faster than the second Python script. My wait time for creating a Wikipedia dictionary got slashed from 57 minutes to 23 minutes, to 13 minutes, to now less than 2 minutes. <em>Performance</em> &hellip; check. What about <em>scalability</em>? I continue and deploy my code on the 2 Azure cloud servers.</p>
+<p>Nope. Lesson #1 in the limitations of multiprocessing. The VM64 reaches its peak performance at 32 processes with an execution time of 50 seconds. Adding more cores, either in the VM64 or in the VM128, does <em>not</em> yield better performance. At some point, the cost of managing memory gobbles up all benefits of multiprocessing. Scalability &hellip; X, beep.</p>
 <table>
   <tr>
     <td>Multiprocessing with separate hashes</td>
@@ -1033,9 +1036,9 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 </table>
 <p>And off to round two.</p>
 <h4 id="2-multiprocessing-with-semaphores-for-memory-synchronization">2. Multiprocessing with semaphores for memory synchronization</h4>
-<p>Next, I want to test using memory synchronization which should help to address the memory problem associated with the previous method. My first option for memory synchronization is <em>semaphores</em>.</p>
-<p><em>Semaphore</em> are numeric registers that allow processes to make <em>atomic</em> operations. <em>Atomic</em> in this context means that an operation is guaranteed to be completed <em>in one piece</em> without interference from any other process. You can set a <em>semaphore</em> to a certain value, normally by incrementing or decrementing, and the operating system will ensure that only 1 process can access a defined resource, e.g. a memory address, at the same time.</p>
-<p>Hhmmm&hellip; I&rsquo;ve worked <a href="/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/">with semaphores before</a> and didn&rsquo;t find them to be very <em>friendly</em>. Let&rsquo;s see. I want to give it a shot. To implement this technique I need to make only 2 changes: create and initialize one semaphore per hash table bucket, and lock (unlock) the respective semaphore before (after) I access the hash table.</p>
+<p>Next, I want to test using memory synchronization which should help to address the memory problem associated with the previous method. My first option for memory synchronization are <a href="https://en.wikipedia.org/wiki/Semaphore_%28programming%29">semaphores</a>.</p>
+<p><em>Semaphores</em> are numeric registers that allow processes to make <em>atomic</em> operations. <em>Atomic</em> in this context means that an operation is guaranteed to be completed <em>in one piece</em> without interference from any other process. You can set a <em>semaphore</em> to a certain value, normally by incrementing or decrementing, and the operating system will ensure that only 1 process can access a defined resource, e.g. a memory address, at the same time.</p>
+<p>Hhmmm&hellip; I&rsquo;ve played <a href="/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/">with semaphores before</a> and don&rsquo;t hold them dearly. Let&rsquo;s see. I want to give it a shot. To implement this technique I need to make only 2 changes: create and initialize one semaphore per hash table bucket, and lock (unlock) the respective semaphore before (after) I access the hash table.</p>
 <h5 id="create-and-initialize-one-semaphore-per-hash-table-bucket">Create and initialize one semaphore per hash table bucket</h5>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="cp">#define SEMAPHORES_PER_SET 10000
 </span><span class="ln"> 2</span><span class="cp"></span>
@@ -1093,7 +1096,7 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 </code></pre></div><p>With so many semaphores, I need to assign each semaphore to serve a particular token or hash table bucket. I use the token&rsquo;s hash index <code>hidx</code> to do so. But, for the design to work, I will require about 30-40 million semaphores in total.</p>
 <p>In most operating systems, however, there is a limit to the number of semaphores. I&rsquo;m starting to wonder whether semaphores are the right tool for the job. While in Linux I can change the limit by editing:</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>/proc/sys/kernel/sem
-</code></pre></div><p>I wasn&rsquo;t able to increase the limit high enough on my Mac to process the full corpus. Therefore, I proceed testing this method on the Azure servers only. The result is devastating.</p>
+</code></pre></div><p>I wasn&rsquo;t able to increase the limit high enough on my Mac to process the full corpus. Therefore, I proceed with testing this method on the Azure servers only. The result is devastating.</p>
 <p>Slow as molasses, the semaphores keep crawling for 12,833 and 14,398 seconds to process the full English Wikipedia dump with 32 and 64 cores respectively. That&rsquo;s almost 4 hours compared to less than 1 minute using the previous method. OMG. What an epic fail. Or, to be fair, just the wrong tool for the job. Locking and unlocking a semaphore requires making a low-level operating system call each time which simply does not scale.</p>
 <table>
   <tr>
@@ -1133,7 +1136,7 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 <p>One of the reasons <em>semaphores</em> are rather slow is that they work across processes. You could communicate between entirely different programs on the same machine which goes beyond what I need here.</p>
 </blockquote>
 <h4 id="3-multithreading-with-mutexes-for-memory-synchronization">3. Multithreading with mutexes for memory synchronization</h4>
-<p>Round 3. <em>Mutexes</em> are binary, process-specific registers that can be used to control access to a resource and support <em>atomic</em> operations in a multitask environment. Their usage is straight forward and the program design resembles what I&rsquo;ve done above for <em>semaphores</em>. With one important difference. <em>Mutuxes</em> do not work <em>across</em> processes but only <em>within</em> a single process.</p>
+<p>Round 3. <a href="https://en.wikipedia.org/wiki/Lock_(computer_science)">Mutexes</a> are binary, process-specific registers that can be used to control access to a resource and support <em>atomic</em> operations in a multitask environment. Their usage is straight forward and the program design resembles what I&rsquo;ve done above for <em>semaphores</em>. With one important difference. <em>Mutexes</em> do not work <em>across</em> processes but only <em>within</em> a single process.</p>
 <p>Therefore, I switch from <em>multiprocessing</em> to <em>multithreading</em> and make the following 4 changes to the code: introduce a &lsquo;thread object&rsquo;, create and initialize one mutex per hash table bucket, define a start function for each thread, and lock (unlock) each mutex before (after) accessing the respective token.</p>
 <h5 id="introduce-a-new-thread-object">Introduce a new &lsquo;thread object&rsquo;</h5>
 <p>One of the differences between using <code>pthread</code>s and <code>fork</code> is that when you send off a new thread you can only give it a <em>single</em> variable, or pointer, for the journey. Therefore, I create a <em>payload</em> object <code>corpus_thread_t</code>  which references all the variables each thread commands for its work.</p>
@@ -1162,7 +1165,7 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 <span class="ln">15</span><span class="p">}</span>
 </code></pre></div><p>Ok. Each thread now receives an individualized <code>corpus_thread_t</code> payload object as a single variable. Only the <em>mutexes</em> are still missing. I add those in the next step.</p>
 <h5 id="create-and-initialize-one-mutex-per-hash-table-bucket">Create and initialize one mutex per hash table bucket</h5>
-<p>My design prescribes one <em>mutex</em> per hash table bucket. Fortunately, C offers a built-in <code>pthread_mutex_t</code> object so I do not need to create my own. I just create an array of these mutex objects matching the size of the hash table. Before I wave them off with <code>pthread_create</code> I quickly toss in the missing reference to the mutexes.</p>
+<p>My design prescribes one <em>mutex</em> per hash table bucket. Fortunately, C offers a built-in <code>pthread_mutex_t</code> object so I do not need to dream up my own. I just create an array of these mutex objects matching the size of the hash table. Before I wave them off with <code>pthread_create</code> I quickly toss in the missing reference to the mutexes.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="nf">process_corpus_multithreading</span><span class="p">(</span><span class="n">corpus_thread_t</span> <span class="o">*</span><span class="n">cts</span><span class="p">){</span>
 <span class="ln"> 2</span>    
 <span class="ln"> 3</span>    <span class="n">pthread_mutex_t</span> <span class="o">*</span><span class="n">mtxs</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">MAX_HASH_LENGTH</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">pthread_mutex_t</span><span class="p">));</span>
@@ -1244,7 +1247,7 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 <span class="ln">33</span><span class="p">}</span>
 </code></pre></div><p>Voila. Contender #3 is entering the ring. I can hardly sit tight. Will mutexes knock-out semaphores? Well, that&rsquo;s not really the question, I hope. Running a BASIC script on a 286 can do that.</p>
 <p>Yup. I&rsquo;m happy with what I see. Creating the dictionary for the English Wikipedia dump takes only 122 seconds running 12 threads on my Mac Mini. That&rsquo;s the second bests result so far. It&rsquo;s a notch slower than the multiple hash tables method but consumes by far less memory. Nice. But how does it scale?</p>
-<p>It doesn&rsquo;t. Again. When I test this option on the cloud servers I find mutexes scale well to about 16 threads. At this point, performance hits a ceiling and adding threads slows things down. Hhm. That&rsquo;s unexpected. The overhead for locking and unlocking, plus the wait time if more than one thread want to access the same token, eat up all time gained from parallel processing.</p>
+<p>It doesn&rsquo;t. Again. When I test this option on the cloud servers I find mutexes scale well to about 16 threads. At this point, performance hits a ceiling, and adding threads slows things down. Hmm. That&rsquo;s unexpected. The overhead for locking and unlocking, plus the wait time if more than one thread wants to access the same token, eat up all the time gained from parallel processing.</p>
 <table>
   <tr>
     <td>Multithreading with mutexes</td>
@@ -1280,12 +1283,12 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
   </tr>
 </table>
 <h4 id="4-multiprocessing-with-pipes-for-ipc">4. Multiprocessing with pipes for IPC</h4>
-<p>This leaves me with one last candidate to assess: <em>pipes</em>. Instead of communicating with each other by accessing the same memory, different processes send information in the form of messages to each other.</p>
+<p>This leaves me with one last candidate to assess: <a href="http://www.gnu.org/software/libc/manual/html_node/Pipes-and-FIFOs.html">pipes</a>. Instead of communicating with each other by accessing the same memory, different processes send information in the form of messages to each other.</p>
 <blockquote>
-<p>The interesting aspect of this messaging-based approach is that it should be scalable not only across multiple processes on <em>one</em> machine, but also across <em>multiple machines</em>, if <em>pipes</em>, for example, were replaced by <em>sockets</em>.</p>
+<p>The interesting aspect of this messaging-based approach is that it should be scalable not only across multiple processes on the <em>same</em> machine, but also across <em>multiple machines</em>, if <em>pipes</em>, for example, were replaced by <em>sockets</em>.</p>
 </blockquote>
 <h5 id="messaging-based-design">Messaging-based design</h5>
-<p>All 3 previous methods shared a similar design. Each process or thread works on a different segment of the corpus, reading <em><strong>and</strong></em> writing tokens. A messaging-based method must be designed differently. I will have 2 types of processes: one that <em>reads</em>, and one that <em>writes</em>. Tokens are sent as small messages via a <em>pipe</em> from a <em>corpus-reading-process</em> to a <em>hash-table-writing-process</em>.</p>
+<p>All 3 previous methods shared a similar design. Each process, or thread, works on a different segment of the corpus, reading <em><strong>and</strong></em> writing tokens. A messaging-based method must be designed differently. I will have 2 types of processes: one that <em>reads</em>, and one that <em>writes</em>. Tokens are sent as small messages via a <em>pipe</em> from a <em>corpus-reading-process</em> to a <em>hash-table-writing-process</em>.</p>
 <h5 id="asynchronous-inter-process-communication">Asynchronous inter process communication</h5>
 <p>One advantage of <em>pipes</em> is that they work fully <em>asynchronous</em>. The sender&rsquo;s rate of <em>writing</em> into the pipe is not limited by the recipient&rsquo;s rate of <em>reading</em> from the <em>pipe</em>. The <em>pipe</em> serves as a buffer and never loses a message. Huh. I can have different designs where there are either more senders or more receivers, depending on where I suspect a bottleneck. I could, for example, have only 4 processes that read the corpus (because I suspect this to be faster) and have 8 processes create the dictionary (because I suspect this to be slower). But how many <em>pipes</em> would I need in this case?</p>
 <p>To avoid overlaps between processes I split the hash table into multiple segments and assign each hash-table-writing-process to one particular segment. Each process only receives the tokens that fit into its respective hash table segment. Therefore, the number of pipes should match the number of processes that write to the hash table &ndash; which are the processes that <em>read</em> from the pipe BTW.</p>
@@ -1297,7 +1300,7 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 <p>Alright. Done the design, moving on to implementation. I add the following 4 functions to the code: create pipes, open and close pipes, send a token into a pipe, and read a token from a pipe.</p>
 <h5 id="create-pipes">Create pipes</h5>
 <p>A <em>pipe</em> is defined as an array of 2 integers. The 2 integers represent the 2 &ldquo;<em>channels</em>&rdquo; of the <em>pipe</em>. The 1st channel is for messages to <em><strong>come in</strong></em>, and the 2nd channel is for messages to <em><strong>go out</strong></em>. When the sender and receiver exchange information unidirectional, which is normally the case, I need only <em><strong>one</strong></em> of the channels and must close the other. I&rsquo;ll come back to that later.</p>
-<p>For coding convenience, I define <em>pipes</em> via below <code>typedef</code> which helps to access the <em>incoming</em> and <em>outgoing</em> channel of the <em>pipe</em> via <code>.in</code> or <code>.out</code> attribute. I feel this keeps the code easier to read and avoids the usage of multi-dimensional arrays.</p>
+<p>For coding convenience, I define <em>pipes</em> via below <code>typedef</code> which helps to access the <em>incoming</em> and <em>outgoing</em> channel of the <em>pipe</em> via a <code>.in</code> and <code>.out</code> attribute. I feel this keeps the code easier to read and avoids the usage of multi-dimensional arrays.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1</span><span class="k">typedef</span> <span class="kt">int</span> <span class="n">pipe_arr_t</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
 <span class="ln">2</span>
 <span class="ln">3</span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">pipe_t</span><span class="p">{</span>
@@ -1319,7 +1322,7 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 <span class="ln">12</span><span class="p">}</span>
 </code></pre></div><h1 id="heading-1"></h1>
 <h5 id="open-and-close-pipes">Open and close pipes</h5>
-<p>After the pipes have been created and <code>fork</code>ed, each process carries a copy of all pipes. The key to the usage of pipes is that <em><strong>all</strong></em> pipe copies need to be closed properly for the pipe to work. And for each pipe copy, each channel (the incoming and the outgoing) must be closed <em><strong>separately</strong></em>. Not closing all pipes&rsquo; in- and out-channels is a frequent source of errors.</p>
+<p>After the pipes have been created and <code>fork</code>ed, each process carries a copy of all pipes. The key to the usage of pipes is that <em><strong>all</strong></em> pipe copies need to be closed properly for the pipe to work. And for each pipe copy, each channel (the incoming and the outgoing) must be closed <em><strong>separately</strong></em>. Not closing all pipes' in- and out-channels is a frequent source of errors.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1</span><span class="kt">void</span> <span class="nf">close_pipes_in</span><span class="p">(</span><span class="n">pipe_t</span> <span class="o">*</span><span class="n">pipes</span><span class="p">,</span> <span class="kt">long</span> <span class="n">npipes</span><span class="p">){</span>
 <span class="ln">2</span>    <span class="k">for</span> <span class="p">(</span><span class="kt">long</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">npipes</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
 <span class="ln">3</span>        <span class="k">if</span> <span class="p">(</span><span class="n">close</span><span class="p">(</span><span class="n">pipes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">in</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span><span class="n">printf</span><span class="p">(</span><span class="s">&#34;Error when closing &#39;in&#39; pipes. ABORT</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);}</span>
@@ -1331,7 +1334,7 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 <span class="ln">9</span><span class="p">}</span>
 </code></pre></div><h1 id="heading-2"></h1>
 <h5 id="send-a-token-into-a-pipe">Send a token into a pipe</h5>
-<p>When I <em>send</em> tokens into the pipe, I need to use the <em>out</em> channel. That&rsquo;s obvious. What&rsquo;s less obvious though is that I, and I know I&rsquo;m repeating myself here, should therefore <em><strong>close</strong></em> the <em>in</em> channel right away. Below function shows how this looks like:</p>
+<p>When I <em>send</em> tokens into the pipe, I need to use the <em>out</em> channel. That&rsquo;s obvious. What&rsquo;s less obvious though is that, and I know I&rsquo;m repeating myself here, I should therefore <em><strong>close</strong></em> the <em>in</em> channel right away. Below function shows how this looks like:</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="nf">read_corpus_and_send_tokens_into_pipe_mp</span><span class="p">(</span><span class="kt">long</span> <span class="n">pidx</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">,</span> <span class="n">range_t</span> <span class="o">*</span><span class="n">corp_segs</span><span class="p">,</span> <span class="n">pipe_t</span> <span class="o">*</span><span class="n">pipes</span><span class="p">){</span>
 <span class="ln"> 2</span>    
 <span class="ln"> 3</span>    <span class="n">close_pipes_in</span><span class="p">(</span><span class="n">pipes</span><span class="p">,</span> <span class="n">PROCESS_COUNT_WRITE_HASH</span><span class="p">);</span>
@@ -1459,8 +1462,8 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 <p>Huh&hellip; almost done. I finished my testing of 4 methods of parallel processing: 2 of them performed splendidly (mutexes and multiple hashes), 1 of them reasonably well (pipes) and 1 of them fell flat (semaphores). Yet, <em>none</em> of them scaled. I had expected that for at least one of the methods adding cores would always further increase performance. Obviously, this is not the case. The overhead of managing and coordinating multiple processes, be it memory management, locking and unlocking registers, or sending and receiving messages, eventually outweighs the benefits of parallel processing.</p>
 <p>Hmmm.. wait. This leaves one question open. If it&rsquo;s the overhead that&rsquo;s preventing the scaling, and the overhead only exists because of our task of creating a dictionary, then how about if I simply <em>read</em> the corpus. No deduplication, no hash table, just read the text, word by word.</p>
 <h3 id="last-but-not-least-just-read">Last but not least: just read</h3>
-<p>Before I conclude my testing I&rsquo;m adding another option, just for fun. And curiosity. I want to confirm whether multiprocessing or multithreading can scale <em>at all</em>. Or is running mutliple processes or threads burdened with inherent overhead. If I simply <em>read</em> the Wikipedia text, <em><strong>without</strong></em> deduplicating tokens and creating a dictionary, will performance cosistently improve all the way to 128?</p>
-<p>Before I conclude my adventure, I create a simple function <code>process_corpus_reading_only</code> and test it on all 3 machines.</p>
+<p>Before I conclude my testing I&rsquo;m adding another option, just for fun. And curiosity. I want to confirm whether multiprocessing or multithreading can scale <em>at all</em>. Is running multiple processes or threads burdened with inherent overhead? If I simply <em>read</em> the Wikipedia text, <em><strong>without</strong></em> deduplicating tokens and creating a dictionary, will performance consistently improve all the way to 128 cores?</p>
+<p>Before I conclude my adventure, I thus create a simple function <code>process_corpus_reading_only</code> and test it on all 3 machines.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="nf">process_corpus_reading_only</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">corpus_fsize</span><span class="p">){</span>
 <span class="ln"> 2</span>    
 <span class="ln"> 3</span>    <span class="n">range_t</span> <span class="o">*</span><span class="n">segs</span> <span class="o">=</span> <span class="n">create_corpus_segments</span><span class="p">(</span><span class="n">corpus_fsize</span><span class="p">,</span> <span class="n">PROCESS_COUNT</span><span class="p">,</span> <span class="n">corpus</span><span class="p">);</span>
@@ -1488,7 +1491,7 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 <span class="ln">25</span>    <span class="n">free</span><span class="p">(</span><span class="n">segs</span><span class="p">);</span>
 <span class="ln">26</span>    <span class="k">return</span><span class="p">;</span>
 <span class="ln">27</span><span class="p">}</span>
-</code></pre></div><p>Wow! Finally. 2 processes run faster than 6, which run faster than 12, which run faster than 32, etc. All the way to 128 processes which take a mere 6 seconds to read through the full 17 GB English Wikipedia corpus with approx. 2.8 billion words. That&rsquo;s a whopping 460 million words <em><strong>per second</strong></em>. To put this in perspetive: if an average novel nowadays comprises 90,000 words, then <code>text2dict</code> is &lsquo;reading&rsquo; 5,000 books .. per second.</p>
+</code></pre></div><p>Wow! Finally. 2 processes run faster than 6, which run faster than 12, which run faster than 32, etc. All the way to 128 processes which take a mere 6 seconds to read through the full 17 GB English Wikipedia corpus with approx. 2.8 billion words. That&rsquo;s a whopping 460 million words <em><strong>per second</strong></em>. To put this in perspective: if an average novel nowadays comprises 90,000 words, then <code>text2dict</code> is &lsquo;reading&rsquo; 5,000 books .. per second.</p>
 <table>
   <tr>
     <td>Simply reading the corpus, without creating a dictionary</td>
@@ -1617,7 +1620,7 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 <h2 id="summary-and-conclusion">Summary and conclusion</h2>
 <p>Given the simple task of creating a dictionary from the Wikipedia corpus, I detoured into insightful analysis and comparison of 4 different methods of parallel processing large text files. On this journey, I learned about the power and potential of multiprocessing and multithreading, but also its challenges and limitations.</p>
 <p>Working with large data sources has become the norm. File sizes that developers and data scientists work on grow exponentially. And large is never large enough. While the usage of GPUs has become very popular through deep learning, the effective utilization of multiple CPUs to enhance processing performance is still lingering.</p>
-<p>Bigger machines with more memory will hopefully enable and motivate more developers to embrace parallel processing. As I&rsquo;ve shown in this post, the challenge of handling <em>race conditions</em> can be addressed in different ways. And sometimes, the most effective is simply &lsquo;throwing memory at the problem&rsquo;.</p>
+<p>Bigger machines with more memory will hopefully enable and motivate more developers to embrace parallel processing. As I&rsquo;ve shown in this post, the challenge of handling <em>race conditions</em> can be addressed in different ways. And sometimes, the most effective one is simply &lsquo;throwing memory at the problem&rsquo;.</p>
 <blockquote>
 <h3 id="lessons-learned">Lessons learned</h3>
 <p>These are some of the key technical lessons I learned from this exercise. Some of them expected, some other less so:</p>
@@ -1626,13 +1629,13 @@ Nope. Lesson #1 on the limitations of multiprocessing. The VM64 reaches its peak
 <li><em>Multiprocessing</em> and <em>multithreading</em> have roughly the same performance. On average, running multiple <em>processes</em> (i.e. using <code>fork</code>) was somewhat faster than running the same number of <em>threads</em>.</li>
 <li>The <em>fastest</em> technique for addressing <em>race conditions</em> is to avoid them, e.g. by <em>throwing memory at the problem</em>.</li>
 <li>The <em>most efficient</em> technique, in terms of memory usage <em>and</em> performance, is memory synchronization using <em>mutexes</em>.</li>
-<li>Stay away from <em>semaphores</em>, at least for anything that requires usage at large scale.</li>
+<li>Stay away from <em>semaphores</em>, at least for anything that requires usage on a large scale.</li>
 <li><em><strong>None</strong></em> of the methods scales really well with multiple cores. Peak performance is reached around 32 cores and then gradually decreases.</li>
 <li>What <em>does</em> scale is simply reading the corpus without <em>any</em> process coordination whatsoever. How far this can be scaled is to be explored on bigger machines.</li>
 </ul>
 </blockquote>
 <h3 id="processing-other-wikipedia-languages">Processing other Wikipedia languages</h3>
-<p>At last, I used the fastest technique to see how long the process of creating a dictionary and of simply <em>reading</em> the Wikipedia corpus would take for other languages than English. Here&rsquo;s a summary:</p>
+<p>At last, I used the fastest technique to see how long the process of creating a dictionary and of simply <em>reading</em> the Wikipedia corpus takes for other languages than English. Here&rsquo;s a summary:</p>
 <table>
 <thead>
 <tr>
