@@ -4,31 +4,46 @@
   
   <url>
     <loc>https://mmlind.github.io/</loc>
-    <lastmod>2020-10-05T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://mmlind.github.io/tags/c/</loc>
-    <lastmod>2020-10-05T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mmlind.github.io/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/</loc>
-    <lastmod>2020-10-05T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://mmlind.github.io/tags/multiprocessing/</loc>
-    <lastmod>2020-10-05T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mmlind.github.io/tags/natural-language-processing-nlp/</loc>
+    <lastmod>2020-10-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://mmlind.github.io/posts/</loc>
-    <lastmod>2020-10-05T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mmlind.github.io/tags/python/</loc>
+    <lastmod>2020-10-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mmlind.github.io/posts/reading_wikipedia_in_seconds_or_how_to_use_multiple_cores_to_process_large_text_files/</loc>
+    <lastmod>2020-10-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://mmlind.github.io/tags/</loc>
+    <lastmod>2020-10-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mmlind.github.io/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/</loc>
     <lastmod>2020-10-05T00:00:00+00:00</lastmod>
   </url>
   

@@ -6,11 +6,11 @@
     <description>Recent content in Tags on Matt&#39;s Tech Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>2015–2020 by Matt Lind</copyright>
-    <lastBuildDate>Mon, 05 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 16 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>C</title>
       <link>https://mmlind.github.io/tags/c/</link>
-      <pubDate>Mon, 05 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>https://mmlind.github.io/tags/c/</guid>
       <description></description>
@@ -19,9 +19,27 @@
     <item>
       <title>Multiprocessing</title>
       <link>https://mmlind.github.io/tags/multiprocessing/</link>
-      <pubDate>Mon, 05 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>https://mmlind.github.io/tags/multiprocessing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Natural Language Processing (NLP)</title>
+      <link>https://mmlind.github.io/tags/natural-language-processing-nlp/</link>
+      <pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/tags/natural-language-processing-nlp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>https://mmlind.github.io/tags/python/</link>
+      <pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/tags/python/</guid>
       <description></description>
     </item>
     

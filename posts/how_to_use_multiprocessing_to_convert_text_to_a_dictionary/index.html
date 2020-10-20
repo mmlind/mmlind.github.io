@@ -1,0 +1,844 @@
+
+<!DOCTYPE html>
+<html lang="en" data-figures="" class="page">
+  <head>  <title>How to use multiple cores to process very large text files | Matt&#39;s Tech Blog</title>
+  <meta charset='utf-8'>
+  <meta name="generator" content="Hugo 0.75.1" />
+  <meta name = 'viewport' content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+  <meta http-equiv = 'X-UA-Compatible' content = 'IE=edge'>
+<meta property = "og:locale" content = "en_US" />
+<meta property="og:type" content="article">
+<meta name="description" content="How to use multiprocessing to create a dictionary from a very large text corpus">
+<meta name = "twitter:card" content = "summary" />
+<meta name = "twitter:creator" content = "@">
+<meta name = "twitter:title" content = "How to use multiple cores to process very large text files" />
+<meta property = "og:url" content = "https://mmlind.github.io/posts/how_to_use_multiprocessing_to_convert_text_to_a_dictionary/" />
+<meta property = "og:title" content = "How to use multiple cores to process very large text files" />
+<meta property = "og:description" content = "How to use multiprocessing to create a dictionary from a very large text corpus" />
+<meta property = "og:image" content = "https://mmlind.github.io/images/nlp.png" />
+<link rel='apple-touch-icon' sizes='180x180' href='https://mmlind.github.io/icons/apple-touch-icon.png'>
+<link rel='icon' type='image/png' sizes='32x32' href='https://mmlind.github.io/icons/favicon-32x32.png'>
+<link rel='icon' type='image/png' sizes='16x16' href='https://mmlind.github.io/icons/favicon-16x16.png'>
+<link rel='manifest' href='https://mmlind.github.io/icons/site.webmanifest'>
+<link rel="mask-icon" href= 'https://mmlind.github.io/safari-pinned-tab.svg' color="#002538">
+<meta name="msapplication-TileColor" content="#002538">
+<meta name="theme-color" content="#002538">
+
+  
+  <link rel='canonical' href='https://mmlind.github.io/posts/how_to_use_multiprocessing_to_convert_text_to_a_dictionary/'>
+
+    
+
+    
+    
+    <link rel="preload" href="https://mmlind.github.io/css/styles.a5262c7798fc304069e7ad8c0884d94b91fa5f203c3219735fe37309b7080d17f29fc1a7be9842862d1a86cf9bca26cdf5eb570f6ad2d44bf92219908c2c44b4.css" integrity = "sha512-pSYsd5j8MEBp562MCITZS5H6XyA8MhlzX&#43;NzCbcIDRfyn8GnvphChi0ahs&#43;byibN9etXD2rS1Ev5IhmQjCxEtA==" as="style" crossorigin="anonymous">
+    <link rel="preload" href="https://mmlind.github.io/js/bundle.min.7333d63e045f01aaa61cad70ba4e3060064949b5a64c00b840c4e0c664bcdb02869222e7bde3800fe4911ccad719c06a19cb5f48c60048c0e382631fbd17cece.js" as="script" integrity=
+    "sha512-czPWPgRfAaqmHK1wuk4wYAZJSbWmTAC4QMTgxmS82wKGkiLnveOAD&#43;SRHMrXGcBqGctfSMYASMDjgmMfvRfOzg==" crossorigin="anonymous">
+
+    
+    <link rel="stylesheet" type="text/css" href="https://mmlind.github.io/css/styles.a5262c7798fc304069e7ad8c0884d94b91fa5f203c3219735fe37309b7080d17f29fc1a7be9842862d1a86cf9bca26cdf5eb570f6ad2d44bf92219908c2c44b4.css" integrity="sha512-pSYsd5j8MEBp562MCITZS5H6XyA8MhlzX&#43;NzCbcIDRfyn8GnvphChi0ahs&#43;byibN9etXD2rS1Ev5IhmQjCxEtA==" crossorigin="anonymous">
+	  
+  </head>
+  
+  
+    
+  
+  <body data-code="7" data-lines="false" id="documentTop">
+
+<header class = 'nav_header' >
+  <nav class = 'nav'>
+    <a href='https://mmlind.github.io/' class = 'nav_brand nav_item'>
+      <img src="https://mmlind.github.io/logos/matt_blog_logo2020.png" class="logo">
+      <div class = 'nav_close'>
+        <div>
+          <svg class="icon">
+            <use xlink:href="#open-menu"></use>
+          </svg>
+          <svg class="icon">
+            <use xlink:href="#closeme"></use>
+          </svg>
+        </div>
+      </div>
+    </a>
+    <div class = 'nav_body nav_body_left'>
+      
+      
+      <div class = 'nav_parent'>
+        <a href = 'https://mmlind.github.io/' class = 'nav_item'>Blog </a>
+      </div>
+      <div class = 'nav_parent'>
+        <a href = 'https://mmlind.github.io/about/' class = 'nav_item'>About </a>
+      </div>
+      
+<div class='follow'>
+  <a href='https://github.com/mmlind'>
+    <svg class="icon">
+      <use xlink:href="#github"></use>
+    </svg>
+  </a>
+  
+  <a href='https://www.linkedin.com/in/mmlind'>
+    <svg class="icon">
+      <use xlink:href="#linkedin"></use>
+    </svg>
+  </a>
+<div class = 'color_mode'>
+  <input type = 'checkbox' class = 'color_choice' id = 'mode'>
+</div>
+
+</div>
+
+    </div>
+  </nav>
+</header>
+
+    <main>
+  
+<div class = 'grid-inverse wrap content'>
+  <article class='post_content'>
+    <h1 class='post_title'>How to use multiple cores to process very large text files</h1><div class = 'post_meta'>
+  <svg class="icon">
+    <use xlink:href="#calendar"></use>
+  </svg>
+  <span class="post_date">
+    Oct 8, 2020</span>
+  <a href = 'https://mmlind.github.io/tags/natural-language-processing-nlp' class = 'post_tag button button_translucent'>Natural Language Processing (NLP)
+  </a>
+  <a href = 'https://mmlind.github.io/tags/multiprocessing' class = 'post_tag button button_translucent'>Multiprocessing
+  </a>
+  <a href = 'https://mmlind.github.io/tags/c' class = 'post_tag button button_translucent'>C
+  </a>
+  <a href = 'https://mmlind.github.io/tags/python' class = 'post_tag button button_translucent'>Python
+  </a>
+</div>
+
+    <div class='post_share'>
+  Share on:
+  <a href="https://twitter.com/intent/tweet?text=How%20to%20use%20multiple%20cores%20to%20process%20very%20large%20text%20files&url=https%3a%2f%2fmmlind.github.io%2fposts%2fhow_to_use_multiprocessing_to_convert_text_to_a_dictionary%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
+    <svg class="icon">
+      <use xlink:href="#twitter"></use>
+    </svg>
+  </a>
+  
+  <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fmmlind.github.io%2fposts%2fhow_to_use_multiprocessing_to_convert_text_to_a_dictionary%2f&t=How%20to%20use%20multiple%20cores%20to%20process%20very%20large%20text%20files" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
+    <svg class="icon">
+      <use xlink:href="#facebook"></use>
+    </svg>
+  </a>
+  <script>
+    function shareViaLinkedin() {
+      window.open('http://www.linkedin.com/shareArticle?mini=true&url='+encodeURIComponent("https://mmlind.github.io/posts/how_to_use_multiprocessing_to_convert_text_to_a_dictionary/"), '', 'left=0,top=0,width=650,height=420,personalbar=0,toolbar=0,scrollbars=0,resizable=0');
+    }
+  </script>
+  <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow" onclick="shareViaLinkedin()">
+    <svg class="icon">
+      <use xlink:href="#linkedin"></use>
+    </svg>
+  </a>
+  <a href="https://mmlind.github.io/posts/how_to_use_multiprocessing_to_convert_text_to_a_dictionary/" title="Copy Link" class="link link_yank">
+    <svg class="icon">
+      <use xlink:href="#yank"></use>
+    </svg>
+  </a>
+</div>
+
+    
+    <h1 id="heading"></h1>
+<p>If you work on natural language processing (NLP) one of the first things you often want to do is to get a dictionary of unique words from a given text corpus. I recently did this with one of the larger modern text corpora that exists: the <em><strong>Wikipedia</strong></em> text. The English Wikipedia text spans approximately 2.5 billion words in a 14 Gb text file. Given the size of this corpus, I wanted to assess to what extent multiple processors could be utilized to fasten the process.</p>
+<p>In this blog post I introduce 5 technical methods that utilize multiple processes on a modern multi-core computer to count unique words, or tokens, in the Wikipedia text corpus. In particular, I explore how scalable these techniques are by simply adding more cores.</p>
+<p><img src="/images/nlp.png" alt=""></p>
+<h2 id="reading-large-wikipedia-files">Reading large Wikipedia files</h2>
+<p>A frequent source of text corpora for NLP practitioners is Wikipedia. Regular backups are available at <a href="https://dumps.wikimedia.org/">dumps.wikimedia.org</a>, the latest dumps of the <em>English</em> site can be downloaded <a href="https://dumps.wikimedia.org/enwiki/latest/">here</a>. Simply look for a file <em>enwiki-latest-pages-articles.xml.bz2</em> which includes all current articles.</p>
+<p>Naturally, these files are not small. The current version of the English Wikipedia dump file is a whopping 17.79 GB, <em><strong>compressed</strong></em>. One of the reasons for the enormous file size is that all dump files come in a clumsy XML format which carries a lot of repetitive, unneeded baggage.</p>
+<p>For this exercise I download the version dated Oct. 2nd 2020. Since I&rsquo;m interested in a plain text corpus, I need to strip off the XML markup and all the meta data that is included. Fortunately, there are a number of tools out there that can help with task, for example: <a href="https://www.kdnuggets.com/2017/11/building-wikipedia-text-corpus-nlp.html">Building a Wikipedia Text Corpus for Natural Language Processing</a>, <a href="https://github.com/panyang/Wikipedia_Word2vec">Word2vec 4 Wikipedia</a> or <a href="https://github.com/yohasebe/wp2txt">WP2TXT</a>.</p>
+<h2 id="creating-a-dictionary-from-a-corpus">Creating a dictionary from a corpus</h2>
+<p>After conversion to plain text the dump file of the English Wikipedia is still about 14 GB. This is the file that I am going to work on. The objective is to read through this file as fast as possible, to create a dictionary of all its unique words, and to sort the words by their count (i.e. how many times they appear in the corpus).</p>
+<h2 id="the-benchmarks">The benchmarks</h2>
+<p>I want to investigate to what extent processing the corpus with <em>multiple</em> cores, either using multiprocessing or multithreading, can speed up the process. Before I start assessing the different technical options for parallel processing I first want to define the 2 benchmarks to compare against:</p>
+<ol>
+<li>processing via Python, and</li>
+<li>processing via C using a single process.</li>
+</ol>
+<p>So, let&rsquo;s first explore the performance of creating the dictionary with Python.</p>
+<h3 id="processing-with-python">Processing with Python</h3>
+<p>The amazing thing about Python is that a developer can achieve complex tasks with very little code which makes Python one of the most efficient programming languages out there. Hence, creating a dictionary from a text corpus requires only a few lines of code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ln"> 1</span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="ln"> 2</span>
+<span class="ln"> 3</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<span class="ln"> 4</span>
+<span class="ln"> 5</span><span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="ln"> 6</span><span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;corpus/corpus.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+<span class="ln"> 7</span>    <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+<span class="ln"> 8</span>        <span class="n">dic</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="ln"> 9</span>    <span class="k">else</span><span class="p">:</span>
+<span class="ln">10</span>        <span class="n">dic</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="ln">11</span>
+<span class="ln">12</span><span class="n">top</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)[:</span><span class="mi">10</span><span class="p">]</span>
+<span class="ln">13</span>
+<span class="ln">14</span><span class="k">print</span><span class="p">(</span><span class="s2">&#34;Execution time: </span><span class="si">%.0f</span><span class="s2"> seconds&#34;</span> <span class="o">%</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+<span class="ln">15</span>
+<span class="ln">16</span><span class="k">print</span><span class="p">(</span><span class="s2">&#34;Number of words in the dictionary: </span><span class="si">%d</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">dic</span><span class="p">))</span>
+<span class="ln">17</span>
+<span class="ln">18</span><span class="k">print</span><span class="p">(</span><span class="s2">&#34;Top 10 words:&#34;</span><span class="p">)</span>
+<span class="ln">19</span>
+<span class="ln">20</span><span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">top</span><span class="p">:</span>
+<span class="ln">21</span>    <span class="k">print</span><span class="p">(</span><span class="n">word</span><span class="p">,</span><span class="n">dic</span><span class="p">[</span><span class="n">word</span><span class="p">])</span>
+</code></pre></div><p>Yes, this is a very simple algorithm for this problem. In typical Python spirit there are probably a hundred more ways to achieve the same thing, some of which may actually perform better. If you want to highlight any method in particular, please leave a comment below.</p>
+<p>Running the script on my computer takes about 3,430 seconds, i.e. more than 53 mins or almost one hour, to complete and outputs the following result:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln"> 1</span>Execution time: 3430 seconds
+<span class="ln"> 2</span>
+<span class="ln"> 3</span>Number of words in the dictionary: 9969783
+<span class="ln"> 4</span>
+<span class="ln"> 5</span>Top 10 words:
+<span class="ln"> 6</span>the 187815597
+<span class="ln"> 7</span>of 94989314
+<span class="ln"> 8</span>and 79019333
+<span class="ln"> 9</span>in 76509632
+<span class="ln">10</span>to 52986068
+<span class="ln">11</span>was 30276734
+<span class="ln">12</span>is 23444605
+<span class="ln">13</span>for 23133442
+<span class="ln">14</span>on 22621322
+<span class="ln">15</span>as 22363717
+</code></pre></div><p>One of the downsides is that it uses a very simple <code>split()</code> method without any further pre-processing such as converting all words to lower case, for example. Alternatively, I therefore also test the following method using Python&rsquo;s <code>counter</code> function. (I stumbled upon this <a href="https://stackoverflow.com/questions/35857519/efficiently-count-word-frequencies-in-python">thread on Stack Overflow</a>. It&rsquo;s concise, elegant and includes some pre-processing of the text:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ln"> 1</span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="ln"> 2</span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="ln"> 3</span><span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">punctuation</span>
+<span class="ln"> 4</span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="ln"> 5</span>
+<span class="ln"> 6</span><span class="k">def</span> <span class="nf">count_words_in_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="ln"> 7</span>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="ln"> 8</span>        <span class="n">linewords</span> <span class="o">=</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">punctuation</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">)</span>
+<span class="ln"> 9</span>        <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">linewords</span><span class="p">))</span>
+<span class="ln">10</span>
+<span class="ln">11</span>
+<span class="ln">12</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<span class="ln">13</span>
+<span class="ln">14</span><span class="n">dic</span> <span class="o">=</span> <span class="n">count_in_file</span><span class="p">(</span><span class="s1">&#39;corpus/enwiki_short.txt&#39;</span><span class="p">)</span>
+<span class="ln">15</span><span class="n">top</span> <span class="o">=</span> <span class="n">dic</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="ln">16</span>
+<span class="ln">17</span><span class="k">print</span><span class="p">(</span><span class="s2">&#34;Execution time: </span><span class="si">%.0f</span><span class="s2"> seconds&#34;</span> <span class="o">%</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+<span class="ln">18</span>
+<span class="ln">19</span><span class="k">print</span><span class="p">(</span><span class="s2">&#34;Number of words in the dictionary: </span><span class="si">%d</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">dic</span><span class="p">))</span>
+<span class="ln">20</span>
+<span class="ln">21</span><span class="k">print</span><span class="p">(</span><span class="s2">&#34;Top 10 words:&#34;</span><span class="p">)</span>
+<span class="ln">22</span>
+<span class="ln">23</span><span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">top</span><span class="p">:</span>
+<span class="ln">24</span>    <span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</code></pre></div><p>This second method performs XXXXXXX, taking XXXXXX seconds on my computer to complete. The top 10 words are the same, although the exact counts per word differ from the first method since each uses slightly different word boundaries. With this method creating the dictionary now takes about XXXXX on my computer:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln"> 1</span>Execution time: 159 seconds !!!???
+<span class="ln"> 2</span>
+<span class="ln"> 3</span>Number of words in dictionary: 6682276
+<span class="ln"> 4</span>
+<span class="ln"> 5</span>Top 10 words:
+<span class="ln"> 6</span>(&#39;the&#39;, 24228466)
+<span class="ln"> 7</span>(&#39;of&#39;, 12137428)
+<span class="ln"> 8</span>(&#39;and&#39;, 9738046)
+<span class="ln"> 9</span>(&#39;in&#39;, 8905046)
+<span class="ln">10</span>(&#39;+&#39;, 8541370)
+<span class="ln">11</span>(&#39;to&#39;, 7011951)
+<span class="ln">12</span>(&#39;a&#39;, 6615421)
+<span class="ln">13</span>(&#39;was&#39;, 3916166)
+<span class="ln">14</span>(&#39;is&#39;, 2959024)
+<span class="ln">15</span>(&#39;as&#39;, 2843045)
+</code></pre></div><p>For the purpose of benchmarking I&rsquo;ll use the faster result, i.e. the first/second script. Therefore, the time of <em><strong>159 seconds</strong></em> is going to be my first benchmark against which to compare the execution time of any multiprocessing or multithreading technique later.</p>
+<h3 id="sequential-processing-with-c">Sequential processing with C</h3>
+<p>My second benchmark shall be creating the dictionary with a simple, sequential C program, running on a single core. In this section I will explain the main steps how this can be done. Doing so also allows me to introduce some of the code that will be used later in the parallel processing techniques as well.</p>
+<p>If we break down the algorithm, creating the dictionary involves 5 main steps:</p>
+<ol>
+<li>Map the corpus file to memory</li>
+<li>Read the corpus word by word</li>
+<li>Insert each word into a hash table</li>
+<li>Copy the words and their count into an array</li>
+<li>Sort the array by count in descending order</li>
+</ol>
+<p>While this is clearly not as efficient and elegant as doing so in Python, let&rsquo;s see what performance improvement we may be able to achieve, even using a <em>single</em> core.</p>
+<h4 id="map-the-corpus-file-to-memory">Map the corpus file to memory</h4>
+<p>Wikipedia dump files can be huge. To ensure they can be read even on computers that do not have sufficient memory to load the complete file at once, I use <code>mmap</code> to <em>map</em> the physical file into memory. The loading into memory is done <em>smartly</em> based on need (ie. what part of the file is being read), and the operating systems helps caching pages which further improves performance.</p>
+<p>Using <code>mmap</code> is simple and straight forward. I create below function <code>map_shared_file()</code> to do and hide all the usual error handling. The function returns a pointer to the mapped file which allows to read the file simply by accessing this pointer. The function also returns the file size of the corpus which we will need later.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="o">*</span><span class="nf">map_shared_file</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fname</span><span class="p">,</span> <span class="n">size_t</span> <span class="o">*</span><span class="n">fsize</span><span class="p">){</span>
+<span class="ln"> 2</span>        
+<span class="ln"> 3</span>    <span class="k">struct</span> <span class="n">stat</span> <span class="n">fstat</span><span class="p">;</span>
+<span class="ln"> 4</span>
+<span class="ln"> 5</span>    <span class="k">if</span> <span class="p">(</span><span class="n">stat</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fstat</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span><span class="n">perror</span><span class="p">(</span><span class="s">&#34;[STAT] Error getting file stats! ABORT. &#34;</span><span class="p">);</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);}</span>
+<span class="ln"> 6</span>
+<span class="ln"> 7</span>    <span class="o">*</span><span class="n">fsize</span> <span class="o">=</span> <span class="n">fstat</span><span class="p">.</span><span class="n">st_size</span><span class="p">;</span>
+<span class="ln"> 8</span>    
+<span class="ln"> 9</span>    <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">);</span>
+<span class="ln">10</span>    <span class="k">if</span> <span class="p">(</span><span class="n">fd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span><span class="n">perror</span><span class="p">(</span><span class="s">&#34;[OPEN] Error opening file for shared use! ABORT. &#34;</span><span class="p">);</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);}</span>
+<span class="ln">11</span>    
+<span class="ln">12</span>    <span class="kt">char</span> <span class="o">*</span><span class="n">mem</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">((</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">fsize</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">,</span> <span class="n">MAP_SHARED</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="ln">13</span>    
+<span class="ln">14</span>    <span class="k">if</span> <span class="p">(</span><span class="n">mem</span> <span class="o">==</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="p">{</span><span class="n">perror</span><span class="p">(</span><span class="s">&#34;[MMAP] Error creating shared memory for file reading! ABORT. &#34;</span><span class="p">);</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);}</span>
+<span class="ln">15</span>    
+<span class="ln">16</span>    <span class="k">if</span> <span class="p">(</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span><span class="o">==-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span><span class="n">perror</span><span class="p">(</span><span class="s">&#34;[CLOSE] Error closing mapped file! ABORT. &#34;</span><span class="p">);</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);}</span>
+<span class="ln">17</span>
+<span class="ln">18</span>    <span class="k">return</span> <span class="n">mem</span><span class="p">;</span>
+<span class="ln">19</span>
+<span class="ln">20</span><span class="p">}</span>
+</code></pre></div><p>BTW: I also tested fully loading the corpus into memory which, however, surprisingly did <em><strong>not</strong></em> result in any measurable performance improvement. To the contrary, in some scenarios mapping the file was even slightly faster than fully loading the file into memory.</p>
+<h4 id="read-the-corpus-word-by-word">Read the corpus word by word</h4>
+<p>Before we now move on to read the corpus word by word, I want to introduce a basic structure for representing a &lsquo;<em>word</em>&rsquo; that I will use throughout the program. I call it the <code>corpus_token_t</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1</span><span class="c1">// basic structure to represent a &#39;word/token&#39; that exists in the corpus
+</span><span class="ln">2</span><span class="c1"></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">corpus_token_t</span><span class="p">{</span>
+<span class="ln">3</span>    <span class="n">size_t</span> <span class="n">off</span><span class="p">;</span>                 <span class="c1">// offset of 1st occurrence in corpus
+</span><span class="ln">4</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">len</span><span class="p">;</span>                    <span class="c1">// length of the token, not null-terminated
+</span><span class="ln">5</span><span class="c1"></span>    <span class="n">size_t</span> <span class="n">count</span><span class="p">;</span>               <span class="c1">// counter for how many times this token is found
+</span><span class="ln">6</span><span class="c1"></span><span class="p">}</span> <span class="n">corpus_token_t</span><span class="p">;</span>
+</code></pre></div><p>As you noticed, from now on we refer to <em>tokens</em> instead of <em>words</em> because in some languages, for example in Chinese, the most basic element of a sentence or a text is not a <em>word</em> but a <em>character</em>. A <em>token</em> may thus be either a series of characters, i.e. a <em>word</em>, or a single <em>character</em>.</p>
+<p>Beware that the <code>corpus_token_t</code> structure does <em><strong>not</strong></em> include a <code>string</code> of the actual character representation of the respective token. Instead, I only store the <em>offset</em> of the first occurrence of this token in the corpus; plus its <em>length</em> and a <em>count</em>er for how many times this token exists in the corpus. The string is actually not needed and avoided for faster performance.</p>
+<p>Reading the corpus word by word is a bit trickier than it may seem at first. Why? There are 2 things to consider: multi-byte sequences and word boundaries.</p>
+<h5 id="multi-byte-sequences">Multi-byte sequences</h5>
+<p>I want to be able to read Wikipedia dumps (or any other text files for that matter) of any language. Therefore, I can&rsquo;t read the file simply <code>char</code> by <code>char</code> because in many languages a single <em>character</em> uses more than a single byte <code>char</code>.</p>
+<p><em>UTF8</em> has become a de facto standard. Unfortunately, in <em>UTF8</em> there is no fixed character length. Characters may range in size from 1 to 4 bytes which makes handling UTF8 in C a bit of a pain.</p>
+<p>Fortunately, there are some small libraries to come to rescue, for example Jeff Bezanson&rsquo;s excellent ground work for UTF8 processing called &lsquo;<a href="https://github.com/JeffBezanson/cutef8">cutef8</a>&rsquo;. I use his simple macro for identifying whether a <code>char</code> is UTF8, &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1</span><span class="cp">#define IS_UTF8(c) (((c)&amp;0xC0)!=0x80)
+</span></code></pre></div><p>&hellip; and expand on his original <code>u8_memchr</code> function to create the following <code>get_next_token</code> function which reads a text segment of given length token by token:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="n">corpus_token_t</span> <span class="nf">get_next_token</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">,</span> <span class="n">size_t</span> <span class="o">*</span><span class="n">idx</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">end</span><span class="p">){</span>
+<span class="ln"> 2</span>
+<span class="ln"> 3</span>    <span class="n">corpus_token_t</span> <span class="n">tok</span><span class="p">;</span>
+<span class="ln"> 4</span>    <span class="n">size_t</span> <span class="n">start_idx</span> <span class="o">=</span> <span class="o">*</span><span class="n">idx</span><span class="p">;</span>
+<span class="ln"> 5</span>
+<span class="ln"> 6</span>    <span class="c1">// move IDX forward in case it points INSIDE of a multibyte character
+</span><span class="ln"> 7</span><span class="c1"></span>    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">IS_UTF8</span><span class="p">(</span><span class="n">corpus</span><span class="p">[</span><span class="o">*</span><span class="n">idx</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="o">*</span><span class="n">idx</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">corpus</span><span class="p">[</span><span class="o">*</span><span class="n">idx</span><span class="p">])</span> <span class="p">(</span><span class="o">*</span><span class="n">idx</span><span class="p">)</span><span class="o">++</span><span class="p">;</span>
+<span class="ln"> 8</span>    
+<span class="ln"> 9</span>    <span class="c1">// move IDX gradually forward
+</span><span class="ln">10</span><span class="c1"></span>    <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">idx</span><span class="o">&lt;</span><span class="n">end</span> <span class="o">&amp;&amp;</span> <span class="o">*</span><span class="n">idx</span> <span class="o">-</span> <span class="n">start_idx</span><span class="o">&lt;</span><span class="n">MAX_TOKEN_SIZE</span> <span class="o">&amp;&amp;</span> <span class="n">corpus</span><span class="p">[</span><span class="o">*</span><span class="n">idx</span><span class="p">]</span> <span class="p">){</span>
+<span class="ln">11</span>        
+<span class="ln">12</span>        <span class="n">uint32_t</span> <span class="n">u8_char_code</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">13</span>        <span class="kt">int</span>      <span class="n">u8_char_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">14</span>        
+<span class="ln">15</span>        <span class="k">do</span> <span class="p">{</span>
+<span class="ln">16</span>            <span class="n">u8_char_code</span> <span class="o">&lt;&lt;=</span> <span class="mi">6</span><span class="p">;</span>
+<span class="ln">17</span>            <span class="n">u8_char_code</span> <span class="o">+=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)</span><span class="n">corpus</span><span class="p">[</span><span class="o">*</span><span class="n">idx</span><span class="p">];</span>
+<span class="ln">18</span>            <span class="n">u8_char_size</span><span class="o">++</span><span class="p">;</span>
+<span class="ln">19</span>            <span class="p">(</span><span class="o">*</span><span class="n">idx</span><span class="p">)</span><span class="o">++</span><span class="p">;</span>
+<span class="ln">20</span>        <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">idx</span><span class="o">&lt;</span><span class="n">end</span> <span class="o">&amp;&amp;</span> <span class="n">corpus</span><span class="p">[</span><span class="o">*</span><span class="n">idx</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">IS_UTF8</span><span class="p">(</span><span class="n">corpus</span><span class="p">[</span><span class="o">*</span><span class="n">idx</span><span class="p">]));</span>
+<span class="ln">21</span>
+<span class="ln">22</span>        <span class="n">u8_char_code</span> <span class="o">-=</span> <span class="n">UTF8_OFFSETS</span><span class="p">[</span><span class="n">u8_char_size</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+<span class="ln">23</span>
+<span class="ln">24</span>        <span class="c1">// 3 exit conditions: (1) multi-byte character, (2) end of text, (3) token delimiter
+</span><span class="ln">25</span><span class="c1"></span>        <span class="kt">bool</span> <span class="n">is_del</span> <span class="o">=</span> <span class="n">is_token_delimiter</span><span class="p">(</span><span class="n">u8_char_code</span><span class="p">);</span> <span class="c1">// this fct will be introduced below
+</span><span class="ln">26</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">u8_char_size</span><span class="o">&gt;</span><span class="mi">1</span>  <span class="o">||</span> <span class="o">*</span><span class="n">idx</span><span class="o">==</span><span class="n">end</span> <span class="o">||</span> <span class="n">is_del</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">27</span>            <span class="n">tok</span><span class="p">.</span><span class="n">len</span>   <span class="o">=</span> <span class="n">is_del</span> <span class="o">?</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="o">*</span><span class="n">idx</span> <span class="o">-</span> <span class="n">start_idx</span> <span class="o">-</span> <span class="n">u8_char_size</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="o">*</span><span class="n">idx</span> <span class="o">-</span> <span class="n">start_idx</span><span class="p">);</span>
+<span class="ln">28</span>            <span class="n">tok</span><span class="p">.</span><span class="n">off</span>   <span class="o">=</span> <span class="n">start_idx</span><span class="p">;</span>
+<span class="ln">29</span>            <span class="n">tok</span><span class="p">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="ln">30</span>            <span class="k">return</span> <span class="n">tok</span><span class="p">;</span>
+<span class="ln">31</span>        <span class="p">}</span>
+<span class="ln">32</span>        
+<span class="ln">33</span>    <span class="p">}</span>
+<span class="ln">34</span>    
+<span class="ln">35</span>    <span class="c1">// if no token was found, return empty token reference
+</span><span class="ln">36</span><span class="c1"></span>    <span class="n">tok</span><span class="p">.</span><span class="n">len</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">37</span>    <span class="n">tok</span><span class="p">.</span><span class="n">off</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">38</span>    <span class="n">tok</span><span class="p">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">39</span>    
+<span class="ln">40</span>    <span class="k">return</span> <span class="n">tok</span><span class="p">;</span>
+<span class="ln">41</span><span class="p">}</span>
+</code></pre></div><h1 id="heading-1"></h1>
+<h5 id="word-boundaries">Word boundaries</h5>
+<p>The other challenge for reading the corpus <em>word by word</em> or <em>token by token</em> is: <em>What actually constitutes a word or a token?</em> In most Western languages the obvious answer is a whitespace between two characters. But of course there are many other characters. I therefore define a list of characters, expressed by their unicode, called <em>token delimiters</em>. Whenever a <em>token delimiter</em> is read, the end or boundary of a token has been reached.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">bool</span> <span class="nf">is_token_delimiter</span><span class="p">(</span><span class="n">u_int32_t</span> <span class="n">utf_code</span><span class="p">){</span>
+<span class="ln"> 2</span>    
+<span class="ln"> 3</span>    <span class="k">return</span> <span class="p">(</span><span class="kt">bool</span><span class="p">)</span> <span class="p">(</span>
+<span class="ln"> 4</span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">32</span>    <span class="o">||</span> <span class="c1">// &#34; &#34; space
+</span><span class="ln"> 5</span><span class="c1"></span>
+<span class="ln"> 6</span>                   <span class="n">utf_code</span> <span class="o">==</span>  <span class="mi">9</span>    <span class="o">||</span> <span class="c1">// &#34; &#34; tab
+</span><span class="ln"> 7</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">10</span>    <span class="o">||</span> <span class="c1">// &#34;\n&#34; linefeed
+</span><span class="ln"> 8</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">13</span>    <span class="o">||</span> <span class="c1">// &#34;&#34; carriage return
+</span><span class="ln"> 9</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">33</span>    <span class="o">||</span> <span class="c1">// &#39;!&#39;
+</span><span class="ln">10</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">34</span>    <span class="o">||</span> <span class="c1">// &#39;&#34;&#39;
+</span><span class="ln">11</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">35</span>    <span class="o">||</span> <span class="c1">// &#39;#&#39;
+</span><span class="ln">12</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">39</span>    <span class="o">||</span> <span class="c1">// &#39;&#39;&#39;
+</span><span class="ln">13</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">40</span>    <span class="o">||</span> <span class="c1">// &#39;(&#39;
+</span><span class="ln">14</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">41</span>    <span class="o">||</span> <span class="c1">// &#39;)&#39;
+</span><span class="ln">15</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">42</span>    <span class="o">||</span> <span class="c1">// &#39;*&#39;
+</span><span class="ln">16</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">43</span>    <span class="o">||</span> <span class="c1">// &#39;+&#39;
+</span><span class="ln">17</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">44</span>    <span class="o">||</span> <span class="c1">// &#39;,&#39;
+</span><span class="ln">18</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">46</span>    <span class="o">||</span> <span class="c1">// &#39;.&#39;
+</span><span class="ln">19</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">47</span>    <span class="o">||</span> <span class="c1">// &#39;/&#39;
+</span><span class="ln">20</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">58</span>    <span class="o">||</span> <span class="c1">// &#39;:&#39;
+</span><span class="ln">21</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">59</span>    <span class="o">||</span> <span class="c1">// &#39;;&#39;
+</span><span class="ln">22</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">60</span>    <span class="o">||</span> <span class="c1">// &#39;&lt;&#39;
+</span><span class="ln">23</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">61</span>    <span class="o">||</span> <span class="c1">// &#39;=&#39;
+</span><span class="ln">24</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">62</span>    <span class="o">||</span> <span class="c1">// &#39;&gt;&#39;
+</span><span class="ln">25</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">63</span>    <span class="o">||</span> <span class="c1">// &#39;?&#39;
+</span><span class="ln">26</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">91</span>    <span class="o">||</span> <span class="c1">// &#39;[&#39;
+</span><span class="ln">27</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">92</span>    <span class="o">||</span> <span class="c1">// &#39;\&#39;
+</span><span class="ln">28</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">93</span>    <span class="o">||</span> <span class="c1">// &#39;]&#39;
+</span><span class="ln">29</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">95</span>    <span class="o">||</span> <span class="c1">// &#39;_&#39;
+</span><span class="ln">30</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">123</span>   <span class="o">||</span> <span class="c1">// &#39;{&#39;
+</span><span class="ln">31</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">124</span>   <span class="o">||</span> <span class="c1">// &#39;|&#39;
+</span><span class="ln">32</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">125</span>   <span class="o">||</span> <span class="c1">// &#39;}&#39;
+</span><span class="ln">33</span><span class="c1"></span>
+<span class="ln">34</span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">8212</span>  <span class="o">||</span> <span class="c1">// &#39;—&#39;&#39;
+</span><span class="ln">35</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">8216</span>  <span class="o">||</span> <span class="c1">// &#39;‘&#39;
+</span><span class="ln">36</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">8217</span>  <span class="o">||</span> <span class="c1">// &#39;’&#39;
+</span><span class="ln">37</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">8220</span>  <span class="o">||</span> <span class="c1">// &#39;“&#39;
+</span><span class="ln">38</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">8221</span>  <span class="o">||</span> <span class="c1">// &#39;”&#39;
+</span><span class="ln">39</span><span class="c1"></span>
+<span class="ln">40</span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">12289</span> <span class="o">||</span>  <span class="c1">// u8&#34;、&#34;
+</span><span class="ln">41</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">12290</span> <span class="o">||</span>  <span class="c1">// u8&#34;。&#34;
+</span><span class="ln">42</span><span class="c1"></span>                   
+<span class="ln">43</span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">65281</span> <span class="o">||</span>  <span class="c1">// u8&#34;！&#34;
+</span><span class="ln">44</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">65288</span> <span class="o">||</span>  <span class="c1">// u8&#34;（&#34;
+</span><span class="ln">45</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">65289</span> <span class="o">||</span>  <span class="c1">// u8&#34;）&#34;
+</span><span class="ln">46</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">65292</span> <span class="o">||</span>  <span class="c1">// u8&#34;，&#34;
+</span><span class="ln">47</span><span class="c1"></span>                   
+<span class="ln">48</span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">65306</span> <span class="o">||</span>  <span class="c1">// u8&#34;：&#34;
+</span><span class="ln">49</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">65307</span> <span class="o">||</span>  <span class="c1">// u8&#34;；&#34;
+</span><span class="ln">50</span><span class="c1"></span>                   <span class="n">utf_code</span> <span class="o">==</span> <span class="mi">65311</span> <span class="o">||</span>  <span class="c1">// u8&#34;？&#34;
+</span><span class="ln">51</span><span class="c1"></span>
+<span class="ln">52</span>                   <span class="p">(</span><span class="n">utf_code</span>  <span class="o">&gt;=</span>  <span class="mi">917600</span> <span class="o">&amp;&amp;</span> <span class="n">utf_code</span>  <span class="o">&lt;=</span>  <span class="mi">917699</span><span class="p">)</span> <span class="o">||</span>
+<span class="ln">53</span>                   <span class="p">(</span><span class="n">utf_code</span>  <span class="o">&gt;=</span> <span class="mi">1113000</span> <span class="o">&amp;&amp;</span> <span class="n">utf_code</span>  <span class="o">&lt;=</span> <span class="mi">1113100</span><span class="p">)</span>
+<span class="ln">54</span>
+<span class="ln">55</span>                   <span class="p">);</span>
+<span class="ln">56</span>    
+<span class="ln">57</span><span class="p">}</span>
+</code></pre></div><p>Feel free to amend the list as needed. The definition of these <em>token delimiters</em> later impacts the result you get, the number of tokens and their respective counts.</p>
+<blockquote>
+<p>BTW: If your raw text version of the Wikipedia dump file already does not include punctuation then you don&rsquo;t need this many token delimiters because these characters have been already removed during the conversion from XML to TEXT.</p>
+</blockquote>
+<h4 id="read-the-corpus-word-by-word-continued">Read the corpus word by word (continued)</h4>
+<p>So, back to our task of reading the corpus <em>word by word</em> or <em>token by token</em>. Using the above two functions we can scan the corpus easily via the following loop:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">char</span> <span class="n">CORPUS_FILE_NAME</span><span class="p">[</span><span class="mi">100</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;enwiki.txt&#34;</span>
+<span class="ln"> 2</span>
+<span class="ln"> 3</span><span class="n">size_t</span> <span class="n">corpus_fsize</span><span class="p">;</span>
+<span class="ln"> 4</span>
+<span class="ln"> 5</span><span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span> <span class="o">=</span> <span class="n">map_shared_file</span><span class="p">(</span><span class="n">CORPUS_FILE_NAME</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">corpus_fsize</span><span class="p">);</span>
+<span class="ln"> 6</span>
+<span class="ln"> 7</span><span class="n">size_t</span> <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln"> 8</span><span class="n">size_t</span> <span class="n">end</span> <span class="o">=</span> <span class="n">corpus_fsize</span><span class="p">;</span>
+<span class="ln"> 9</span>
+<span class="ln">10</span><span class="n">corpus_token_t</span> <span class="n">tok</span><span class="p">;</span>
+<span class="ln">11</span>
+<span class="ln">12</span><span class="k">while</span><span class="p">(</span><span class="n">pos</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">){</span>
+<span class="ln">13</span>    <span class="n">tok</span> <span class="o">=</span> <span class="n">get_next_token</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">end</span><span class="p">);</span>
+<span class="ln">14</span>
+<span class="ln">15</span>    <span class="k">if</span> <span class="p">(</span><span class="n">tok</span><span class="p">.</span><span class="n">len</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">16</span>
+<span class="ln">17</span>        <span class="c1">// do something with this token....
+</span><span class="ln">18</span><span class="c1"></span>                
+<span class="ln">19</span>    <span class="p">}</span>
+<span class="ln">20</span>
+<span class="ln">21</span><span class="p">}</span>
+</code></pre></div><p>As you can see, something is missing <em><strong>inside</strong></em> the loop.</p>
+<h4 id="insert-each-word-into-a-hashtable">Insert each word into a hashtable</h4>
+<p>When we process the corpus we need to <em>deduplicate</em> all tokens to get a list of <em><strong>unique</strong></em> tokens only. One of the most efficient tools for deduplication and quick lookups is a <em>hashtable</em>. If you are not familiar with hashtables I suggest to catchup with some respective reading.</p>
+<p>In our case we want to use the <em>string</em> of the token as hash key. To implement the hashtable we need 4 components:</p>
+<ol>
+<li>Creating the hashtable</li>
+<li>Hashing a string</li>
+<li>Comparing tokens</li>
+<li>Inserting a token into the hashtable</li>
+</ol>
+<h5 id="creating-the-hashtable">Creating the hashtable</h5>
+<p>The hashtable itself is nothing but a an <em>array</em> of <code>corpus_token_t</code> structs. That&rsquo;s easy. But what about its size? There is no agreed definition of the <em>ideal</em> or <em>best</em> size of a hashtable. Some argue that a hashtable should be big enough that the number of expected entries in the hashtable will not occupy more than 70% of its space.</p>
+<p>Since I want the size of the hashtable be somewhat relative to the size of the corpus I use the following formula to define the hash size:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1</span><span class="n">MAX_HASH_SIZE</span> <span class="o">=</span> <span class="mi">100000</span> <span class="o">*</span> <span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">log10</span><span class="p">(</span><span class="n">corpus_fsize</span><span class="p">));</span>
+<span class="ln">2</span>
+<span class="ln">3</span><span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">tok_htab</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">MAX_HASH_SIZE</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">corpus_token_t</span><span class="p">));</span>
+</code></pre></div><p>You can and should try different sizes. Later on, during multiprocessing and multithreading, we will find that the size of the hashtable may considerably impact the performance of the overall algorithm. If you use fixed sizes, using prime numbers arguably makes better hashes.</p>
+<p>I used <a href="http://compoasso.free.fr/primelistweb/page/prime/liste_online_en.php">this online tool</a> to quickly find prime numbers of any size. Below are some of the alternatives that I used.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1</span><span class="c1">//    MAX_HASH_SIZE = 13727587;
+</span><span class="ln">2</span><span class="c1">//    MAX_HASH_SIZE = 18303449;
+</span><span class="ln">3</span><span class="c1">//    MAX_HASH_SIZE = 36606883;
+</span><span class="ln">4</span><span class="c1">//    MAX_HASH_SIZE = 53150323;
+</span><span class="ln">5</span><span class="c1">//    MAX_HASH_SIZE = 80000023;
+</span></code></pre></div><h5 id="hashing-a-string">Hashing a string</h5>
+<p>Next, we want to hash each token to obtain a unique code. I use <a href="https://en.wikipedia.org/wiki/Daniel_J._Bernstein">Daniel J. Bernstein&rsquo;s</a> DJB2 hash function which is simple and works well for strings. Feel free to try and compare <a href="http://www.cse.yorku.ca/~oz/hash.html">with others</a>.</p>
+<p>Remember that our <code>corpus_token_t</code> structure does not include the actual character representation (aka string) of this token.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="nf">get_token_string</span><span class="p">(</span><span class="n">corpus_token_t</span> <span class="n">tok</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">){</span>
+<span class="ln"> 2</span>    
+<span class="ln"> 3</span>    <span class="n">memcpy</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="n">corpus</span> <span class="o">+</span> <span class="n">tok</span><span class="p">.</span><span class="n">off</span><span class="p">,</span> <span class="n">tok</span><span class="p">.</span><span class="n">len</span><span class="p">);</span>
+<span class="ln"> 4</span>    <span class="n">memset</span><span class="p">(</span><span class="n">str</span> <span class="o">+</span> <span class="n">tok</span><span class="p">.</span><span class="n">len</span><span class="p">,</span> <span class="sc">&#39;\0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="ln"> 5</span>
+<span class="ln"> 6</span>    <span class="c1">// convert to lower case
+</span><span class="ln"> 7</span><span class="c1"></span>    <span class="kt">char</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">str</span><span class="p">;</span>
+<span class="ln"> 8</span>    <span class="k">while</span> <span class="p">((</span><span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">tolower</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)))</span> <span class="o">++</span><span class="n">p</span><span class="p">;</span>
+<span class="ln"> 9</span>
+<span class="ln">10</span>    <span class="k">return</span><span class="p">;</span>
+<span class="ln">11</span><span class="p">}</span>
+</code></pre></div><p>Therefore, we first need to create the actual string for this token before we can create a hash. I also convert to all tokens to lowercase to more efficiently use the hashtable and because for most NLP tasks the <em>case</em> of a word is insignificant.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="n">size_t</span> <span class="nf">get_token_hash</span><span class="p">(</span><span class="n">corpus_token_t</span> <span class="n">tok</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">){</span>
+<span class="ln"> 2</span>    
+<span class="ln"> 3</span>    <span class="c1">// create a character representation of the token
+</span><span class="ln"> 4</span><span class="c1"></span>    <span class="kt">char</span> <span class="n">tok_str</span><span class="p">[</span><span class="n">MAX_TOKEN_SIZE</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+<span class="ln"> 5</span>    <span class="n">get_token_string</span><span class="p">(</span><span class="n">tok</span><span class="p">,</span> <span class="n">tok_str</span><span class="p">,</span> <span class="n">corpus</span><span class="p">);</span>
+<span class="ln"> 6</span>    
+<span class="ln"> 7</span>    <span class="c1">// hash the token string
+</span><span class="ln"> 8</span><span class="c1"></span>    
+<span class="ln"> 9</span>    <span class="kt">char</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="n">tok_str</span><span class="p">;</span>
+<span class="ln">10</span>    
+<span class="ln">11</span>    <span class="n">size_t</span> <span class="n">hash</span> <span class="o">=</span> <span class="mi">5381</span><span class="p">;</span>
+<span class="ln">12</span>    
+<span class="ln">13</span>    <span class="kt">int</span> <span class="n">c</span><span class="p">;</span>
+<span class="ln">14</span>
+<span class="ln">15</span>    <span class="k">while</span> <span class="p">((</span><span class="n">c</span> <span class="o">=</span> <span class="o">*</span><span class="n">str</span><span class="o">++</span><span class="p">))</span> <span class="n">hash</span> <span class="o">=</span> <span class="p">((</span><span class="n">hash</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">hash</span><span class="p">)</span> <span class="o">^</span> <span class="n">c</span><span class="p">;</span> <span class="cm">/* hash * 33 XOR c */</span>
+<span class="ln">16</span>
+<span class="ln">17</span>    <span class="k">return</span> <span class="n">hash</span> <span class="o">%</span> <span class="n">MAX_HASH_SIZE</span><span class="p">;</span>
+<span class="ln">18</span>        
+<span class="ln">19</span><span class="p">}</span>
+</code></pre></div><h5 id="comparing-tokens">Comparing tokens</h5>
+<p>When we insert a token into a hash, we need to check for potential collisions. Therefore, we need a comparison function to assess whether two tokens are equal:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="c1">// compare two integers and return the smaller one
+</span><span class="ln"> 2</span><span class="c1"></span><span class="cp">#define MIN_OF_TWO(a,b)         \
+</span><span class="ln"> 3</span><span class="cp">  ({ __typeof__ (a) _a = (a);   \
+</span><span class="ln"> 4</span><span class="cp">      __typeof__ (b) _b = (b);  \
+</span><span class="ln"> 5</span><span class="cp">    _a &lt; _b ? _a : _b; })
+</span><span class="ln"> 6</span><span class="cp"></span>
+<span class="ln"> 7</span>
+<span class="ln"> 8</span><span class="kt">int</span> <span class="nf">compare_corpus_tokens</span><span class="p">(</span><span class="k">const</span> <span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">tok1</span><span class="p">,</span> <span class="k">const</span> <span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">tok2</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">){</span>
+<span class="ln"> 9</span>    
+<span class="ln">10</span>    <span class="kt">int</span> <span class="n">len1</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">tok1</span><span class="p">).</span><span class="n">len</span><span class="p">;</span>
+<span class="ln">11</span>    <span class="kt">int</span> <span class="n">len2</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">tok2</span><span class="p">).</span><span class="n">len</span><span class="p">;</span>
+<span class="ln">12</span>
+<span class="ln">13</span>    <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">MIN_OF_TWO</span><span class="p">(</span><span class="n">len1</span><span class="p">,</span> <span class="n">len2</span><span class="p">);</span>
+<span class="ln">14</span>    
+<span class="ln">15</span>    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str1</span> <span class="o">=</span> <span class="n">corpus</span> <span class="o">+</span> <span class="p">(</span><span class="o">*</span><span class="n">tok1</span><span class="p">).</span><span class="n">off</span><span class="p">;</span>
+<span class="ln">16</span>    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str2</span> <span class="o">=</span> <span class="n">corpus</span> <span class="o">+</span> <span class="p">(</span><span class="o">*</span><span class="n">tok2</span><span class="p">).</span><span class="n">off</span><span class="p">;</span>
+<span class="ln">17</span>
+<span class="ln">18</span>    <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="n">strncasecmp</span><span class="p">(</span><span class="n">str1</span><span class="p">,</span> <span class="n">str2</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+<span class="ln">19</span>    
+<span class="ln">20</span>    <span class="c1">// both strings differ in the first &#39;len&#39; chars
+</span><span class="ln">21</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">r</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+<span class="ln">22</span>    
+<span class="ln">23</span>    <span class="c1">// both strings are the same
+</span><span class="ln">24</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">len1</span> <span class="o">==</span> <span class="n">len2</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">25</span>    
+<span class="ln">26</span>    <span class="c1">// if both strings are different length but share the first &#39;len&#39; characters
+</span><span class="ln">27</span><span class="c1"></span>    <span class="c1">// then return a reference to the shorter one
+</span><span class="ln">28</span><span class="c1"></span>    
+<span class="ln">29</span>    <span class="k">if</span> <span class="p">(</span><span class="n">len1</span> <span class="o">&lt;</span> <span class="n">len2</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="ln">30</span>    
+<span class="ln">31</span>    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="ln">32</span><span class="p">}</span>
+</code></pre></div><h5 id="inserting-a-token-into-the-hashtable">Inserting a token into the hashtable</h5>
+<p>Next, we insert each token into the hashtable. If the token exists already, its counter will be incremented:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="nf">insert_token</span><span class="p">(</span><span class="n">corpus_token_t</span> <span class="n">tok</span><span class="p">,</span> <span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">htab</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">){</span>
+<span class="ln"> 2</span>    
+<span class="ln"> 3</span>    <span class="n">size_t</span> <span class="n">hidx</span> <span class="o">=</span> <span class="n">get_token_hash</span><span class="p">(</span><span class="n">tok</span><span class="p">,</span> <span class="n">corpus</span><span class="p">);</span>
+<span class="ln"> 4</span>    
+<span class="ln"> 5</span>    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 6</span>        <span class="c1">// check if this bucket is empty
+</span><span class="ln"> 7</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">htab</span><span class="p">[</span><span class="n">hidx</span><span class="p">].</span><span class="n">len</span> <span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 8</span>            
+<span class="ln"> 9</span>            <span class="c1">// if the same token already exists in the hash table increment its counter
+</span><span class="ln">10</span><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">compare_corpus_tokens</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tok</span><span class="p">,</span> <span class="n">htab</span> <span class="o">+</span> <span class="n">hidx</span><span class="p">,</span> <span class="n">corpus</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">11</span>                <span class="n">htab</span><span class="p">[</span><span class="n">hidx</span><span class="p">].</span><span class="n">count</span> <span class="o">+=</span> <span class="n">tok</span><span class="p">.</span><span class="n">count</span><span class="p">;</span>
+<span class="ln">12</span>                <span class="k">return</span><span class="p">;</span>
+<span class="ln">13</span>                
+<span class="ln">14</span>            <span class="p">}</span>
+<span class="ln">15</span>            <span class="c1">// otherwise move forward to the next bucket
+</span><span class="ln">16</span><span class="c1"></span>            <span class="k">else</span> <span class="p">{</span>
+<span class="ln">17</span>                <span class="n">hidx</span><span class="o">++</span><span class="p">;</span>
+<span class="ln">18</span>                <span class="n">hidx</span> <span class="o">%=</span> <span class="n">MAX_HASH_SIZE</span><span class="p">;</span>
+<span class="ln">19</span>            <span class="p">}</span>
+<span class="ln">20</span>            
+<span class="ln">21</span>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+<span class="ln">22</span>            <span class="c1">// if this token&#39;s bucket was empty (i.e. first time) add it into the hashtable
+</span><span class="ln">23</span><span class="c1"></span>            <span class="n">htab</span><span class="p">[</span><span class="n">hidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">tok</span><span class="p">;</span>
+<span class="ln">24</span>            <span class="k">return</span><span class="p">;</span>
+<span class="ln">25</span>        <span class="p">}</span>
+<span class="ln">26</span>        
+<span class="ln">27</span>    <span class="p">}</span>
+<span class="ln">28</span>    
+<span class="ln">29</span><span class="p">}</span>
+</code></pre></div><p>At the end, the number of filled entries or <em>buckets</em> of the hashtable gives us the number of unique tokens in the dictionary.</p>
+<h4 id="copy-the-words-and-their-count-into-an-array">Copy the words and their count into an array</h4>
+<p>After the hashtable has been filled, the fourth step in our overall algorithm is copying all unique tokens into a more compact representation, into an array of tokens, the dictionary.</p>
+<blockquote>
+<p>Remember the hashtable is <em>sparsely</em> filled and therefore &lsquo;wastes&rsquo; a lot of memory. It also can&rsquo;t be sorted which is why we need the copying into this new, more compact representation.</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="n">corpus_token_t</span> <span class="o">*</span><span class="nf">create_dictionary</span><span class="p">(</span><span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">htab</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">dict_tok_count</span><span class="p">,</span> <span class="n">size_t</span> <span class="o">*</span><span class="n">corpus_tok_count</span><span class="p">){</span>
+<span class="ln"> 2</span>    
+<span class="ln"> 3</span>    <span class="o">*</span><span class="n">corpus_tok_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln"> 4</span>
+<span class="ln"> 5</span>    <span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">dict</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">dict_tok_count</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">corpus_token_t</span><span class="p">));</span>
+<span class="ln"> 6</span>
+<span class="ln"> 7</span>    <span class="n">size_t</span> <span class="n">didx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln"> 8</span>    <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">hidx</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">hidx</span><span class="o">&lt;</span><span class="n">MAX_HASH_SIZE</span><span class="p">;</span> <span class="n">hidx</span><span class="o">++</span><span class="p">){</span>
+<span class="ln"> 9</span>    
+<span class="ln">10</span>        <span class="k">if</span> <span class="p">(</span><span class="n">htab</span><span class="p">[</span><span class="n">hidx</span><span class="p">].</span><span class="n">len</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">11</span>            <span class="o">*</span><span class="n">corpus_tok_count</span> <span class="o">+=</span> <span class="n">htab</span><span class="p">[</span><span class="n">hidx</span><span class="p">].</span><span class="n">count</span><span class="p">;</span>  <span class="c1">// calc overall token count
+</span><span class="ln">12</span><span class="c1"></span>            <span class="n">dict</span><span class="p">[</span><span class="n">didx</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">htab</span><span class="p">[</span><span class="n">hidx</span><span class="p">];</span>              <span class="c1">// add token into dictionary
+</span><span class="ln">13</span><span class="c1"></span>        <span class="p">}</span>
+<span class="ln">14</span>        
+<span class="ln">15</span>    <span class="p">}</span>
+<span class="ln">16</span>        
+<span class="ln">17</span>    <span class="n">assert</span><span class="p">(</span><span class="n">didx</span> <span class="o">==</span> <span class="n">dict_tok_count</span><span class="p">);</span>
+<span class="ln">18</span>    
+<span class="ln">19</span>    <span class="k">return</span> <span class="n">dict</span><span class="p">;</span>
+<span class="ln">20</span><span class="p">}</span>
+</code></pre></div><h4 id="sort-the-array-in-descending-order">Sort the array in descending order</h4>
+<p>The last step is simply sorting the dictionary array by the token counter, in descending order.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">int</span> <span class="nf">compare_token_counters</span><span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">b</span><span class="p">){</span>
+<span class="ln"> 2</span>    
+<span class="ln"> 3</span>    <span class="n">size_t</span> <span class="n">freq_a</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">corpus_token_t</span><span class="o">*</span><span class="p">)</span><span class="n">a</span><span class="p">).</span><span class="n">count</span><span class="p">;</span>
+<span class="ln"> 4</span>    <span class="n">size_t</span> <span class="n">freq_b</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">corpus_token_t</span><span class="o">*</span><span class="p">)</span><span class="n">b</span><span class="p">).</span><span class="n">count</span><span class="p">;</span>
+<span class="ln"> 5</span>
+<span class="ln"> 6</span>    <span class="k">if</span> <span class="p">(</span><span class="n">freq_a</span> <span class="o">&lt;</span> <span class="n">freq_b</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="ln"> 7</span>    <span class="k">if</span> <span class="p">(</span><span class="n">freq_a</span> <span class="o">&gt;</span> <span class="n">freq_b</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="ln"> 8</span>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln"> 9</span><span class="p">}</span>
+<span class="ln">10</span>
+<span class="ln">11</span>
+<span class="ln">12</span><span class="kt">void</span> <span class="nf">sort_dict</span><span class="p">(</span><span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">dict</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">dict_tok_count</span><span class="p">){</span>
+<span class="ln">13</span>    
+<span class="ln">14</span>    <span class="n">qsort</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span> <span class="n">dict_tok_count</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">corpus_token_t</span><span class="p">),</span> <span class="n">compare_token_counters</span><span class="p">);</span>
+<span class="ln">15</span>
+<span class="ln">16</span><span class="p">}</span>   
+</code></pre></div><p>Wow. You&rsquo;ve made it to here. Putting all the above together we now have all the pieces we need to process the corpus, deduplicate all unique tokens, count the number of their occurrences in the corpus and print out the top 10.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="kt">void</span> <span class="nf">text2dict</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+<span class="ln"> 2</span>
+<span class="ln"> 3</span>    <span class="n">size_t</span> <span class="n">corpus_fsize</span><span class="p">;</span>
+<span class="ln"> 4</span>    <span class="kt">char</span> <span class="o">*</span><span class="n">corpus</span> <span class="o">=</span> <span class="n">map_shared_file</span><span class="p">(</span><span class="n">CORPUS_FILE_NAME</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">corpus_fsize</span><span class="p">);</span>
+<span class="ln"> 5</span>
+<span class="ln"> 6</span>    <span class="n">MAX_HASH_SIZE</span> <span class="o">=</span> <span class="mi">100000</span> <span class="o">*</span> <span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">log10</span><span class="p">(</span><span class="n">corpus_fsize</span><span class="p">));</span>
+<span class="ln"> 7</span>
+<span class="ln"> 8</span>    <span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">htab</span>  <span class="o">=</span> <span class="n">create_token_hashtable</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">corpus_fsize</span><span class="p">);</span>
+<span class="ln"> 9</span>
+<span class="ln">10</span>    <span class="n">size_t</span> <span class="n">dict_tok_count</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">11</span>    <span class="n">size_t</span> <span class="n">corpus_tok_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">12</span>    <span class="n">corpus_token_t</span> <span class="o">*</span><span class="n">dict</span> <span class="o">=</span> <span class="n">create_dictionary</span><span class="p">(</span><span class="n">htab</span><span class="p">,</span> <span class="n">corpus</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dict_tok_count</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">corpus_tok_count</span><span class="p">);</span>
+<span class="ln">13</span>    
+<span class="ln">14</span>    <span class="n">sort_dict</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span> <span class="n">dict_tok_count</span><span class="p">);</span>
+<span class="ln">15</span>    
+<span class="ln">16</span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;# of tokens in corpus: [%&#39;15lu]</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">corpus_tok_count</span><span class="p">);</span>
+<span class="ln">17</span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;# of tokens in dict:   [%&#39;15lu]</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">dict_tok_count</span><span class="p">);</span>
+<span class="ln">18</span>
+<span class="ln">19</span>    
+<span class="ln">20</span>    <span class="kt">char</span> <span class="n">tok_str</span><span class="p">[</span><span class="n">MAX_TOKEN_SIZE</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+<span class="ln">21</span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Top 10:</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+<span class="ln">22</span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">23</span>        <span class="n">get_token_string</span><span class="p">(</span><span class="n">dict</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">tok_str</span><span class="p">,</span> <span class="n">corpus</span><span class="p">);</span>
+<span class="ln">24</span>        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;#%2d: %&#39;12zu = %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">dict</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">count</span><span class="p">,</span> <span class="n">tok_str</span><span class="p">);</span>
+<span class="ln">25</span>    <span class="p">}</span>
+<span class="ln">26</span>     
+<span class="ln">27</span>    <span class="c1">// clean up
+</span><span class="ln">28</span><span class="c1"></span>    <span class="n">free</span><span class="p">(</span><span class="n">dict</span><span class="p">);</span>
+<span class="ln">29</span>    <span class="n">free</span><span class="p">(</span><span class="n">htab</span><span class="p">);</span>
+<span class="ln">30</span>    <span class="n">unmap_shared_memory</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">corpus_fsize</span><span class="p">);</span>
+<span class="ln">31</span>
+<span class="ln">32</span>    <span class="k">return</span><span class="p">;</span>
+<span class="ln">33</span><span class="p">}</span>
+</code></pre></div><p>If I run this code on my computer I get the following result:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln"> 1</span>Execution time: 756 seconds
+<span class="ln"> 2</span>
+<span class="ln"> 3</span># of tokens in corpus: [  2,796,219,305]
+<span class="ln"> 4</span># of tokens in dict:   [      9,925,231]
+<span class="ln"> 5</span>
+<span class="ln"> 6</span>Top 10:
+<span class="ln"> 7</span># 1:  187,816,162 = the
+<span class="ln"> 8</span># 2:   94,989,894 = of
+<span class="ln"> 9</span># 3:   79,019,494 = and
+<span class="ln">10</span># 4:   76,509,997 = in
+<span class="ln">11</span># 5:   52,986,487 = to
+<span class="ln">12</span># 6:   30,276,740 = was
+<span class="ln">13</span># 7:   23,445,023 = is
+<span class="ln">14</span># 8:   23,133,852 = for
+<span class="ln">15</span># 9:   22,621,486 = on
+<span class="ln">16</span>#10:   22,363,826 = as
+</code></pre></div><p>Creating the dictionary via C takes 756 seconds, compared to 3,430 seconds from the Python script. That&rsquo;s already a performance improvement of more than 80%.</p>
+<p>Now, let&rsquo;s see how we can further speed up processing the corpus and creating the dictionary by utilizing multiple cores.</p>
+<h2 id="parallel-processing-of-text-corpora">Parallel processing of text corpora</h2>
+<h3 id="the-basic-design">The basic design</h3>
+<h3 id="methods-for-parallel-text-processing">Methods for parallel text processing</h3>
+<h4 id="1-multiprocessing-without-memory-synchronization">1. Multiprocessing without memory synchronization</h4>
+<h4 id="2-multiprocessing-with-separate-hashes">2. Multiprocessing with separate hashes</h4>
+<h4 id="3-multiprocessing-with-pipes-for-ipc">3. Multiprocessing with pipes for IPC</h4>
+<h4 id="4-multiprocessing-with-semaphores-for-synchronization">4. Multiprocessing with semaphores for synchronization</h4>
+<h4 id="5-multithreading-with-mutexes-for-synchronization">5. Multithreading with mutexes for synchronization</h4>
+<h3 id="comparison-and-conlusion">Comparison and conlusion</h3>
+<p>&ndash;</p>
+
+    <script src="https://utteranc.es/client.js"
+        repo="mmlind/mmlind.github.io"
+        issue-term="pathname"
+        theme="preferred-color-scheme"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  </article>
+<aside class="sidebar">
+  <section class="sidebar_inner">
+    <h2>Matt Lind</h2>
+    <div>
+      CTO, freelancer, and passionate software engineer. Azure cloud and M365 global admin. Excited about parellel processing and distributed systems. AI enthusiast with special interest in natural language processing (NLP)...
+    </div>
+    <a href = 'https://mmlind.github.io/about/' class="button mt-1" role="button">Read More</a>
+    <h2 class="mt-4">Featured Posts</h2>
+    <ul>
+    
+    
+    
+      <li>
+        <a href="https://mmlind.github.io/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/" class="nav-link">How to simultaneously write to shared memory with multiple processes</a>
+      </li>
+    
+    </ul>
+    <h2 class="mt-4">Recent Posts</h2>
+    <ul class="flex-column">
+      
+      <li>
+        <a href="https://mmlind.github.io/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/" class="nav-link">How to simultaneously write to shared memory with multiple processes</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/posts/migrating_blog_from_jekyl_hugo/" class="nav-link">Migrating my GitHub pages blog from Jekyl to Hugo</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/posts/using_logistic_regression_to_solve_mnist/" class="nav-link">Using logistic regression to classify images</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/posts/linear_regression/" class="nav-link">Understanding linear regression</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/posts/deep_neural_network_for_mnist_handwriting_recognition/" class="nav-link">Deep neural network for MNIST handwriting recognition</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/posts/simple_3-layer_neural_network_for_mnist_handwriting_recognition/" class="nav-link">Simple 3-layer neural network for MNIST handwriting recognition</a>
+      </li>
+    </ul> 
+    
+    
+    
+    
+    
+    
+    <div>
+      <h2 class="mt-4 taxonomy" id="tags-section">Tags</h2>
+      <nav class="tags_nav">
+        <a href='https://mmlind.github.io/tags/machine-learning/' class=" post_tag button button_translucent">
+          MACHINE-LEARNING
+          <span class='button_tally'>6</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/computer-vision/' class=" post_tag button button_translucent">
+          COMPUTER-VISION
+          <span class='button_tally'>4</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/c/' class=" post_tag button button_translucent">
+          C
+          <span class='button_tally'>3</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/multiprocessing/' class=" post_tag button button_translucent">
+          MULTIPROCESSING
+          <span class='button_tally'>3</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/blogging/' class=" post_tag button button_translucent">
+          BLOGGING
+          <span class='button_tally'>2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/math/' class=" post_tag button button_translucent">
+          MATH
+          <span class='button_tally'>2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/natural-language-processing-nlp/' class=" post_tag button button_translucent">
+          NATURAL-LANGUAGE-PROCESSING-NLP
+          <span class='button_tally'>2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/python/' class=" post_tag button button_translucent">
+          PYTHON
+          <span class='button_tally'>2</span>
+        </a>
+        
+        
+      </nav>
+    </div>
+    
+    
+  </section>
+</aside>
+
+</div>
+    </main><svg width="0" height="0" class="hidden">
+  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook">
+    <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.001 18.001" id="twitter">
+    <path d="M15.891 4.013c.808-.496 1.343-1.173 1.605-2.034a8.68 8.68 0 0 1-2.351.861c-.703-.756-1.593-1.14-2.66-1.14-1.043 0-1.924.366-2.643 1.078a3.56 3.56 0 0 0-1.076 2.605c0 .309.039.585.117.819-3.076-.105-5.622-1.381-7.628-3.837-.34.601-.51 1.213-.51 1.846 0 1.301.549 2.332 1.645 3.089-.625-.053-1.176-.211-1.645-.47 0 .929.273 1.705.82 2.388a3.623 3.623 0 0 0 2.115 1.291c-.312.08-.641.118-.979.118-.312 0-.533-.026-.664-.083.23.757.664 1.371 1.291 1.841a3.652 3.652 0 0 0 2.152.743C4.148 14.173 2.625 14.69.902 14.69c-.422 0-.721-.006-.902-.038 1.697 1.102 3.586 1.649 5.676 1.649 2.139 0 4.029-.542 5.674-1.626 1.645-1.078 2.859-2.408 3.639-3.974a10.77 10.77 0 0 0 1.172-4.892v-.468a7.788 7.788 0 0 0 1.84-1.921 8.142 8.142 0 0 1-2.11.593z"
+      ></path>
+  </symbol>
+  <symbol aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="mail">
+    <path  d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="calendar">
+    <path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916 0 100v352c0 33.084 26.916 60 60 60h392c33.084 0 60-26.916 60-60V100c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028 0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028 0 20 8.972 20 20v48z"></path>
+    <path d="M76 230h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 310h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 390h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80-80h40v40h-40z"></path>
+  </symbol>
+  <symbol viewBox="-21 0 512 512" xmlns="http://www.w3.org/2000/svg" id="yank">
+    <path d="M410.668 405.332H165.332c-32.363 0-58.664-26.3-58.664-58.664v-288c0-32.363 26.3-58.668 58.664-58.668h181.504c21.059 0 41.687 8.535 56.555 23.445l42.496 42.496c15.125 15.125 23.445 35.223 23.445 56.575v224.152c0 32.363-26.3 58.664-58.664 58.664zM165.332 32c-14.7 0-26.664 11.969-26.664 26.668v288c0 14.7 11.965 26.664 26.664 26.664h245.336c14.7 0 26.664-11.965 26.664-26.664V122.516c0-12.82-4.992-24.871-14.059-33.942l-42.496-42.496C371.84 37.121 359.488 32 346.836 32zm0 0"></path>
+    <path d="M314.668 512h-256C26.305 512 0 485.695 0 453.332V112c0-32.363 26.305-58.668 58.668-58.668h10.664c8.832 0 16 7.168 16 16s-7.168 16-16 16H58.668C43.968 85.332 32 97.301 32 112v341.332C32 468.032 43.969 480 58.668 480h256c14.7 0 26.664-11.969 26.664-26.668v-10.664c0-8.832 7.168-16 16-16s16 7.168 16 16v10.664c0 32.363-26.3 58.668-58.664 58.668zM368 181.332H208c-8.832 0-16-7.168-16-16s7.168-16 16-16h160c8.832 0 16 7.168 16 16s-7.168 16-16 16zm0 0"></path>
+    <path d="M368 245.332H208c-8.832 0-16-7.168-16-16s7.168-16 16-16h160c8.832 0 16 7.168 16 16s-7.168 16-16 16zm0 64H208c-8.832 0-16-7.168-16-16s7.168-16 16-16h160c8.832 0 16 7.168 16 16s-7.168 16-16 16zm0 0"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="github">
+    <path d="M255.968 5.329C114.624 5.329 0 120.401 0 262.353c0 113.536 73.344 209.856 175.104 243.872 12.8 2.368 17.472-5.568 17.472-12.384 0-6.112-.224-22.272-.352-43.712-71.2 15.52-86.24-34.464-86.24-34.464-11.616-29.696-28.416-37.6-28.416-37.6-23.264-15.936 1.728-15.616 1.728-15.616 25.696 1.824 39.2 26.496 39.2 26.496 22.848 39.264 59.936 27.936 74.528 21.344 2.304-16.608 8.928-27.936 16.256-34.368-56.832-6.496-116.608-28.544-116.608-127.008 0-28.064 9.984-51.008 26.368-68.992-2.656-6.496-11.424-32.64 2.496-68 0 0 21.504-6.912 70.4 26.336 20.416-5.696 42.304-8.544 64.096-8.64 21.728.128 43.648 2.944 64.096 8.672 48.864-33.248 70.336-26.336 70.336-26.336 13.952 35.392 5.184 61.504 2.56 68 16.416 17.984 26.304 40.928 26.304 68.992 0 98.72-59.84 120.448-116.864 126.816 9.184 7.936 17.376 23.616 17.376 47.584 0 34.368-.32 62.08-.32 70.496 0 6.88 4.608 14.88 17.6 12.352C438.72 472.145 512 375.857 512 262.353 512 120.401 397.376 5.329 255.968 5.329z"></path>
+  </symbol>
+  <symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="rss">
+    <circle cx="3.429" cy="20.571" r="3.429"></circle>
+    <path d="M11.429 24h4.57C15.999 15.179 8.821 8.001 0 8v4.572c6.302.001 11.429 5.126 11.429 11.428z"></path>
+    <path d="M24 24C24 10.766 13.234 0 0 0v4.571c10.714 0 19.43 8.714 19.43 19.429z"></path>
+  </symbol>
+  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="linkedin">
+    <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h362c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zM181 406h-60V196h60zm0-240h-60v-60h60zm210 240h-60V286c0-16.54-13.46-30-30-30s-30 13.46-30 30v120h-60V196h60v11.309C286.719 202.422 296.93 196 316 196c40.691.043 75 36.547 75 79.688zm0 0"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" id="arrow">
+    <path d="M604.501 440.509L325.398 134.956c-5.331-5.357-12.423-7.627-19.386-7.27-6.989-.357-14.056 1.913-19.387 7.27L7.499 440.509c-9.999 10.024-9.999 26.298 0 36.323s26.223 10.024 36.222 0l262.293-287.164L568.28 476.832c9.999 10.024 26.222 10.024 36.221 0 9.999-10.023 9.999-26.298 0-36.323z"></path>
+  </symbol>
+  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="carly">
+    <path d="M504.971 239.029L448 182.059V84c0-46.317-37.682-84-84-84h-44c-13.255 0-24 10.745-24 24s10.745 24 24 24h44c19.851 0 36 16.149 36 36v108c0 6.365 2.529 12.47 7.029 16.971L454.059 256l-47.029 47.029A24.002 24.002 0 0 0 400 320v108c0 19.851-16.149 36-36 36h-44c-13.255 0-24 10.745-24 24s10.745 24 24 24h44c46.318 0 84-37.683 84-84v-98.059l56.971-56.971c9.372-9.372 9.372-24.568 0-33.941zM112 192V84c0-19.851 16.149-36 36-36h44c13.255 0 24-10.745 24-24S205.255 0 192 0h-44c-46.318 0-84 37.683-84 84v98.059l-56.971 56.97c-9.373 9.373-9.373 24.568 0 33.941L64 329.941V428c0 46.317 37.682 84 84 84h44c13.255 0 24-10.745 24-24s-10.745-24-24-24h-44c-19.851 0-36-16.149-36-36V320c0-6.365-2.529-12.47-7.029-16.971L57.941 256l47.029-47.029A24.002 24.002 0 0 0 112 192z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="copy">
+    <path d="M366.345 406.069H66.207c-9.751 0-17.655-7.904-17.655-17.655V17.655C48.552 7.904 56.456 0 66.207 0h300.138C376.096 0 384 7.904 384 17.655v370.759c0 9.751-7.904 17.655-17.655 17.655z" fill="#f1f4fb"></path>
+    <path d="M384 388.414v-76.992c-.907.322-1.869.494-2.751.882-6.307-6.593-14.733-11.025-24.111-11.964a40.49 40.49 0 0 0-8.448.039v-92.93c0-21.903-17.82-39.723-39.723-39.724a40.5 40.5 0 0 0-4.036.202c-20.012 2.004-35.689 19.916-35.689 40.781v101.773l-21.581 21.581c-15.241 15.241-21.393 36.866-16.456 57.847l3.802 16.16h131.338c9.75 0 17.655-7.905 17.655-17.655z"
+      fill="#d5dced"></path>
+    <circle cx="128" cy="105.931" r="26.483" fill="#b4e66e"></circle>
+    <circle cx="128" cy="203.034" r="26.483" fill="#dae169"></circle>
+    <circle cx="128" cy="300.138" r="26.483" fill="#ffdc64"></circle>
+    <path d="M331.034 229.517H189.793c-4.879 0-8.828-3.953-8.828-8.828s3.948-8.828 8.828-8.828h141.241c4.879 0 8.828 3.953 8.828 8.828s-3.948 8.828-8.828 8.828z" fill="#7f8499"></path>
+    <path d="M295.724 194.207H189.793a8.826 8.826 0 0 1-8.828-8.828 8.826 8.826 0 0 1 8.828-8.828h105.931a8.826 8.826 0 0 1 8.828 8.828 8.826 8.826 0 0 1-8.828 8.828z" fill="#5b5d6e"></path>
+    <path d="M331.034 326.621H189.793c-4.879 0-8.828-3.953-8.828-8.828s3.948-8.828 8.828-8.828h141.241c4.879 0 8.828 3.953 8.828 8.828s-3.948 8.828-8.828 8.828z" fill="#7f8499"></path>
+    <path d="M295.724 291.31H189.793c-4.879 0-8.828-3.953-8.828-8.828s3.948-8.828 8.828-8.828h105.931c4.879 0 8.828 3.953 8.828 8.828s-3.948 8.828-8.828 8.828z" fill="#5b5d6e"></path>
+    <path d="M331.034 132.414H189.793a8.826 8.826 0 0 1-8.828-8.828 8.826 8.826 0 0 1 8.828-8.828h141.241a8.826 8.826 0 0 1 8.828 8.828 8.826 8.826 0 0 1-8.828 8.828z" fill="#7f8499"></path>
+    <path d="M295.724 97.103H189.793a8.826 8.826 0 0 1-8.828-8.828 8.826 8.826 0 0 1 8.828-8.828h105.931a8.826 8.826 0 0 1 8.828 8.828 8.825 8.825 0 0 1-8.828 8.828z" fill="#5b5d6e"></path>
+    <path d="M443.656 335.563c-13.21-1.323-24.345 9.015-24.345 21.954v-7.569c0-11.544-8.306-22.063-19.794-23.213-13.209-1.323-24.344 9.015-24.344 21.954v-7.569c0-11.544-8.306-22.063-19.794-23.213-13.209-1.323-24.344 9.015-24.344 21.954V207.448c0-12.939-11.135-23.277-24.345-21.954-11.486 1.15-19.793 11.669-19.793 23.213v109.086l-26.752 26.752a44.14 44.14 0 0 0-11.754 41.32l18.47 78.495c6.567 27.913 31.475 47.64 60.15 47.64h74.645c34.127 0 61.793-27.666 61.793-61.793v-91.431c-.001-11.544-8.306-22.063-19.793-23.213z"
+      fill="#f0c087"></path>
+    <path d="M339.862 361.377a8.829 8.829 0 0 0 8.828-8.828v-34.194c-10.052 2.061-17.655 10.844-17.655 21.506v12.687a8.827 8.827 0 0 0 8.827 8.829zM384 370.205a8.829 8.829 0 0 0 8.828-8.828v-34.194c-10.052 2.061-17.655 10.844-17.655 21.506v12.687a8.827 8.827 0 0 0 8.827 8.829zm44.138 8.827a8.829 8.829 0 0 0 8.828-8.828V336.01c-10.052 2.061-17.655 10.844-17.655 21.506v12.687a8.827 8.827 0 0 0 8.827 8.829zM288.885 464.36l-20.467-86.985a28.482 28.482 0 0 1 7.585-26.663l10.893-10.894v22.113a8.829 8.829 0 0 0 17.656 0V185.933c-10.344 2.173-17.655 11.972-17.655 22.773v109.087l-26.752 26.752a44.14 44.14 0 0 0-11.754 41.32l18.47 78.495c6.567 27.913 31.475 47.64 60.15 47.64h22.026c-28.677 0-53.584-19.727-60.152-47.64z"
+      fill="#e6af78"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001" id="closeme">
+    <path d="M284.286 256.002L506.143 34.144c7.811-7.811 7.811-20.475 0-28.285-7.811-7.81-20.475-7.811-28.285 0L256 227.717 34.143 5.859c-7.811-7.811-20.475-7.811-28.285 0-7.81 7.811-7.811 20.475 0 28.285l221.857 221.857L5.858 477.859c-7.811 7.811-7.811 20.475 0 28.285a19.938 19.938 0 0 0 14.143 5.857 19.94 19.94 0 0 0 14.143-5.857L256 284.287l221.857 221.857c3.905 3.905 9.024 5.857 14.143 5.857s10.237-1.952 14.143-5.857c7.811-7.811 7.811-20.475 0-28.285L284.286 256.002z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="open-menu">
+    <path d="M492 236H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20zm0-160H20C8.954 76 0 84.954 0 96s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20zm0 320H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="instagram">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id=youtube>
+    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+  </symbol>
+</svg>
+<footer class = 'footer'>
+  <div class = 'footer_inner wrap pale'>
+    <img src = 'https://mmlind.github.io/icons/apple-touch-icon.png' class = 'icon icon_2 transparent'>
+    <p>&lt;/&gt; &copy;&nbsp;<span class = 'year'>2020</span>&nbsp;MATT&#39;S TECH BLOG. &lt;/&gt;</p>
+<a class='to_top' href="#documentTop">
+  <svg class="icon">
+    <use xlink:href="#arrow"></use>
+  </svg>
+</a>
+
+  </div>
+</footer>
+    <script type="text/javascript" src = "https://mmlind.github.io/js/bundle.min.7333d63e045f01aaa61cad70ba4e3060064949b5a64c00b840c4e0c664bcdb02869222e7bde3800fe4911ccad719c06a19cb5f48c60048c0e382631fbd17cece.js" integrity=
+    "sha512-czPWPgRfAaqmHK1wuk4wYAZJSbWmTAC4QMTgxmS82wKGkiLnveOAD&#43;SRHMrXGcBqGctfSMYASMDjgmMfvRfOzg==" crossorigin="anonymous"></script>
+  </body>
+</html>

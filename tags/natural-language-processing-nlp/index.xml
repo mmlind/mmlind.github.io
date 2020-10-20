@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Natural Language Processing (NLP) on Matt&#39;s Tech Blog</title>
+    <link>https://mmlind.github.io/tags/natural-language-processing-nlp/</link>
+    <description>Recent content in Natural Language Processing (NLP) on Matt&#39;s Tech Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>2015–2020 by Matt Lind</copyright>
+    <lastBuildDate>Fri, 16 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/tags/natural-language-processing-nlp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reading all of Wikipedia in 6 seconds: how to utilize multiple cores to process very large text files</title>
+      <link>https://mmlind.github.io/posts/reading_wikipedia_in_seconds_or_how_to_use_multiple_cores_to_process_large_text_files/</link>
+      <pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/posts/reading_wikipedia_in_seconds_or_how_to_use_multiple_cores_to_process_large_text_files/</guid>
+      <description>I was about to do some basic natural language processing (NLP) task on a large text file: create a dictionary of unique words and count how many times each word occurs. Easy peasy. This should only take me a minute. So I thought. While coding did not take more than 2 zips of coffee, I needed to wait almost an hour for the task to complete. That was unacceptable. There must be a way to accelerate this process.</description>
+    </item>
+    
+  </channel>
+</rss>
