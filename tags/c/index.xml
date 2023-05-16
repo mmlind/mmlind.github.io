@@ -5,25 +5,38 @@
     <link>https://mmlind.github.io/tags/c/</link>
     <description>Recent content in C on Matt&#39;s Tech Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <copyright>2015–2020 by Matt Lind</copyright>
     <lastBuildDate>Fri, 16 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/tags/c/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Reading all of Wikipedia in 6 seconds: how to utilize multiple cores to process very large text files</title>
-      <link>https://mmlind.github.io/posts/reading_wikipedia_in_seconds_or_how_to_use_multiple_cores_to_process_large_text_files/</link>
+      <link>https://mmlind.github.io/post/2020-10-16-reading_all_of_wikipedia_in_6_seconds_how_to_utilize_multiple_cores_to_process_very_large_text_files/</link>
       <pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://mmlind.github.io/posts/reading_wikipedia_in_seconds_or_how_to_use_multiple_cores_to_process_large_text_files/</guid>
-      <description>I was about to do some basic natural language processing (NLP) task on a large text file: create a dictionary of unique words and count how many times each word occurs. Easy peasy. This should only take me a minute. So I thought. While coding did not take more than 2 zips of coffee, I needed to wait almost an hour for the task to complete. That was unacceptable. There must be a way to accelerate this process.</description>
+      <guid>https://mmlind.github.io/post/2020-10-16-reading_all_of_wikipedia_in_6_seconds_how_to_utilize_multiple_cores_to_process_very_large_text_files/</guid>
+      <description>
+        
+          
+            I was about to do some basic natural language processing (NLP) task on a large text file: create a dictionary of unique words and count how many times each word occurs. Easy peasy. This should only take me a minute. So I thought. While coding did not take more than 2 zips of coffee, I needed to wait almost an hour for the task to complete. That was unacceptable. There must be a way to accelerate this process.
+          
+          
+        
+      </description>
     </item>
     
     <item>
       <title>How to simultaneously write to shared memory with multiple processes</title>
-      <link>https://mmlind.github.io/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/</link>
+      <link>https://mmlind.github.io/post/2020-10-05-how_to_simultaneously_write_to_shared_memory_with_multiple_processes/</link>
       <pubDate>Mon, 05 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://mmlind.github.io/posts/how_to_synchronize_multiprocessing_access_to_shared_memory/</guid>
-      <description>Most of our modern day computers have more than one processing unit. They are often referred to as cores. For a developer, effectively using multiple cores simultaneously to speed up program execution by parallel processing comes with challenges. One of them is changing the value of a variable in shared memory.
-In this blog post I introduce one of the two most common methods to overcome this problem by synchronizing access to shared memory: fork and semaphores.</description>
+      <guid>https://mmlind.github.io/post/2020-10-05-how_to_simultaneously_write_to_shared_memory_with_multiple_processes/</guid>
+      <description>
+        
+          
+            Most of our modern day computers have more than one processing unit. They are often referred to as cores. For a developer, effectively using multiple cores simultaneously to speed up program execution by parallel processing comes with challenges. One of them is changing the value of a variable in shared memory.
+In this blog post I introduce one of the two most common methods to overcome this problem by synchronizing access to shared memory: fork and semaphores.
+          
+          
+        
+      </description>
     </item>
     
   </channel>

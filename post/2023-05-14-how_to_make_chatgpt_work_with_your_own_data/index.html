@@ -1,0 +1,909 @@
+
+<!DOCTYPE html>
+<html
+  lang="en"
+  data-figures=""
+  
+    class="page"
+  
+  
+  >
+  <head>
+<title>How to make ChatGPT work with your own data | Matt&#39;s Tech Blog</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+
+
+
+<meta property="og:locale" content="en" />
+
+<meta property="og:type" content="article">
+<meta name="description" content="TLDR: I&#39;m going through a simple POC (Proof of Concept) how companies can setup their own ChatGPT-like professional agents without sending their confidential …" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:creator" content="@coming_soon">
+<meta name="twitter:title" content="How to make ChatGPT work with your own data" />
+<meta name="twitter:image" content="https://mmlind.github.io/images/thumbnail.png"/>
+<meta property="og:url" content="https://mmlind.github.io/post/2023-05-14-how_to_make_chatgpt_work_with_your_own_data/" />
+<meta property="og:title" content="How to make ChatGPT work with your own data" />
+<meta property="og:description" content="TLDR: I&#39;m going through a simple POC (Proof of Concept) how companies can setup their own ChatGPT-like professional agents without sending their confidential …" />
+<meta property="og:image" content="https://mmlind.github.io/images/thumbnail.png" />
+  <meta name="keywords" content="ai,machine learning,nlp,nlm,large language models" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="https://mmlind.github.io/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://mmlind.github.io/icons/favicon-32x32.png">
+<link rel="manifest" href="https://mmlind.github.io/icons/site.webmanifest">
+
+<link rel="canonical" href="https://mmlind.github.io/post/2023-05-14-how_to_make_chatgpt_work_with_your_own_data/">
+
+
+
+<link rel="preload" href="https://mmlind.github.io/css/styles.5bbdaff74df43ad3301fd1da44a332ca19afbd2dbb8c4f1e6c7fb5da394229112d9972011fedf21ba2cbd401586281122a5901efade33dec7837cceff22fa6ad.css" integrity = "sha512-W72v9030OtMwH9HaRKMyyhmvvS27jE8ebH&#43;12jlCKREtmXIBH&#43;3yG6LL1AFYYoESKlkB763jPex4N8zv8i&#43;mrQ==" as="style" crossorigin="anonymous">
+
+
+
+<link rel="preload" href="https://mmlind.github.io/en/js/bundle.f4da32c64ece1e7d5a836039ceed09b7e4f3592da2a593a2c0e74dd8b24aef5d873eea6fcf180b171a60c193c271d3f845628a40d93531f8e49a553ed23162cd.js" as="script" integrity=
+"sha512-9Noyxk7OHn1ag2A5zu0Jt&#43;TzWS2ipZOiwOdN2LJK712HPupvzxgLFxpgwZPCcdP4RWKKQNk1MfjkmlU&#43;0jFizQ==" crossorigin="anonymous">
+
+
+<link rel="stylesheet" type="text/css" href="https://mmlind.github.io/css/styles.5bbdaff74df43ad3301fd1da44a332ca19afbd2dbb8c4f1e6c7fb5da394229112d9972011fedf21ba2cbd401586281122a5901efade33dec7837cceff22fa6ad.css" integrity="sha512-W72v9030OtMwH9HaRKMyyhmvvS27jE8ebH&#43;12jlCKREtmXIBH&#43;3yG6LL1AFYYoESKlkB763jPex4N8zv8i&#43;mrQ==" crossorigin="anonymous">
+
+  </head>
+  <body
+    data-code="7"
+    data-lines="false"
+    id="documentTop"
+    data-lang="en"
+  >
+
+<header class="nav_header" >
+  <nav class="nav"><a href='https://mmlind.github.io/' class="nav_brand nav_item" title="Matt&#39;s Tech Blog">
+  <img src="https://mmlind.github.io/logos/logo.png" class="logo" alt="Matt&#39;s Tech Blog">
+  <div class="nav_close">
+    <div><svg class="icon">
+  <title>open-menu</title>
+  <use xlink:href="#open-menu"></use>
+</svg>
+<svg class="icon">
+  <title>closeme</title>
+  <use xlink:href="#closeme"></use>
+</svg>
+</div>
+  </div>
+</a>
+
+    <div class='nav_body nav_body_left'>
+      
+      
+      
+        
+
+  <div class="nav_parent">
+    <a href="https://mmlind.github.io/" class="nav_item" title="Blog">Blog </a>
+  </div>
+  <div class="nav_parent">
+    <a href="https://mmlind.github.io/about/" class="nav_item" title="About">About </a>
+  </div>
+      
+      <div class="nav_parent">
+        <a href="#" class="nav_item"></a>
+        <div class="nav_sub">
+          <span class="nav_child"></span>
+          
+          <a href="https://mmlind.github.io/" class="nav_child nav_item">English</a>
+          
+          <a href="https://mmlind.github.io/de/" class="nav_child nav_item">Deutsch</a>
+          
+        </div>
+      </div>
+<div class='follow'>
+  <a href="https://github.com/#">
+    <svg class="icon">
+  <title>github</title>
+  <use xlink:href="#github"></use>
+</svg>
+
+  </a>
+  <a href="https://cn.linkedin.com/in/mmlind">
+    <svg class="icon">
+  <title>linkedin</title>
+  <use xlink:href="#linkedin"></use>
+</svg>
+
+  </a>
+<div class="color_mode">
+  <input type="checkbox" class="color_choice" id="mode">
+</div>
+
+</div>
+
+    </div>
+  </nav>
+</header>
+
+    <main>
+  
+<div class="grid-inverse wrap content">
+  <article class="post_content">
+    <h1 class="post_title">How to make ChatGPT work with your own data</h1>
+  <div class="post_meta">
+    <span><svg class="icon">
+  <title>calendar</title>
+  <use xlink:href="#calendar"></use>
+</svg>
+</span>
+    <span class="post_date">
+      May 14, 2023</span>
+    <span class="post_time"> · 26 min read</span><span>&nbsp;· <a href='https://mmlind.github.io/tags/chat-gpt/' title="CHAT GPT" class="post_tag button button_translucent">CHAT GPT
+        </a><a href='https://mmlind.github.io/tags/nlp/' title="NLP" class="post_tag button button_translucent">NLP
+        </a><a href='https://mmlind.github.io/tags/natural-language-processing/' title="NATURAL LANGUAGE PROCESSING" class="post_tag button button_translucent">NATURAL LANGUAGE PROCESSING
+        </a><a href='https://mmlind.github.io/tags/python/' title="PYTHON" class="post_tag button button_translucent">PYTHON
+        </a>
+    </span>
+    <span class="page_only">&nbsp;·
+  <div class="post_share">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=How%20to%20make%20ChatGPT%20work%20with%20your%20own%20data&url=https%3a%2f%2fmmlind.github.io%2fpost%2f2023-05-14-how_to_make_chatgpt_work_with_your_own_data%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
+      <svg class="icon">
+  <title>twitter</title>
+  <use xlink:href="#twitter"></use>
+</svg>
+
+    </a>
+    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fmmlind.github.io%2fpost%2f2023-05-14-how_to_make_chatgpt_work_with_your_own_data%2f&t=How%20to%20make%20ChatGPT%20work%20with%20your%20own%20data" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
+      <svg class="icon">
+  <title>facebook</title>
+  <use xlink:href="#facebook"></use>
+</svg>
+
+    </a>
+    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow">
+      <svg class="icon">
+  <title>linkedin</title>
+  <use xlink:href="#linkedin"></use>
+</svg>
+
+    </a>
+    <a href="https://mmlind.github.io/post/2023-05-14-how_to_make_chatgpt_work_with_your_own_data/" title="Copy Link" class="link link_yank">
+      <svg class="icon">
+  <title>copy</title>
+  <use xlink:href="#copy"></use>
+</svg>
+
+    </a>
+  </div>
+  </span>
+  </div>
+
+    <div class="post_body"><p><strong>TLDR:</strong> I'm going through a simple POC (Proof of Concept) how companies can setup their own ChatGPT-like professional agents without sending their confidential data to OpenAI or to any other online service. After a general introduction to how LLMs are trained, I show how you can use Dolly (a publicly available and commercially usable fine-tuned language model) and Langchain (an open-source NLP library) to make your own data sources (e.g. from documents, databases, other systems) accessible via natural language using vector data stores and semantic search.</p>
+<p><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_internal image_unprocessed"
+        src="chatgpt.jpg"
+      
+      
+    />
+
+    </picture>
+</figure>
+</p>
+<p>Just as I was thinking that we are about to enter another <a href="https://en.wikipedia.org/wiki/AI_winter">AI winter</a>, OpenAI broke the news with <a href="https://openai.com/blog/chatgpt">ChatGPT</a>. Ever since, no day goes by without some startling news about ChatGPT's astonishing, and somewhat inconceivable, capabilities.</p>
+<p>A technical writing-aid on steroids, ChatGPT can literally comment about <strong>anything</strong> that you ask it about and will revert with a sensible, grammatically correct response. And apparently it does so in <a href="https://seo.ai/blog/how-many-languages-does-chatgpt-support">95 different languages</a>. Impressive!</p>
+<h3 id="taking-the-internet-by-storm">Taking the Internet by storm</h3>
+<p>After its launch in late 2022, ChatGPT has taken the entire Internet by storm. It now ranks as the fastest application or platform ever to accumulate 100 million users: only 2 months. Growing faster than Tik Tok or any other social media app.</p>
+<h3 id="fluency-without-understanding">Fluency without understanding</h3>
+<p>What sets it apart from its dated ancestors Siri, Alexa and Cortana is its mind-blowing ability to digest long, complex human inputs, now called <em>prompts</em>. It systematically deconstructs and creatively re-assembles sentences and is able to produce (what seems to be) <em>meaningful</em> outputs.</p>
+<p>Does this mean that ChatGPT actually <em><strong>understands</strong></em> human language and the <em><strong>meaning</strong></em> of our questions and its own answers? <strong>No.</strong> Absolutely not.</p>
+<p>Make no mistake. Don't be fooled by the flawless prose that ChatGPT generates. It's simply comparing users' queries to everything it has been <em>fed</em> in the past, and assembles text that, by measure of statistical probability, likely <em>looks</em> meaningful in the given context.</p>
+<p>In doing so, it may completely make up &quot;facts&quot; and generate grammatically correct <strong>non-sense</strong>. Commonly now referred to as <a href="https://en.wikipedia.org/wiki/Hallucination_(artificial_intelligence)"><em><strong>hallucination</strong></em></a>, ChatGPT's creative nature has no limits. Reader discretion is advised. A funny example I found is a <a href="https://twitter.com/tqbf/status/1598513757805858820">Twitter user</a> asking ChatGPT to write a biblical verse explaining how to remove a peanut butter sandwich from a VCR. LOL</p>
+<p>See ChatGPT's flawless response below, and further examples <a href="https://www.springboard.com/blog/news/chatgpt-revolution/">here</a>.</p>
+<p><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_internal image_unprocessed"
+        src="chat_gpt_twitter_example.jpeg"
+      
+      
+    />
+
+    </picture>
+</figure>
+</p>
+<p>With all that being said about ChatGPT's short-comings and potential risks, there's also a <strong>tremendous upside</strong> to using the technology productively in an enterprise setting. But how?</p>
+<h2 id="issues-for-commercial-usage">Issues for commercial usage</h2>
+<p>As soon as you explore the idea of leveraging ChatGPT, or other alike systems for that matter, commercially, a number of issues are typically raised at once, including:</p>
+<ul>
+<li>lack of domain expertise</li>
+<li>data privacy and data protection</li>
+<li>cost</li>
+</ul>
+<h3 id="lack-of-domain-expertise">Lack of domain expertise</h3>
+<p>Most large language models (LLMs) have been trained on humongous, generic, publicly available data sets. <strong>The Pile</strong>, for example, is a &gt;800 GB <a href="(https://arxiv.org/abs/2101.00027)">Dataset of Diverse Text for Language Modeling</a> which you can download <a href="https://the-eye.eu/public/AI/pile/">here</a>.</p>
+<p>As such, the <em>LLM's knowledge of the world</em> is limited to information that is publicly available. It won't have any knowledge of company-internal, proprietary data such as customer information, project references, internal documents such as contracts, financial reports, etc. Yet, it is exactly this <em>domain expertise</em> that harnesses the largest potential for a prudent, intelligent professional agent to add value in a business setting.</p>
+<p>So the question is, how can we apply the power of LLMs and GPT (generative pre-trained transformers) technology to a specific domain?</p>
+<p>And if we actually <strong>do</strong> provide ChatGPT with access to any domain-specific knowledge, how do we protect data privacy and intellectual property?</p>
+<h3 id="data-privacy-and-data-protection">Data privacy and data protection</h3>
+<p>OpenAI offers ChatGPT as a free service via its own <a href="https://chat.openai.com/">website</a>, as well as via a $20 <a href="https://openai.com/blog/chatgpt-plus">ChatGPT Plus</a> subscription. The direct service on their website can be very tempting to play with.</p>
+<p>When you do, keep in mind though that all user input is not only <em>shared</em> with OpenAI for processing but also <em>used</em> by OpenAI to further <em>&quot;improve the service&quot;</em> as the company's <a href="https://openai.com/policies/terms-of-use">Terms of Use</a> clearly point out.</p>
+<p>This means, users' chats are directly used to further train the model and improve future versions. When your staff, for example, share meeting write-ups with ChatGPT to quickly produce meeting minutes, or when your developers feed proprietary source code to ChatGPT to quickly find a coding bug, they're effectively leaking confidential data. Both cases actually happened at <a href="https://gizmodo.com/chatgpt-ai-samsung-employees-leak-data-1850307376">Samsung</a>. Oops!</p>
+<p>While leaking proprietary information to OpenAI is already bad enough, things get even more ugly if the OpenAI platform itself has bugs and accidentally shares one user's data with other users. Unfortunately, this as well actually <a href="https://www.dailymail.co.uk/sciencetech/article-11893689/ChatGPT-creator-confirms-bug-allowed-users-snoop-chat-histories.html">happened</a>. Oops^2!</p>
+<p>The risks of using ChatGPT as a service in a company setting quickly become clear. But there's more.</p>
+<p>As an alternative to using the direct service on the OpenAI website, the more interesting offering is the company's <a href="https://platform.openai.com/docs/api-reference">API service</a> which allows developers to connect and empower any application with ChatGPT capabilities.</p>
+<p>And According to OpenAI's <a href="https://openai.com/policies/api-data-usage-policies">data usage policies</a></p>
+<blockquote>
+<p><em>OpenAI will not use data submitted by customers via our API to train or improve our models</em></p>
+</blockquote>
+<p>which is great. This means, while for the direct chat service there's an <strong>opt-out</strong> policy (i.e. if you don't explicitly opt-out your data <em>will</em> be used), for the API it's <strong>opt-in</strong> (i.e. by default your data will <em>not</em> be used but you can explicitly allow OpenAI to use your data if you want to).</p>
+<p>So, should this make companies feel better to use ChatGPT via the API in a professional setting? Yes. Does it fully address the concern of protecting data privacy and proprietary information? No.</p>
+<p>Why not? Well, companies are still sending their proprietary information to OpenAI where OpenAI's employees will have access to this data. OpenAI explicitly mentions this in their <a href="https://openai.com/policies/api-data-usage-policies">data usage policies</a>:</p>
+<blockquote>
+<p><em>OpenAI retains API data for 30 days for abuse and misuse monitoring purposes. A limited number of authorized OpenAI employees, as well as specialized third-party contractors that are subject to confidentiality and security obligations, can access this data solely to investigate and verify suspected abuse.</em></p>
+</blockquote>
+<p>So, while the data you shared via the API is not directly used by OpenAI anymore to further improve their service, it is still accessible by their employees. For many business use cases, this type of potential external access may render the service unusable commercially.</p>
+<h3 id="cost">Cost</h3>
+<p>The third concern that is typically considered by companies when exploring a ChatGPT-like service in a professional setting is <strong>cost</strong>.</p>
+<p>OpenAI's charges for ChatGPT are based on the number of words, or tokens, that you feed into the API. <a href="https://openai.com/pricing#language-models">Pricing</a> also depends on what specific model you use. While ChatGPT (based on GPT-3.5) is currently priced at $0.002 per 1,000 tokens (which roughly translates into 750 words), the latest and most advanced model, GPT-4, is priced at $0.06 per 1,000 tokens when using the largest possible <em>context</em> of 32k tokens. A jaw-dropping 3,000% increase from version 3.5 to version 4. Ouch!</p>
+<p>While the unit charges seem low, total usage fees quickly add up. Especially, if your organization has a large amount of users. And in a business setting, this type of <em>variable</em>, usage-dependent cost do matter.</p>
+<h2 id="llms-under-the-hood">LLMs under the hood</h2>
+<p>To address the above concerns about lack of domain expertise, data privacy and cost, companies may want to explore setting up their own ChatGPT. And so do I.</p>
+<p>Is this feasible? And if so, how to do so?</p>
+<p>I wanted to to explore these questions and therefore created a simple POC using publicly available data sets and Open Source technology.</p>
+<p>But before we get there, let me make a small detour and dive a bit deeper into how ChatGPT actually works.</p>
+<h2 id="training-a-language-model">Training a language model</h2>
+<p>Large language models are typically trained in 2 steps: pre-training and fine-tuning.</p>
+<h3 id="pre-training">Pre-training</h3>
+<p>During pre-training, large text corpora such as The <a href="https://arxiv.org/abs/2101.00027">Pile</a> are processed using different flavors of the <em>transformer</em> technology and other NLP tools.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)"><strong>transformer</strong></a> network architecture has been around for a few years already. Back in 2017, researchers at Google Brain introduced the transformer idea in their ground-breaking paper <em>&quot;Attention is all you need&quot;</em>. The main contribution of transformers to NLP was the introduction of an <em>attention</em> mechanism.</p>
+<p>Two techniques in particular are being used for training: <em><strong>next token prediction</strong></em> and <em><strong>masked language modeling</strong></em>. Both basically utilize statistical probabilities of words to appear in the same context. With transformers, neural networks started to be able to consider the <strong>context</strong> that a given text is presented in. Since <strong>all meaning in language is context-sensitive</strong> this presented a real break-through.</p>
+<p>Ever since, transformers have by and large replaced recurrent and convolutional networks in NLP and have become the de-facto weapon of choice for NLP engineers worldwide.</p>
+<h4 id="foundation-models">Foundation models</h4>
+<p>The training process is compute-intensive and can take several days to complete. The result is a language <em>model</em> that is capable of incrementally predicting the next word in a sentence. It detects <em>structure</em> and <em>patterns</em> in language, identifies relationships between words and sentences, and fluently produces grammatically correct outputs.</p>
+<p>Those base models form the generic <em>foundation</em> for a wide range of more specialized downstream tasks and hence are referred to as <strong>foundation models</strong>.</p>
+<p>The most popular foundation models include: <sup>extracted from <a href="https://en.wikipedia.org/wiki/Large_language_model">Wikipedia</a>:</sup></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Model</th>
+<th style="text-align:right">Release date</th>
+<th style="text-align:center">Developer</th>
+<th style="text-align:right">Number of parameters</th>
+<th style="text-align:right">Corpus size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html">BERT</a></td>
+<td style="text-align:right">2018</td>
+<td style="text-align:center">Google</td>
+<td style="text-align:right">340 million</td>
+<td style="text-align:right">3.3 billion words</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://arxiv.org/pdf/2005.14165.pdf">GPT-3</a></td>
+<td style="text-align:right">2020</td>
+<td style="text-align:center">OpenAI</td>
+<td style="text-align:right">175 billion</td>
+<td style="text-align:right">499 billion words</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://ai.facebook.com/blog/large-language-model-llama-meta-ai/">LLaMA</a></td>
+<td style="text-align:right">February 2023</td>
+<td style="text-align:center">Meta</td>
+<td style="text-align:right">65 billion</td>
+<td style="text-align:right">1.4 trillion words</td>
+</tr>
+</tbody>
+</table>
+<h4 id="open-foundation-models"><strong>Open</strong> foundation models</h4>
+<p>Unfortunately, most of those foundation models were kept <strong>closed</strong> source by their creators, and so it didn't take long for a growing number of <strong>open</strong> alternatives to emerge in the NLP community:</p>
+<ul>
+<li>Big Science’s <a href="https://bigscience.huggingface.co/blog/bloom">Bloom</a> (trained on a French supercomputer, sponsored by the French government)</li>
+<li>EleutherAI’s Pythia</li>
+<li>H2O.ai’s h2ogpt</li>
+<li><a href="https://github.com/openlm-research/open_llama">OpenLLaMA</a></li>
+</ul>
+<p>The availability of such open models has greatly facilitated and further accelerated the rapid, continuous evolution of LLMs.</p>
+<p>What foundation models are missing though is the ability to follow instructions, hold conversations (dialog) and apply <em>logic</em> (reasoning). No matter how many times you read all books, blogs, websites, etc. ever written in the entire history of mankind, you won't <em>learn</em> reasoning from simply processing prose text.</p>
+<p>To make the foundation model more useful for different use cases, for example to power a chat bot, the model needs to be further refined or <em><strong>fine-tuned</strong></em>.</p>
+<h3 id="fine-tuning">Fine-tuning</h3>
+<p>OpenAI creatively combined the 5-years-old transformer technology with other machine learning training mechanisms, in particular with <strong>supervised learning</strong> and <strong>reinforcement learning</strong> to <em>inject</em> desired capabilities such as instruction-following, dialog and reasoning into the foundation model.</p>
+<p><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        <source srcset="/post/2023-05-14-how_to_make_chatgpt_work_with_your_own_data/openai_chatgpt_fine_tuning.webp" type="image/webp">
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_internal image_unprocessed"
+        src="openai_chatgpt_fine_tuning.jpg"
+      
+      
+    />
+
+    </picture>
+</figure>
+</p>
+<p>The fine-tuning can be split into 2 major steps:</p>
+<ul>
+<li>instruction and conversation tuning</li>
+<li>Reinforcement Learning with Human Feedback</li>
+</ul>
+<h4 id="instruction-and-conversation-tuning">Instruction and conversation tuning</h4>
+<p>The pre-trained foundation model is first <em>fine-tuned</em> using supervised learning. In supervised learning, a machine learning model is <em>taught</em> by humans what a <em>correct</em> behavior should look like. In practice, this means researchers create a <em>new</em> data set of arbitrarily collected prompts and ask a group human labelers to write down the <em>expected</em> responses to these prompts.</p>
+<p>Prompts may also be collected from user-submitted input to ChatGPT. Remember from further above that when you use the ChatGPT service directly you implicitly provide permission to &quot;improve the service&quot;? That's your contribution to OpenAI's fine-tuning right there. Thank you. Much appreciated.</p>
+<p>However, this type of supervised fine-tuning is very inefficient and presents a Hercules task with a number of issues:</p>
+<ol>
+<li>
+<p>The selection of prompts for the data set is <strong>finite</strong> and <strong>arbitrary</strong>. Human language, on the other side, is <strong>infinite</strong>. No matter how many prompts you pick for training, they will still present only a tiny, arbitrarily selected subset of the overall language universe.</p>
+</li>
+<li>
+<p>Both the selection of prompts and the carefully crafted human responses are heavily <strong>biased</strong>. Most prompts do not have a single, distinct <em><strong>correct</strong></em> answer. Hence, the standard for what a <strong>correct</strong> response looks like will strongly depend on the group of human labelers and researchers creating the data set.</p>
+</li>
+<li>
+<p>Manually crafting proper responses and conducting some measure of quality control to review and compile everything is very <strong>labor intensive</strong>, <strong>expensive</strong> and <strong>slow</strong>. As such, the process does <strong>not scale</strong> well. Given that in machine learning the quality of a model typically increases with the size of the data source, not being able to scale presents a significant drawback.</p>
+</li>
+</ol>
+<p>Despite these short-comings, the supervised fine-tuning already leads to an astonishing quality improvement compared to the bare pre-trained model. The model now has learned to follow instructions and have a conversation.</p>
+<p>But there's more.</p>
+<h4 id="reinforcement-learning-with-human-feedback">Reinforcement Learning with Human Feedback</h4>
+<p>Next, researchers apply proven concepts and ideas from reinforcement learning. Remember AlphaGo, the DeepMind computer program beating the best human player at Go? Yep, that's reinforcement learning.</p>
+<h5 id="reward-model">Reward model</h5>
+<p>Again, a number of prompts are selected but this time they are fed into the already supervised fine-tuned model. The model then generates 4-9 different possible outputs which are then manually ranked by human labelers in terms of their suitability to serve as a <em>proper</em> response.</p>
+<p>Practically speaking, this again is a form of supervised learning, as humans provide feedback to further train the algorithm. One immediate thought thus might be, isn't this approach then again bound by the same constraints as the prior step? Yes, but not really.</p>
+<p>First, it's much easier and faster for a human to <em>rank</em> different responses than to <em>write</em> their own responses. Therefore, this kind of human feedback scales much better and results in a 10 times bigger data set than the data set curated in the prior step.</p>
+<p>Second, the human rankings are used to train a new, separate model whose purpose is not to produce a response but to <em>assess the quality</em> of a response. Called the <em><strong>reward model</strong></em>, this new model can then be used by the algorithm to further train itself. Simply brilliant, isn't it!? Scalability ... checked.</p>
+<p>How exactly does this work?</p>
+<h5 id="ppo-reinforcement-learning">PPO reinforcement learning</h5>
+<p>Enter <a href="https://openai.com/research/openai-baselines-ppo">Proximal Policy Optimization</a>. PPO is a reinforcement learning algorithm to optimize outcomes against a reward model. Initiated with the values of the supervised fine-tuned model, the PPO model continuously generates outputs and asks the reward model to calculate a reward for this output. The reward is then used to further update and improve the PPO model.</p>
+<p>Put together, this technique is called <a href="https://en.wikipedia.org/wiki/Reinforcement_learning_from_human_feedback"><em><strong>Reinforcement Learning with Human Feedback</strong></em></a> or RLHF. And the result of this process is now an <a href="https://openai.com/research/instruction-following">instruction-following</a> model that is capable of dialog and reasoning.</p>
+<h3 id="fine-tuned-llms">Fine-tuned LLMs</h3>
+<p>ChatGPT is not the only kid on the block. Driven by the recent success of ChatGPT, a quickly growing number of fine-tuned models are mushrooming online, most of which are based on Facebook's <a href="https://ai.facebook.com/blog/large-language-model-llama-meta-ai/">LLaMa</a> foundation model:</p>
+<ul>
+<li><a href="https://github.com/nomic-ai/gpt4all">Gpt4all</a> <sup>which comes with a neat installer to install your own ChatGPT desktop app</sup></li>
+<li><a href="https://github.com/h2oai/h2ogpt">H2OGPT</a></li>
+<li><a href="https://github.com/lm-sys/FastChat#FastChat-T5">FastChat</a></li>
+<li><a href="https://lmsys.org/blog/2023-03-30-vicuna/">Vicuna</a></li>
+</ul>
+<p>There is also a growing number of universities who joined the race to support <strong>academic research</strong>:</p>
+<ul>
+<li>Stanford's <a href="https://crfm.stanford.edu/2023/03/13/alpaca.html">Alpaca</a> and later <a href="https://github.com/tloen/alpaca-lora">Alpaca-LoRA</a></li>
+<li>Berkeley's <a href="https://bair.berkeley.edu/blog/2023/04/03/koala/">Koala</a></li>
+</ul>
+<p>Microsoft apparently watched too much Marvel and has now launched Iron Man's <a href="https://github.com/microsoft/JARVIS">JARVIS</a> -- an intelligent agent that can combine text, vision and speech. Fascinating. Here comes the future.</p>
+<p>Another one that I found worth mentioning is LAION's <a href="https://github.com/LAION-AI/Open-Assistant">Open Assistant</a>, an attempt to fully open source LLM technology. Definitely interesting to watch how this unfolds.</p>
+<h4 id="fine-tuning-becomes-easier-and-cheaper">Fine-tuning becomes easier and cheaper</h4>
+<p>Much of the mush-rooming has been made possible by recent algorithmic improvements such as Lora which allow to drastically decrease the size of the model in fine-tuning, allowing to fine-tune models even on a laptop. Incredible.</p>
+<blockquote>
+<p>LoRA uses <em>low-rank factorizations</em> to drastically (by a factor of 10,000) reduce the size of the matrices that need to be updated during training. Foundation models can now be fine-tuned at a fraction of the cost and time. People are now able to <em>personalize</em> a language model in a few hours on consumer hardware, causing Google employees to cry out: <em><strong><a href="https://www.semianalysis.com/p/google-we-have-no-moat-and-neither">We Have No Moat</a></strong></em>.</p>
+</blockquote>
+<p>Given this kind of progress, I'm thinking that by 2030 we probably run a 100 billion parameter AI model on a toaster. LOL</p>
+<h3 id="dolly----again-the-first">Dolly -- Again the <em>first</em></h3>
+<p>A common problem of most of these fine-tuned LLMs though is that their licensing prohibits commercial usage. Bummer!</p>
+<p>It's only <a href="https://www.databricks.com/blog/2023/04/12/dolly-first-open-commercially-viable-instruction-tuned-llm">recently</a> that Databricks released a new fine-tuned data set, meaningfully called <strong>Dolly</strong>, that fully supports commercial usage. Yippie.</p>
+<p>Databricks went through the above cumbersome and labor-intensive process of manually creating a human generated dataset, about 15k instruction-response-pairs in size, crowd-sourced among 50 thousand of Databricks' own employees. This data set was then used to fine-tune <a href="https://github.com/EleutherAI/pythia">EleutherAI's</a> <a href="https://arxiv.org/abs/2304.01373">Pythia</a> model.</p>
+<h3 id="models-a-la-carte">Models a la carte</h3>
+<p>Dolly 2.0 is available as a 3, 6 and 12 billion parameter model. All nicely served on Huggingface. The higher the number of parameters, i.e. weights in the underlying neural network, the more nuanced and adaptive, in short the more powerful, the model.</p>
+<h2 id="setting-up-your-own-chatgpt-locally">Setting up your own ChatGPT locally</h2>
+<p>Now that we better understand how ChatGPT works, let me go back to our objective of building our own ChatGPT that is not only as <em>smart</em> as the real ChatGPT but that can also run locally, can be used commercially, and can connect to our own personal data sources.</p>
+<p>With Dolly we now have a fine-tuned LLM that supports all of this. So let's roll-up our sleeves and take a look.</p>
+<h2 id="load-a-fine-tuned-model">Load a fine-tuned model</h2>
+<p>The easiest way to download Dolly is to clone the respective repository at <a href="https://huggingface.co/databricks/dolly-v2-12b">Huggingface</a>. I'm using the 12 billion parameter version to be able to obtain the best possible results.</p>
+<p>Once downloaded, you can prepare running your own LLM with only a few lines of Python code:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PYTHON" data-lang="PYTHON"><span class="line"><span class="ln">1</span><span class="cl"><span class="kn">import</span> <span class="nn">torch</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="kn">from</span> <span class="nn">instruct_pipeline</span> <span class="kn">import</span> <span class="n">InstructionTextGenerationPipeline</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModelForCausalLM</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl">
+</span></span><span class="line"><span class="ln">5</span><span class="cl"><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;dolly-v2-12b&#39;</span><span class="p">,</span> <span class="n">padding_side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">6</span><span class="cl">
+</span></span><span class="line"><span class="ln">7</span><span class="cl"><span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;dolly-v2-12b&#39;</span><span class="p">,</span> <span class="n">device_map</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">torch_dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">8</span><span class="cl">
+</span></span><span class="line"><span class="ln">9</span><span class="cl"><span class="n">generate_text</span> <span class="o">=</span> <span class="n">InstructionTextGenerationPipeline</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">return_full_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="s1">&#39;text-generation&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><p>To make this work though you will need to download the <code>instruct_pipeline</code> code file from Huggingface. Alternatively, you could also not download the file and instead go with the <code>trust_remote_code = True</code> option which I did not want to do.</p>
+<p>Generating a response to an arbitrary prompt is then as simple as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PYTHON" data-lang="PYTHON"><span class="line"><span class="ln">1</span><span class="cl"><span class="n">prompt</span> <span class="o">=</span> <span class="s2">&#34;Explain to me the difference between nuclear fission and fusion.&#34;</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">generate_text</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl">
+</span></span><span class="line"><span class="ln">5</span><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">Nuclear fission and fusion are both methods that can be used to release energy. Nuclear fission is the method that a nuclear bomb uses to release a large amount of energy by splitting the nucleus of an atom. Fusion, on the other hand, is a method that aims to create a more manageable amount of energy by combining two small atomic nuclei together. Currently, the only method of creating fusion on a commercial level is through nuclear fission.
+</span></span></code></pre></div><p>At first, I tried running the above prompt on my 16 GB RAM MacBook and failed. Apparently, 16 GB of RAM doesn't cut it for the 12 billion Dolly model. So, I moved over to my older MacMini which is equipped with a slightly more generous 64 GB of memory.</p>
+<p>To my surprise, the query takes almost 8 minutes to complete. Likely due to that pathetic, antique Intel chip. Apple Silicon, where are you!?</p>
+<p>This type of performance and waiting time is too tiring. I decide to move the test over to an Azure server.</p>
+<h3 id="running-locally-in-the-cloud">Running <em>locally in the cloud</em></h3>
+<p>Among the large choices available I select the M128s with 128 vCPUs and 2T RAM for $1.33 per hour, running on Debian Bullseye:</p>
+<p><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_internal image_unprocessed"
+        src="azure_m128s.png"
+      
+      
+    />
+
+    </picture>
+</figure>
+</p>
+<p>The same prompt now takes only around 80 seconds to respond to. Still not the fastest but definitely an improvement over my MacMini.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">$ python3 dolly.py
+</span></span><span class="line"><span class="ln">2</span><span class="cl">
+</span></span><span class="line"><span class="ln">3</span><span class="cl">Explain to me the difference between nuclear fission and fusion.
+</span></span><span class="line"><span class="ln">4</span><span class="cl">
+</span></span><span class="line"><span class="ln">5</span><span class="cl">Nuclear fission and fusion are both methods that can be used to extract energy from nuclear material. Nuclear fission, also known as fission energy, involves splitting the nucleus of an atom to release concentrated amounts of energy. In contrast, fusion involves heating up a small amount of nuclear material to very high temperatures, causing a reaction that produces more mass than either of the original inputs. As a result of this fusion reaction, more mass than what was started with is released. Both methods of nuclear energy production are being researched, but fusion has been identified as having the potential to be a more sustainable and lower carbon emission energy source than fission.
+</span></span></code></pre></div><p>Bored waiting for another chat response, I start thinking: what about if the whole model was loaded into memory? That should help to speed things further up, shouldn't it?</p>
+<p>I quickly setup a 1T <em>RAM drive</em>, and copy the whole code with model onto this RAM drive and run it from there. One reason why I had opted for the M128s in the first place was that it comes with 2T of RAM. So this should work well for my needs. So I thought.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-SH" data-lang="SH"><span class="line"><span class="ln">1</span><span class="cl">sudo mkdir -p /mnt/ram
+</span></span><span class="line"><span class="ln">2</span><span class="cl">sudo mount -t ramfs -o <span class="nv">size</span><span class="o">=</span>1000g ramfs /mnt/ram
+</span></span><span class="line"><span class="ln">3</span><span class="cl">sudo chown -R matt:matt /mnt/ram
+</span></span></code></pre></div><p>So how long does model inference take now if everything is loaded into and run in memory?</p>
+<p>Still a whopping 60+ seconds! Bummer. That's a bit of a surprise. Hardly any performance gain there.</p>
+<p>Actually, running the same prompt a couple of times generates a different response each time and execution time depends, more than on anything else, on the length of the returned response. So, performance tuning is definitely something to be further investigated. Some other time.</p>
+<p>For now, I'm good. I'm running the LLM on my own server, completely stand-alone and disconnected from OpenAI or any other online service. The aforementioned issues of data privacy and usage-dependent cost have thus been successfully addressed.</p>
+<p>Performance is still not great, but hey, it's just a POC. So all good for now to proceed.</p>
+<p>But what about the lack of domain expertise?</p>
+<h2 id="connect-to-your-own-data-sources">Connect to your own data sources</h2>
+<p>Enter <a href="https://docs.langchain.com/docs/">Langchain</a>: <em>&quot;LangChain is a framework for developing applications powered by language models.&quot;</em> It allows to <em><a href="https://python.langchain.com/en/latest/modules/chains/getting_started.html">chain</a></em> or connect different NLP components to achieve a particular objective.</p>
+<p>For example, you can connect additional text components to your prompt. This additional input to your prompt can be thought of as some additional <em>context</em> that you want the model to be aware of.</p>
+<p>Let's see how this look in practice.</p>
+<p>I refactor above code and put the <code>tokenizer</code> and pre-trained <code>model</code> into a new function called <code>text_generation_pipeline</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PYTHON" data-lang="PYTHON"><span class="line"><span class="ln">1</span><span class="cl">
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="k">def</span> <span class="nf">text_generation_pipeline</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">
+</span></span><span class="line"><span class="ln">4</span><span class="cl">	<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;dolly-v2-12b&#39;</span><span class="p">,</span> <span class="n">padding_side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">5</span><span class="cl">
+</span></span><span class="line"><span class="ln">6</span><span class="cl">	<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;dolly-v2-12b&#39;</span><span class="p">,</span> <span class="n">device_map</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">torch_dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">7</span><span class="cl">
+</span></span><span class="line"><span class="ln">8</span><span class="cl">	<span class="k">return</span> <span class="n">InstructionTextGenerationPipeline</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">return_full_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="s1">&#39;text-generation&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><p>This function now serves to represent a <strong>local</strong> LLM in our <em>chain</em>. Langchain offers a number of built-in integrations to many of the currently popular LLMs, online. But I don't want to connect to an online LLM. I want it to run stand-alone.</p>
+<p>And instead of a simple string <em>prompt</em> let's use a <em>PromptTemplate</em> which allows to easily construct more complex prompts. A bit of an overkill for this simple example, but will come in handy later.</p>
+<p>We can now generate a <code>response</code> based on a user's <code>instruction</code> with the following code:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PYTHON" data-lang="PYTHON"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">from</span> <span class="nn">langchain</span> <span class="kn">import</span> <span class="n">PromptTemplate</span><span class="p">,</span> <span class="n">LLMChain</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kn">from</span> <span class="nn">langchain.llms</span> <span class="kn">import</span> <span class="n">HuggingFacePipeline</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="n">llm</span>             <span class="o">=</span> <span class="n">HuggingFacePipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="o">=</span><span class="n">text_generation_pipeline</span><span class="p">())</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="n">input_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;instruction&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="n">template</span>        <span class="o">=</span> <span class="s2">&#34;</span><span class="si">{instruction}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="n">prompt</span>          <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">(</span><span class="n">input_variables</span><span class="o">=</span><span class="n">input_variables</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="n">llm_chain</span>       <span class="o">=</span> <span class="n">LLMChain</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="n">response</span>        <span class="o">=</span> <span class="n">llm_chain</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">instruction</span><span class="o">=</span><span class="n">instruction</span><span class="p">)</span>
+</span></span></code></pre></div><p>This pretty much gets us the same result as earlier but is now nicely utilizing the Langchain structure which can be easily expanded.</p>
+<h3 id="adding-context-to-your-prompt">Adding context to your prompt</h3>
+<p>Instead of just feeding a single <code>input_variable</code> into the model, we can add another <code>input_variable</code> which I call <code>context</code>. And, we also add this new variable into our <code>template</code>. The rest is the same.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PYTHON" data-lang="PYTHON"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">from</span> <span class="nn">langchain</span> <span class="kn">import</span> <span class="n">PromptTemplate</span><span class="p">,</span> <span class="n">LLMChain</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kn">from</span> <span class="nn">langchain.llms</span> <span class="kn">import</span> <span class="n">HuggingFacePipeline</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="n">llm</span>             <span class="o">=</span> <span class="n">HuggingFacePipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="o">=</span><span class="n">text_generation_pipeline</span><span class="p">())</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="n">input_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;instruction&#39;</span><span class="p">,</span> <span class="s1">&#39;context&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="n">template</span>        <span class="o">=</span> <span class="s2">&#34;</span><span class="si">{context}</span><span class="se">\n</span><span class="si">{instruction}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="n">prompt</span>          <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">(</span><span class="n">input_variables</span><span class="o">=</span><span class="n">input_variables</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="n">llm_chain</span>       <span class="o">=</span> <span class="n">LLMChain</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="n">response</span>        <span class="o">=</span> <span class="n">llm_chain</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">instruction</span><span class="o">=</span><span class="n">instruction</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
+</span></span></code></pre></div><p>With this simple design we can now inject additional, user- or domain-specific context into a prompt. For example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">CONTEXT: Matt Lind is a technology professional from Germany living in China.
+</span></span><span class="line"><span class="ln">2</span><span class="cl">
+</span></span><span class="line"><span class="ln">3</span><span class="cl">INSTRUCTION: What country does Matt Lind come from?
+</span></span><span class="line"><span class="ln">4</span><span class="cl">
+</span></span><span class="line"><span class="ln">5</span><span class="cl">RESPONSE: Germany
+</span></span></code></pre></div><p>I slightly change the question, to check whether my ChatGPT is able to correctly detect what I am actually asking about.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">CONTEXT: Matt Lind is a technology professional from Germany living in China.
+</span></span><span class="line"><span class="ln">2</span><span class="cl">
+</span></span><span class="line"><span class="ln">3</span><span class="cl">INSTRUCTION: What country does Matt Lind live in?
+</span></span><span class="line"><span class="ln">4</span><span class="cl">
+</span></span><span class="line"><span class="ln">5</span><span class="cl">RESPONSE: Matt Lind lives in China
+</span></span></code></pre></div><p>Cool! While the original pre-training and fine-tuning taught the model to deal with the <strong>structure</strong> of my question, the <strong>content</strong> for the response is taken from my additional input. That's exactly the kind of <strong>domain expertise injection</strong> that we were looking for.</p>
+<p>So, is that it? Can we simply pass our whole domain expertise as <em>context</em> into our prompt?</p>
+<p>No.</p>
+<h3 id="limitations-of-context-injection-via-prompt">Limitations of context-injection via prompt</h3>
+<p>Extending the prompt is quite limited. Actually, if we just wanted to extend the prompt in every query we don't have to use Langchain in the first place. Since LLMs simply <em>continue</em> any given text piece, you could do the above using a vanilla LLM implementation <strong>without</strong> Langchain.</p>
+<p>Extending the prompt, however, faces limitations. First, most current LLM implementations have a <strong>technical limit</strong> in terms of the number of tokens that can be passed into the model. For OpenAI. for example, the total number of tokens, specifically prompt and response tokens <em>combined</em>, is <a href="https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them#">4097</a>:</p>
+<blockquote>
+<h1 id="token-limits"><em>Token Limits</em></h1>
+<p><em>Depending on the model used, requests can use up to 4097 tokens shared between prompt and completion. If your prompt is 4000 tokens, your completion can be 97 tokens at most.</em>
+<em>The limit is currently a technical limitation, but there are often creative ways to solve problems within the limit, e.g. condensing your prompt, breaking the text into smaller pieces, etc.</em></p>
+</blockquote>
+<p>Second, it's very inefficient to inject the same context or domain knowledge with every single request again and again.</p>
+<p>Third, the scale of the context or domain expertise that we want to inject may be huge and spread over different sources. Buried in company databases, Sharepoint libraries, documents, websites, etc.</p>
+<p>What if we could compress all of our private or domain-specific information into a single local data source and then inject this data source into our model?</p>
+<h3 id="vector-data-stores">Vector data stores</h3>
+<p>Enter vector data stores. Vector data stores can be thought of as <strong>semantic databases</strong> that store information as numerical representations (<em>vectors</em>) and allow for convenient and fast semantic searches across that information.</p>
+<p>Langchain already supports a range of vector data stores <a href="https://python.langchain.com/en/latest/modules/indexes/vectorstores.html">built-in</a>. At first, I opted for Redis which I'm already familiar with for session management. However, since the required RediSearch module requires an Enterprise license I end up using Facebook's <a href="https://github.com/facebookresearch/faiss">FAISS</a> which is one of the easiest to get started with and thus ideal for testing.</p>
+<p>To move on, I need a personal data source for testing. Something that's ideally not available publicly and has not been seen by ChatGPT during pre-training.</p>
+<h3 id="talking-to-a-pdf">Talking to a PDF</h3>
+<p>But what do I use? Turns out this is harder than expected. There is not that much <em>stuff</em> sitting on my computer that's interesting to share and that I'm comfortable putting on a public blog.</p>
+<p>Instead, I decide to run the test using an <a href="2021_Annual_Report.pdf">annual financial report</a> downloaded from <a href="https://www.microsoft.com/investor/reports/ar21/download-center/">here</a>.</p>
+<p>After a brief scan of the document, I find the following passage on page 8:</p>
+<blockquote>
+<p><em>Diversity and inclusion continues to be a core priority for every employee at Microsoft and is incorporated into our performance and career development approach.</em></p>
+</blockquote>
+<p>and decide to try to query for this particular piece of content via the prompt:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">&#34;What is a core priority for every employee at Microsoft?&#34;
+</span></span></code></pre></div><p>Since I got this text from a public server, I need to confirm that the contained text has not been part of the model's prior training already. Therefore, I first query the vanilla Dolly model without the <em>chained</em> report:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">PROMPT: What is a core priority for every employee at Microsoft?
+</span></span><span class="line"><span class="ln">2</span><span class="cl">
+</span></span><span class="line"><span class="ln">3</span><span class="cl">RESPONSE: Microsoft promises to continuously deliver shareholder value through the deployment of innovative technology solutions, the development of commercially successful products, and the hiring of world-class employees.
+</span></span></code></pre></div><p>And because the model spits out a different creative response every time, I run the prompt a couple of times more just to check that <em>&quot;Diversity and Inclusion&quot;</em> are not mentioned, i.e. have not appeared in the corpus that was used for either pre-training or fine-tuning.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">PROMPT: What is a core priority for every employee at Microsoft?
+</span></span><span class="line"><span class="ln">2</span><span class="cl">
+</span></span><span class="line"><span class="ln">3</span><span class="cl">RESPONSE: Microsoft always puts its customers first. The customer is at the core of everything we do and we invest significantly in making our customers successful. We help our customers realize their vision through our product innovations and through the people who work here.
+</span></span><span class="line"><span class="ln">4</span><span class="cl">
+</span></span><span class="line"><span class="ln">5</span><span class="cl">RESPONSE: Being responsive to customer requests
+</span></span></code></pre></div><p>Looks good. The responses from the vanilla model do <strong>not</strong> include the <em>correct</em> information that we're looking for. The model has likely <strong>not</strong> seen this document before.</p>
+<p>Now, let's try to <em>chain</em> this PDF to our LLM.</p>
+<p>We first load the content of the PDF and split it into smaller, more digestible <strong>chunks</strong> of text.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PYTHON" data-lang="PYTHON"><span class="line"><span class="ln">1</span><span class="cl"><span class="n">loader</span>         <span class="o">=</span> <span class="n">PyPDFLoader</span><span class="p">(</span><span class="s1">&#39;2021_Annual_Report.pdf&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="n">documents</span>      <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="n">text_splitter</span>  <span class="o">=</span> <span class="n">CharacterTextSplitter</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="n">chunks</span>         <span class="o">=</span> <span class="n">text_splitter</span><span class="o">.</span><span class="n">split_documents</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+</span></span></code></pre></div><p>Then we add the chunks into a vector store. As I mentioned above, we'll use <a href="https://python.langchain.com/en/latest/modules/indexes/vectorstores/examples/faiss.html">FAISS</a> for its simplicity. For production use, there are many alternative <a href="https://python.langchain.com/en/latest/modules/indexes/vectorstores.html">options</a>.</p>
+<p>Langchain also allows to choose what embeddings to use to represent the text as vectors. Since I want my professional agent to run offline without an OpenAI API key, I choose the <code>HuggingFaceEmbeddings</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PYTHON" data-lang="PYTHON"><span class="line"><span class="ln">1</span><span class="cl">
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="n">embeddings</span>     <span class="o">=</span> <span class="n">HuggingFaceEmbeddings</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="n">vector_store</span>   <span class="o">=</span> <span class="n">FAISS</span><span class="o">.</span><span class="n">from_documents</span><span class="p">(</span><span class="n">chunks</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">)</span>
+</span></span></code></pre></div><p>Now, we can search the vector store for our prompt via a semantic similarity search:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PYTHON" data-lang="PYTHON"><span class="line"><span class="ln">1</span><span class="cl"><span class="n">similar_chunks</span> <span class="o">=</span> <span class="n">vector_store</span><span class="o">.</span><span class="n">similarity_search</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span></span></code></pre></div><p>Text pieces that are recognized as semantically close to our query will be returned as chunks. We then simply feed those chunks as additional <code>input_documents</code> into our LLM <em>chain</em>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PYTHON" data-lang="PYTHON"><span class="line"><span class="ln">1</span><span class="cl"><span class="n">llm</span>            <span class="o">=</span> <span class="n">HuggingFacePipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="o">=</span><span class="n">text_generation_pipeline</span><span class="p">())</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="n">chain</span>          <span class="o">=</span> <span class="n">load_qa_chain</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">chain_type</span><span class="o">=</span><span class="s2">&#34;stuff&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="n">response</span>       <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_documents</span><span class="o">=</span><span class="n">similar_chunks</span><span class="p">,</span> <span class="n">question</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+</span></span></code></pre></div><p>What do we get?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">PROMPT: What is a core priority for every employee at Microsoft?
+</span></span><span class="line"><span class="ln">2</span><span class="cl">
+</span></span><span class="line"><span class="ln">3</span><span class="cl">RESPONSE: Diversity and inclusion is a core priority for every employee at Microsoft. This is important to Microsoft because of the company&#39;s value in creating a more inclusive workplace and driving change in the communities where Microsoft operates. Diverse teams and companies are better able to solve complex problems and create innovative solutions.
+</span></span></code></pre></div><p>Voila! The same LLM now responds with the desired answer: <strong>Diversity and inclusion</strong></p>
+<p>The 2nd and 3rd sentences in that response BTW did not exactly match the report. Dolly must have found those somewhere else, or, again, <em>hallucinated</em>.</p>
+<p><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_internal image_unprocessed"
+        src="her-movie2.jpg"
+      
+      
+    />
+
+    </picture>
+</figure>
+</p>
+<h3 id="where-does-this-go-from-here">Where does this go from here?</h3>
+<p>This is the moment when I have to think of the movie &quot;Her&quot;. Do you remember the scene at the beginning when Theodore installs his new operating system and his new AI agent asks for permission to access his email and files?</p>
+<p>Yep. We're almost there now. What seemed far utopia back then is starting to appear possible. With all its pros and cons.</p>
+<h2 id="limitations">Limitations</h2>
+<p>This simple POC demonstrates how powerful this technology can be. Once connected to your own data sources, this type of GPT-like agent becomes a search engine on steroids. Users will be able to use natural language, either by typing or by speaking, to retrieve any information they want. With high accuracy and no end-user training required.</p>
+<p>At the same time though, running this test also taught me some of the current limitations of LLMs and GPT-like technology:</p>
+<ul>
+<li>
+<p><strong>Model accuracy</strong> -- The Dolly model proved less powerful or less accurate than its famous OpenAI counterpart. Not all models are created equal. And model quality has a significant impact on the agent's ability to produce high quality responses.</p>
+</li>
+<li>
+<p><strong>Compute power</strong> -- The fact that training LLM takes a huge amount of compute power is well known. But with the recent humungous sizes of LLMs nowadays, even inference (i.e. simply pushing a query through the trained model) is becoming a very memory- and compute-intensive undertaking.</p>
+</li>
+<li>
+<p><strong>Hallucination</strong> -- LLMs are non-deterministic. It's very difficult, if not impossible, to trace and reconstruct why a certain query led to a certain response. The model may combine inputs and randomly extrapolate <em>non-sense</em>.</p>
+</li>
+</ul>
+<p>While the first two limitations are likely being addressed by the continuous evolution of hardware and algorithmic enhancements in the next couple of years, the third presents a real challenge and an unsolved problem. One potential option to address <em>hallucination</em> is <strong>Prompt Engineering</strong> which I likely explore next in a different post.</p>
+<p>Thank you for reading. Feel free to reach out with any comments or questions.</p>
+<p>Happy coding!</p>
+<h3 id="further-readings">Further readings</h3>
+<ul>
+<li><a href="https://www.assemblyai.com/blog/how-chatgpt-actually-works/">How ChatGPT actually works</a></li>
+<li><a href="https://medium.com/geekculture/list-of-open-sourced-fine-tuned-large-language-models-llm-8d95a2e0dc76">List of Open Sourced Fine-Tuned Large Language Models (LLM)</a></li>
+<li><a href="https://arxiv.org/abs/2303.18223">A Survey of Large Language Models</a></li>
+<li><a href="https://www.databricks.com/blog/2023/04/12/dolly-first-open-commercially-viable-instruction-tuned-llm">Free Dolly: Introducing the World's First Truly Open Instruction-Tuned LLM</a></li>
+<li><a href="https://arxiv.org/abs/2106.09685">LoRA: Low-Rank Adaptation of Large Language Models</a></li>
+<li><a href="https://www.semianalysis.com/p/google-we-have-no-moat-and-neither">We Have No Moat</a></li>
+<li><a href="https://youtu.be/wrD-fZvT6UI">Langchain dolly-first-open-commercially-viable-instruction-tuned-llm</a></li>
+</ul>
+<p>Similar talk to PDF blog posts:</p>
+<ul>
+<li><a href="https://python.langchain.com/en/latest/use_cases/evaluation/qa_benchmarking_sota.html">Question Answering Benchmarking: State of the Union Address</a></li>
+<li><a href="https://github.com/wafflecomposite/langchain-ask-pdf-local">Ask Your PDF, locally</a></li>
+<li><a href="https://github.com/alejandro-ao/langchain-ask-pdf">Langchain Ask PDF</a></li>
+</ul>
+
+    </div>
+<div class="post_comments">
+  
+  
+    
+ <script src="https://utteranc.es/client.js"
+         repo="https://github.com/mmlind/mmlind.github.io"
+         issue-term="pathname"
+         theme="github-dark"
+         
+         label="blog comments ✨💬✨"
+         
+         crossorigin="anonymous"
+         async>
+ </script>
+ 
+  
+  
+</div>
+
+
+
+
+  </article>
+<aside class="sidebar">
+  <section class="sidebar_inner">
+    <br>
+    
+  
+  <div class="search">
+    <input type="search" class="search_field form_field" placeholder='Search...' id="find" autocomplete="off" data-scope='post'>
+    <label for="find" class="search_label"><svg class="icon">
+  <title>search</title>
+  <use xlink:href="#search"></use>
+</svg>
+
+    </label>
+    
+    <div class="search_results results"></div>
+  </div>
+
+        <h2>Matt Lind</h2>
+      <div class="author_bio">
+        Tech geek, command-line aficionado, AI enthusiast, life-long learner.
+      </div>
+      <a href='https://mmlind.github.io/about/' class="button mt-1" role="button" title='Read More'>Read More</a>
+
+    
+    
+    <h2 class="mt-4">Featured Posts</h2>
+    <ul>
+      <li>
+        <a href="https://mmlind.github.io/post/2023-05-14-how_to_make_chatgpt_work_with_your_own_data/" class="nav-link" title="How to make ChatGPT work with your own data">How to make ChatGPT work with your own data</a>
+      </li>
+    </ul>
+    <h2 class="mt-4">Recent Posts</h2>
+    <ul class="flex-column">
+      <li>
+        <a href="https://mmlind.github.io/post/2020-10-16-reading_all_of_wikipedia_in_6_seconds_how_to_utilize_multiple_cores_to_process_very_large_text_files/" class="nav-link" title="Reading all of Wikipedia in 6 seconds: how to utilize multiple cores to process very large text files">Reading all of Wikipedia in 6 seconds: how to utilize multiple cores to process very large text files</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2020-10-05-how_to_simultaneously_write_to_shared_memory_with_multiple_processes/" class="nav-link" title="How to simultaneously write to shared memory with multiple processes">How to simultaneously write to shared memory with multiple processes</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2020-09-29-migrating_my_github-pages_blog_from_jekyl_to_hugo/" class="nav-link" title="Migrating my GitHub pages blog from Jekyl to Hugo">Migrating my GitHub pages blog from Jekyl to Hugo</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2017-12-26-using_logistic_regression_to_classify_images/" class="nav-link" title="Using logistic regression to classify images">Using logistic regression to classify images</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2017-03-05-understanding_linear_regression/" class="nav-link" title="Understanding linear regression">Understanding linear regression</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2016-02-12-deep_neural_network_for_mnist_handwriting_recognition/" class="nav-link" title="Deep Neural Network for MNIST Handwriting Recognition">Deep Neural Network for MNIST Handwriting Recognition</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2015-08-09-simple_3-layer_neural_network_for_mnist_handwriting_recognition/" class="nav-link" title="Simple 3-Layer Neural Network for MNIST Handwriting Recognition">Simple 3-Layer Neural Network for MNIST Handwriting Recognition</a>
+      </li>
+    </ul>
+    <div>
+      <h2 class="mt-4 taxonomy" id="tags-section">Tags</h2>
+      <nav class="tags_nav">
+        <a href='https://mmlind.github.io/tags/machine-learning/' class="post_tag button button_translucent" title="machine-learning">
+          MACHINE-LEARNING
+          <span class="button_tally">6</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/computer-vision/' class="post_tag button button_translucent" title="computer-vision">
+          COMPUTER-VISION
+          <span class="button_tally">4</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/blogging/' class="post_tag button button_translucent" title="blogging">
+          BLOGGING
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/c/' class="post_tag button button_translucent" title="c">
+          C
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/math/' class="post_tag button button_translucent" title="math">
+          MATH
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/multiprocessing/' class="post_tag button button_translucent" title="multiprocessing">
+          MULTIPROCESSING
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/natural-language-processing/' class="post_tag button button_translucent" title="natural-language-processing">
+          NATURAL-LANGUAGE-PROCESSING
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/nlp/' class="post_tag button button_translucent" title="nlp">
+          NLP
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/python/' class="post_tag button button_translucent" title="python">
+          PYTHON
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/chat-gpt/' class="post_tag button button_translucent" title="chat-gpt">
+          CHAT-GPT
+          <span class="button_tally">1</span>
+        </a>
+        
+        
+      </nav>
+    </div>
+  </section>
+</aside>
+
+  
+</div>
+    </main><svg width="0" height="0" class="hidden">
+  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook">
+    <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.001 18.001" id="twitter">
+    <path d="M15.891 4.013c.808-.496 1.343-1.173 1.605-2.034a8.68 8.68 0 0 1-2.351.861c-.703-.756-1.593-1.14-2.66-1.14-1.043 0-1.924.366-2.643 1.078a3.56 3.56 0 0 0-1.076 2.605c0 .309.039.585.117.819-3.076-.105-5.622-1.381-7.628-3.837-.34.601-.51 1.213-.51 1.846 0 1.301.549 2.332 1.645 3.089-.625-.053-1.176-.211-1.645-.47 0 .929.273 1.705.82 2.388a3.623 3.623 0 0 0 2.115 1.291c-.312.08-.641.118-.979.118-.312 0-.533-.026-.664-.083.23.757.664 1.371 1.291 1.841a3.652 3.652 0 0 0 2.152.743C4.148 14.173 2.625 14.69.902 14.69c-.422 0-.721-.006-.902-.038 1.697 1.102 3.586 1.649 5.676 1.649 2.139 0 4.029-.542 5.674-1.626 1.645-1.078 2.859-2.408 3.639-3.974a10.77 10.77 0 0 0 1.172-4.892v-.468a7.788 7.788 0 0 0 1.84-1.921 8.142 8.142 0 0 1-2.11.593z"
+      ></path>
+  </symbol>
+  <symbol aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="mail">
+    <path  d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="calendar">
+    <path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916 0 100v352c0 33.084 26.916 60 60 60h392c33.084 0 60-26.916 60-60V100c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028 0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028 0 20 8.972 20 20v48z"></path>
+    <path d="M76 230h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 310h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 390h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80-80h40v40h-40z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="github">
+    <path d="M255.968 5.329C114.624 5.329 0 120.401 0 262.353c0 113.536 73.344 209.856 175.104 243.872 12.8 2.368 17.472-5.568 17.472-12.384 0-6.112-.224-22.272-.352-43.712-71.2 15.52-86.24-34.464-86.24-34.464-11.616-29.696-28.416-37.6-28.416-37.6-23.264-15.936 1.728-15.616 1.728-15.616 25.696 1.824 39.2 26.496 39.2 26.496 22.848 39.264 59.936 27.936 74.528 21.344 2.304-16.608 8.928-27.936 16.256-34.368-56.832-6.496-116.608-28.544-116.608-127.008 0-28.064 9.984-51.008 26.368-68.992-2.656-6.496-11.424-32.64 2.496-68 0 0 21.504-6.912 70.4 26.336 20.416-5.696 42.304-8.544 64.096-8.64 21.728.128 43.648 2.944 64.096 8.672 48.864-33.248 70.336-26.336 70.336-26.336 13.952 35.392 5.184 61.504 2.56 68 16.416 17.984 26.304 40.928 26.304 68.992 0 98.72-59.84 120.448-116.864 126.816 9.184 7.936 17.376 23.616 17.376 47.584 0 34.368-.32 62.08-.32 70.496 0 6.88 4.608 14.88 17.6 12.352C438.72 472.145 512 375.857 512 262.353 512 120.401 397.376 5.329 255.968 5.329z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212" id="gitlab">
+    <path d="M12.3 74.7h54L43.3 3c-1-3.6-6.4-3.6-7.6 0L12.3 74.8z" />
+    <path d="M12.3 74.7L.5 111c-1 3.2 0 6.8 3 8.8l101.6 74-92.5-119z"/>
+    <path d="M105 193.7l-38.6-119h-54l92.7 119z"/>
+    <path d="M105 193.7l38.7-119H66.4l38.7 119z"/>
+    <path d="M105 193.7l38.7-119H198l-93 119z"/>
+    <path d="M198 74.7l11.6 36.2c1 3 0 6.6-3 8.6l-101.5 74 93-119z"/>
+    <path d="M198 74.7h-54.3L167 3c1.2-3.6 6.4-3.6 7.6 0L198 74.8z"/>
+  </symbol>
+  <symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="rss">
+    <circle cx="3.429" cy="20.571" r="3.429"></circle>
+    <path d="M11.429 24h4.57C15.999 15.179 8.821 8.001 0 8v4.572c6.302.001 11.429 5.126 11.429 11.428z"></path>
+    <path d="M24 24C24 10.766 13.234 0 0 0v4.571c10.714 0 19.43 8.714 19.43 19.429z"></path>
+  </symbol>
+  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="linkedin">
+    <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h362c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zM181 406h-60V196h60zm0-240h-60v-60h60zm210 240h-60V286c0-16.54-13.46-30-30-30s-30 13.46-30 30v120h-60V196h60v11.309C286.719 202.422 296.93 196 316 196c40.691.043 75 36.547 75 79.688zm0 0"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" id="to-top">
+    <path d="M604.501 440.509L325.398 134.956c-5.331-5.357-12.423-7.627-19.386-7.27-6.989-.357-14.056 1.913-19.387 7.27L7.499 440.509c-9.999 10.024-9.999 26.298 0 36.323s26.223 10.024 36.222 0l262.293-287.164L568.28 476.832c9.999 10.024 26.222 10.024 36.221 0 9.999-10.023 9.999-26.298 0-36.323z"></path>
+  </symbol>
+  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="carly">
+    <path d="M504.971 239.029L448 182.059V84c0-46.317-37.682-84-84-84h-44c-13.255 0-24 10.745-24 24s10.745 24 24 24h44c19.851 0 36 16.149 36 36v108c0 6.365 2.529 12.47 7.029 16.971L454.059 256l-47.029 47.029A24.002 24.002 0 0 0 400 320v108c0 19.851-16.149 36-36 36h-44c-13.255 0-24 10.745-24 24s10.745 24 24 24h44c46.318 0 84-37.683 84-84v-98.059l56.971-56.971c9.372-9.372 9.372-24.568 0-33.941zM112 192V84c0-19.851 16.149-36 36-36h44c13.255 0 24-10.745 24-24S205.255 0 192 0h-44c-46.318 0-84 37.683-84 84v98.059l-56.971 56.97c-9.373 9.373-9.373 24.568 0 33.941L64 329.941V428c0 46.317 37.682 84 84 84h44c13.255 0 24-10.745 24-24s-10.745-24-24-24h-44c-19.851 0-36-16.149-36-36V320c0-6.365-2.529-12.47-7.029-16.971L57.941 256l47.029-47.029A24.002 24.002 0 0 0 112 192z"></path>
+  </symbol>
+  <symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="copy">
+    <path d="M23 2.75A2.75 2.75 0 0 0 20.25 0H8.75A2.75 2.75 0 0 0 6 2.75v13.5A2.75 2.75 0 0 0 8.75 19h11.5A2.75 2.75 0 0 0 23 16.25zM18.25 14.5h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5zm0-3h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5zm0-3h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5z"></path>
+    <path d="M8.75 20.5a4.255 4.255 0 0 1-4.25-4.25V2.75c0-.086.02-.166.025-.25H3.75A2.752 2.752 0 0 0 1 5.25v16A2.752 2.752 0 0 0 3.75 24h12a2.752 2.752 0 0 0 2.75-2.75v-.75z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001" id="closeme">
+    <path d="M284.286 256.002L506.143 34.144c7.811-7.811 7.811-20.475 0-28.285-7.811-7.81-20.475-7.811-28.285 0L256 227.717 34.143 5.859c-7.811-7.811-20.475-7.811-28.285 0-7.81 7.811-7.811 20.475 0 28.285l221.857 221.857L5.858 477.859c-7.811 7.811-7.811 20.475 0 28.285a19.938 19.938 0 0 0 14.143 5.857 19.94 19.94 0 0 0 14.143-5.857L256 284.287l221.857 221.857c3.905 3.905 9.024 5.857 14.143 5.857s10.237-1.952 14.143-5.857c7.811-7.811 7.811-20.475 0-28.285L284.286 256.002z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="open-menu">
+    <path d="M492 236H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20zm0-160H20C8.954 76 0 84.954 0 96s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20zm0 320H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="instagram">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id=youtube>
+    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="stackoverflow">
+    <path d="M21 27v-8h3v11H0V19h3v8h18z"></path><path d="M17.1.2L15 1.8l7.9 10.6 2.1-1.6L17.1.2zm3.7 14.7L10.6 6.4l1.7-2 10.2 8.5-1.7 2zM7.2 12.3l12 5.6 1.1-2.4-12-5.6-1.1 2.4zm-1.8 6.8l13.56 1.96.17-2.38-13.26-2.55-.47 2.97zM19 25H5v-3h14v3z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="xing">
+    <path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 71 55" id="discord">
+    <path d="M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.471 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6202 41.8354 49.6202 53.3179 44.3151C53.3935 44.2785 53.4831 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978ZM23.7259 37.3253C20.2276 37.3253 17.3451 34.1136 17.3451 30.1693C17.3451 26.225 20.1717 23.0133 23.7259 23.0133C27.308 23.0133 30.1626 26.2532 30.1066 30.1693C30.1066 34.1136 27.28 37.3253 23.7259 37.3253ZM47.3178 37.3253C43.8196 37.3253 40.9371 34.1136 40.9371 30.1693C40.9371 26.225 43.7636 23.0133 47.3178 23.0133C50.9 23.0133 53.7545 26.2532 53.6986 30.1693C53.6986 34.1136 50.9 37.3253 47.3178 37.3253Z"/>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 18" id="mastodon">
+    <path
+    fill="#ffffff"
+    d="m 15.054695,9.8859583 c -0.22611,1.1632697 -2.02517,2.4363497 -4.09138,2.6830797 -1.0774504,0.12856 -2.1382704,0.24673 -3.2694704,0.19484 -1.84996,-0.0848 -3.30971,-0.44157 -3.30971,-0.44157 0,0.1801 0.0111,0.35157 0.0333,0.51194 0.24051,1.82571 1.81034,1.93508 3.29737,1.98607 1.50088,0.0514 2.8373104,-0.37004 2.8373104,-0.37004 l 0.0617,1.35686 c 0,0 -1.0498104,0.56374 -2.9199404,0.66742 -1.03124,0.0567 -2.3117,-0.0259 -3.80308,-0.42069 -3.23454998,-0.85613 -3.79081998,-4.304 -3.87592998,-7.8024197 -0.026,-1.03871 -0.01,-2.01815 -0.01,-2.83732 0,-3.57732 2.34385998,-4.62587996 2.34385998,-4.62587996 1.18184,-0.54277 3.20976,-0.77101 5.318,-0.7882499985409 h 0.0518 C 9.8267646,0.01719834 11.856025,0.24547834 13.037775,0.78824834 c 0,0 2.34377,1.04855996 2.34377,4.62587996 0,0 0.0294,2.63937 -0.32687,4.47183"/>
+ <path
+    fill="#000000"
+    d="m 12.616925,5.6916583 v 4.3315297 h -1.71607 V 5.8189683 c 0,-0.88624 -0.37289,-1.33607 -1.1187604,-1.33607 -0.82467,0 -1.23799,0.53361 -1.23799,1.58875 v 2.30122 h -1.70594 v -2.30122 c 0,-1.05514 -0.4134,-1.58875 -1.23808,-1.58875 -0.74587,0 -1.11876,0.44983 -1.11876,1.33607 v 4.2042197 h -1.71607 V 5.6916583 c 0,-0.88527 0.22541,-1.58876 0.67817,-2.10922 0.46689,-0.52047 1.07833,-0.78727 1.83735,-0.78727 0.87816,0 1.54317,0.33752 1.98288,1.01267 l 0.42744,0.71655 0.42753,-0.71655 c 0.43961,-0.67515 1.10463,-1.01267 1.9828704,-1.01267 0.75893,0 1.37037,0.2668 1.83735,0.78727 0.45268,0.52046 0.67808,1.22395 0.67808,2.10922"/>
+  </symbol>
+</svg>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+<footer class="footer">
+  <div class="footer_inner wrap pale">
+    <img src='https://mmlind.github.io/icons/cli.png' class="icon icon_2 transparent" alt="Matt&#39;s Tech Blog">
+    <p>Copyright&nbsp;2015-&nbsp;<span class="year"></span>&nbsp;MATT&#39;S TECH BLOG. All Rights Reserved</p><a class="to_top" href="#documentTop">
+  <svg class="icon">
+  <title>to-top</title>
+  <use xlink:href="#to-top"></use>
+</svg>
+
+</a>
+
+  </div>
+</footer>
+
+<script type="text/javascript" src="https://mmlind.github.io/en/js/bundle.f4da32c64ece1e7d5a836039ceed09b7e4f3592da2a593a2c0e74dd8b24aef5d873eea6fcf180b171a60c193c271d3f845628a40d93531f8e49a553ed23162cd.js" integrity="sha512-9Noyxk7OHn1ag2A5zu0Jt&#43;TzWS2ipZOiwOdN2LJK712HPupvzxgLFxpgwZPCcdP4RWKKQNk1MfjkmlU&#43;0jFizQ==" crossorigin="anonymous"></script>
+
+  <script src="https://mmlind.github.io/js/search.min.441534ebca8f29b72ee98c817c1d9c475fc24ae0a88f1c2eb4deacb203fccebce3c0eee3c758545c399671772a0bc025c7e45b2b1396a19a6dff7ead9c73f066.js"></script>
+
+  </body>
+</html>

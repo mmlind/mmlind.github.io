@@ -4,7 +4,6 @@
     <title>Series on Matt&#39;s Tech Blog</title>
     <link>https://mmlind.github.io/series/</link>
     <description>Recent content in Series on Matt&#39;s Tech Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <copyright>2015–2020 by Matt Lind</copyright><atom:link href="https://mmlind.github.io/series/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator><atom:link href="https://mmlind.github.io/series/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

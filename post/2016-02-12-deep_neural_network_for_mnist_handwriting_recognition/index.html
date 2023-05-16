@@ -1,0 +1,1252 @@
+
+<!DOCTYPE html>
+<html
+  lang="en"
+  data-figures=""
+  
+    class="page"
+  
+  
+  >
+  <head>
+<title>Deep Neural Network for MNIST Handwriting Recognition | Matt&#39;s Tech Blog</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+
+
+
+<meta property="og:locale" content="en" />
+
+<meta property="og:type" content="article">
+<meta name="description" content="I finally found some time to enhance my neural network to support deep learning. The network now masters a variable number of layers and is capable of running …" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:creator" content="@coming_soon">
+<meta name="twitter:title" content="Deep Neural Network for MNIST Handwriting Recognition" />
+<meta name="twitter:image" content="https://mmlind.github.io/images/thumbnail.png"/>
+<meta property="og:url" content="https://mmlind.github.io/post/2016-02-12-deep_neural_network_for_mnist_handwriting_recognition/" />
+<meta property="og:title" content="Deep Neural Network for MNIST Handwriting Recognition" />
+<meta property="og:description" content="I finally found some time to enhance my neural network to support deep learning. The network now masters a variable number of layers and is capable of running …" />
+<meta property="og:image" content="https://mmlind.github.io/images/thumbnail.png" />
+  <meta name="keywords" content="ai,machine learning,nlp,nlm,large language models" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="https://mmlind.github.io/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://mmlind.github.io/icons/favicon-32x32.png">
+<link rel="manifest" href="https://mmlind.github.io/icons/site.webmanifest">
+
+<link rel="canonical" href="https://mmlind.github.io/post/2016-02-12-deep_neural_network_for_mnist_handwriting_recognition/">
+
+
+
+<link rel="preload" href="https://mmlind.github.io/css/styles.5bbdaff74df43ad3301fd1da44a332ca19afbd2dbb8c4f1e6c7fb5da394229112d9972011fedf21ba2cbd401586281122a5901efade33dec7837cceff22fa6ad.css" integrity = "sha512-W72v9030OtMwH9HaRKMyyhmvvS27jE8ebH&#43;12jlCKREtmXIBH&#43;3yG6LL1AFYYoESKlkB763jPex4N8zv8i&#43;mrQ==" as="style" crossorigin="anonymous">
+
+
+
+<link rel="preload" href="https://mmlind.github.io/en/js/bundle.f4da32c64ece1e7d5a836039ceed09b7e4f3592da2a593a2c0e74dd8b24aef5d873eea6fcf180b171a60c193c271d3f845628a40d93531f8e49a553ed23162cd.js" as="script" integrity=
+"sha512-9Noyxk7OHn1ag2A5zu0Jt&#43;TzWS2ipZOiwOdN2LJK712HPupvzxgLFxpgwZPCcdP4RWKKQNk1MfjkmlU&#43;0jFizQ==" crossorigin="anonymous">
+
+
+<link rel="stylesheet" type="text/css" href="https://mmlind.github.io/css/styles.5bbdaff74df43ad3301fd1da44a332ca19afbd2dbb8c4f1e6c7fb5da394229112d9972011fedf21ba2cbd401586281122a5901efade33dec7837cceff22fa6ad.css" integrity="sha512-W72v9030OtMwH9HaRKMyyhmvvS27jE8ebH&#43;12jlCKREtmXIBH&#43;3yG6LL1AFYYoESKlkB763jPex4N8zv8i&#43;mrQ==" crossorigin="anonymous">
+
+  </head>
+  <body
+    data-code="7"
+    data-lines="false"
+    id="documentTop"
+    data-lang="en"
+  >
+
+<header class="nav_header" >
+  <nav class="nav"><a href='https://mmlind.github.io/' class="nav_brand nav_item" title="Matt&#39;s Tech Blog">
+  <img src="https://mmlind.github.io/logos/logo.png" class="logo" alt="Matt&#39;s Tech Blog">
+  <div class="nav_close">
+    <div><svg class="icon">
+  <title>open-menu</title>
+  <use xlink:href="#open-menu"></use>
+</svg>
+<svg class="icon">
+  <title>closeme</title>
+  <use xlink:href="#closeme"></use>
+</svg>
+</div>
+  </div>
+</a>
+
+    <div class='nav_body nav_body_left'>
+      
+      
+      
+        
+
+  <div class="nav_parent">
+    <a href="https://mmlind.github.io/" class="nav_item" title="Blog">Blog </a>
+  </div>
+  <div class="nav_parent">
+    <a href="https://mmlind.github.io/about/" class="nav_item" title="About">About </a>
+  </div>
+      
+      <div class="nav_parent">
+        <a href="#" class="nav_item"></a>
+        <div class="nav_sub">
+          <span class="nav_child"></span>
+          
+          <a href="https://mmlind.github.io/" class="nav_child nav_item">English</a>
+          
+          <a href="https://mmlind.github.io/de/" class="nav_child nav_item">Deutsch</a>
+          
+        </div>
+      </div>
+<div class='follow'>
+  <a href="https://github.com/#">
+    <svg class="icon">
+  <title>github</title>
+  <use xlink:href="#github"></use>
+</svg>
+
+  </a>
+  <a href="https://cn.linkedin.com/in/mmlind">
+    <svg class="icon">
+  <title>linkedin</title>
+  <use xlink:href="#linkedin"></use>
+</svg>
+
+  </a>
+<div class="color_mode">
+  <input type="checkbox" class="color_choice" id="mode">
+</div>
+
+</div>
+
+    </div>
+  </nav>
+</header>
+
+    <main>
+  
+<div class="grid-inverse wrap content">
+  <article class="post_content">
+    <h1 class="post_title">Deep Neural Network for MNIST Handwriting Recognition</h1>
+  <div class="post_meta">
+    <span><svg class="icon">
+  <title>calendar</title>
+  <use xlink:href="#calendar"></use>
+</svg>
+</span>
+    <span class="post_date">
+      Feb 12, 2016</span>
+    <span class="post_time"> · 28 min read</span><span>&nbsp;· <a href='https://mmlind.github.io/tags/machine-learning/' title="MACHINE LEARNING" class="post_tag button button_translucent">MACHINE LEARNING
+        </a><a href='https://mmlind.github.io/tags/computer-vision/' title="COMPUTER VISION" class="post_tag button button_translucent">COMPUTER VISION
+        </a>
+    </span>
+    <span class="page_only">&nbsp;·
+  <div class="post_share">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Deep%20Neural%20Network%20for%20MNIST%20Handwriting%20Recognition&url=https%3a%2f%2fmmlind.github.io%2fpost%2f2016-02-12-deep_neural_network_for_mnist_handwriting_recognition%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
+      <svg class="icon">
+  <title>twitter</title>
+  <use xlink:href="#twitter"></use>
+</svg>
+
+    </a>
+    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fmmlind.github.io%2fpost%2f2016-02-12-deep_neural_network_for_mnist_handwriting_recognition%2f&t=Deep%20Neural%20Network%20for%20MNIST%20Handwriting%20Recognition" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
+      <svg class="icon">
+  <title>facebook</title>
+  <use xlink:href="#facebook"></use>
+</svg>
+
+    </a>
+    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow">
+      <svg class="icon">
+  <title>linkedin</title>
+  <use xlink:href="#linkedin"></use>
+</svg>
+
+    </a>
+    <a href="https://mmlind.github.io/post/2016-02-12-deep_neural_network_for_mnist_handwriting_recognition/" title="Copy Link" class="link link_yank">
+      <svg class="icon">
+  <title>copy</title>
+  <use xlink:href="#copy"></use>
+</svg>
+
+    </a>
+  </div>
+  </span>
+  </div>
+
+    <div class="post_body"><p>I finally found some time to enhance my neural network to support deep learning. The network now masters a variable number of layers and is capable of running convolutional layers. The architecture is generic, light weight (very small memory footprint) and super fast. :-)</p>
+<p><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_internal image_unprocessed"
+        src="dnn_mnist-logo.png"
+      
+      
+    />
+
+    </picture>
+</figure>
+</p>
+<p>In a previous blog post I wrote about a simple <a href="/post/2015-08-09-simple_3-layer_neural_network_for_mnist_handwriting_recognition/">3-Layer neural network for MNIST handwriting recognition</a> that I built. Its architecture -- a 3-layer structure with exactly 1 hidden layer -- was fix. And it only supported normal fully connected layers.</p>
+<p>To achieve better results in image recognition tasks deeper networks are needed.
+And, ideally, they need to be capable of running convolutional layers.
+Hence, I set out to add these features, on my continous journey into the world of <em>machine learning</em>. :)</p>
+<h3 id="convolutional-networks">Convolutional Networks</h3>
+<p>Convolutional layers are a different beast than normal fully connected layers.
+Instead of each node in a layer connecting to <em>all</em> nodes in the previous layer, it connects to only <em>some</em> of them.
+The selection of which nodes it connects to is defined by a quadratic filter that moves over the previous layer.
+The geolocation of each node, i.e. the horizontal and vertical proximity to its neighbors, is thereby taken into account which is crucial for image recognition.</p>
+<p>The second major difference of convolutional layers is the fact that weights are shared between nodes.
+This siginificantly reduces the network's complexity, i.e. the number of weights or parameters that need to be trained, as well as its memory requirements.</p>
+<p><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_internal image_unprocessed"
+        src="dnn_convolutional_net.png"
+      
+      
+    />
+
+    </picture>
+</figure>
+</p>
+<p>This post assumes that you understand the basic functionality of a convolutional network.
+If you don't I strongly recommend reading Stanford's <a href="http://cs231n.github.io/convolutional-networks/">CS231n Convolutional Neural Networks for Visual Recognition
+</a> by Andrej Karpathy or, more hardcore, Yann Lecun's <a href="http://yann.lecun.com/exdb/lenet/">LeNet-5 Convolutional Neural Networks</a> first.</p>
+<p>So, now let's jump into the code and start with the network's overall design.</p>
+<h2 id="network-architecture">Network Architecture</h2>
+<p>More than anything else did the introduction of convolutional layers influence the design of the network. Previously, my network structure consisted of layers, nodes and weights. Now, I added 2 additional concepts: <code>Columns</code> and <code>Connections</code>.
+So in total, the neural network consists of 5 data structures.</p>
+<h3 id="the-network">The Network</h3>
+<p>The network structure serves as the overall <em>container</em> for the whole network.
+It defines the <em>learning rate</em> and information about number and location of all weights in the network.
+And, most importantly, it includes a variable-sized array of layer structures which contain the network nodes.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln">1</span><span class="cl"><span class="k">struct</span> <span class="n">Network</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">    <span class="n">ByteSize</span> <span class="n">size</span><span class="p">;</span>                  <span class="c1">// actual byte size of this structure in run-time
+</span></span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="c1"></span>    <span class="kt">double</span> <span class="n">learningRate</span><span class="p">;</span>            <span class="c1">// factor by which connection weight changes are applied
+</span></span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">weightCount</span><span class="p">;</span>                <span class="c1">// number of weights in the net&#39;s weight block
+</span></span></span><span class="line"><span class="ln">5</span><span class="cl"><span class="c1"></span>    <span class="n">Weight</span> <span class="o">*</span><span class="n">weightsPtr</span><span class="p">;</span>             <span class="c1">// pointer to the start of the network&#39;s weights block
+</span></span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="c1"></span>    <span class="n">Weight</span> <span class="n">nullWeight</span><span class="p">;</span>              <span class="c1">// memory slot for a weight pointed to by dead connections
+</span></span></span><span class="line"><span class="ln">7</span><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">layerCount</span><span class="p">;</span>                 <span class="c1">// number of layers in the network
+</span></span></span><span class="line"><span class="ln">8</span><span class="cl"><span class="c1"></span>    <span class="n">Layer</span> <span class="n">layers</span><span class="p">[];</span>                 <span class="c1">// array of layers (of different sizes)
+</span></span></span><span class="line"><span class="ln">9</span><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span></code></pre></div><h3 id="a-network-layer">A Network Layer</h3>
+<p>The <code>Layer</code> structure contains all the information related to a specific layer in the network, including a pointer to its weights and a variable-sized array of all columns inside this layer.</p>
+<p>It's worth mentioning here that in my design, the input layer is counted as one of the layers.
+Other definitions may vary. <a href="http://yann.lecun.com/exdb/mnist/">Yann LeCun's collection of MNIST results</a>, for example, defines a linear classifier as a 1-layer-NN, and networks with exactly 1 hidden layer as 2-layer-NNs. In my design these count as 2-layer-NN and 3-layer-NN respectively.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln">1</span><span class="cl"><span class="k">struct</span> <span class="n">Layer</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">    <span class="kt">int</span> <span class="n">id</span><span class="p">;</span>                         <span class="c1">// index of this layer in the network
+</span></span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="c1"></span>    <span class="n">ByteSize</span> <span class="n">size</span><span class="p">;</span>                  <span class="c1">// actual byte size of this structure in run-time
+</span></span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="c1"></span>    <span class="n">LayerDefinition</span> <span class="o">*</span><span class="n">layerDef</span><span class="p">;</span>      <span class="c1">// pointer to the definition of this layer
+</span></span></span><span class="line"><span class="ln">5</span><span class="cl"><span class="c1"></span>    <span class="n">Weight</span> <span class="o">*</span><span class="n">weightsPtr</span><span class="p">;</span>             <span class="c1">// pointer to the weights of this layer
+</span></span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">columnCount</span><span class="p">;</span>                <span class="c1">// number of columns in this layer
+</span></span></span><span class="line"><span class="ln">7</span><span class="cl"><span class="c1"></span>    <span class="n">Column</span> <span class="n">columns</span><span class="p">[];</span>               <span class="c1">// array of columns
+</span></span></span><span class="line"><span class="ln">8</span><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span></code></pre></div><p>The second point worth mentioning here is that I keep the definition of the layer model outside of the <code>Layer</code> structure in a separate <code>LayerDefinition</code> structure (more on that below) and add an equivalent pointer reference to the <code>Layer</code>.</p>
+<h3 id="a-network-column">A Network Column</h3>
+<p>What is a network column and why are they needed?
+In my previous design, a network layer directly contained the network nodes that were all aligned flat in a 1-dimensional vector.
+A MNIST image, for example, has 28 x 28 pixels and the respective network layer thus consists of 784 nodes that are all aligned in a single row.</p>
+<p>In image recognition, though, the exact location of a pixel inside the image matters. Convolutional networks therefore build connections to neighboring nodes that are located within a defined region, the so called <em>filter</em>.</p>
+<p>Example: A convolutional network node may want to create connections to a 3 x 3 area (the <em>filter</em>) of 9 neighboring nodes (pixels) located at the top left of the image. If all pixels of the image are numbered from 0..783 than this area can be easily defined as nodes [0,1,2,28,29,30,56,57,58].
+We essentially use a 1-dimensional vector to include some 2-dimensional information using simple algebra.</p>
+<p>So far, so good. The critical point that triggered a design change is that images are not 2-dimensional but 3-dimensional.
+What? Yes. Convolutional networks treat their input, be it an image in the input later or the output from a previous layer, as 3-dimensional.</p>
+<p>Where does the 3rd dimension come from? ... Color. In a simple RGB image, each pixel is composed of 3 values: a red value, a green value and a blue value.
+The MNIST images are actually not color but grey-scale.
+Thus, if it was only about MNIST we wouldn't need the 3rd dimension.<br>
+But the idea here is to build an architecture as flexible as possible that can handle all kinds of data sets.</p>
+<h4 id="columns-vs-feature-maps">Columns vs Feature Maps</h4>
+<p>Adding a 3rd dimension of nodes to the network, I faced 2 design options: feature maps or columns.
+Intuitively, I wanted to slice the image (or the input of a previous layer for that matter) <strong>horizontally</strong> which creates what the convolutional network theory sometimes refers to as <em>feature maps</em>.
+So in the example of an RGB image, instead of having a single 1-dimensional [0..783] vector of 784 nodes, you'd have an array of 3 <em>feature maps</em> and each would consist of 784 nodes.</p>
+<p>Alternatively, if you slice the image (or the input of a previous layer for that matter) <strong>vertically</strong> you end up with <code>Columns</code>.
+The network layer then consists of an array of 784 <code>Columns</code> each consisting of 3 nodes.</p>
+<p>Conceptually, both designs are equivally acceptable and feasible to implement.
+The fact that I ended up chosing the latter may have been related to my previous study of Hierarchical Temporal Memory (HTM) theory where columns are an intrinsic element.
+This design overall also more closely resembles the design of the brain.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln">1</span><span class="cl"><span class="k">struct</span> <span class="n">Column</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">    <span class="n">ByteSize</span> <span class="n">size</span><span class="p">;</span>              <span class="c1">// actual byte size of this structure in run-time
+</span></span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">maxConnCountPerNode</span><span class="p">;</span>    <span class="c1">// maximum number of connections per node in this layer
+</span></span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">nodeCount</span><span class="p">;</span>              <span class="c1">// number of nodes in this column
+</span></span></span><span class="line"><span class="ln">5</span><span class="cl"><span class="c1"></span>    <span class="n">Node</span> <span class="n">nodes</span><span class="p">[];</span>               <span class="c1">// array of nodes
+</span></span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span></code></pre></div><h3 id="a-network-node">A Network Node</h3>
+<p>A column contains a number of network nodes.
+In non-convolutional layers the number of nodes per column is, by definition, always 1.
+I call this the <em>depth</em> of the layer.
+Thus non-convolutional layers always have a <em>depth</em> of 1 which means the number of columns equals the number of nodes.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln">1</span><span class="cl"><span class="k">struct</span> <span class="n">Node</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">    <span class="n">ByteSize</span> <span class="n">size</span><span class="p">;</span>              <span class="c1">// actual byte size of this structure in run-time
+</span></span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="c1"></span>    <span class="n">Weight</span> <span class="n">bias</span><span class="p">;</span>                <span class="c1">// value of the bias weight of this node
+</span></span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="c1"></span>    <span class="kt">double</span> <span class="n">output</span><span class="p">;</span>              <span class="c1">// result of activation function applied to this node
+</span></span></span><span class="line"><span class="ln">5</span><span class="cl"><span class="c1"></span>    <span class="kt">double</span> <span class="n">errorSum</span><span class="p">;</span>            <span class="c1">// result of error back propagation applied to this node
+</span></span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">backwardConnCount</span><span class="p">;</span>      <span class="c1">// number of connections to the previous layer
+</span></span></span><span class="line"><span class="ln">7</span><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">forwardConnCount</span><span class="p">;</span>       <span class="c1">// number of connections to the following layer
+</span></span></span><span class="line"><span class="ln">8</span><span class="cl"><span class="c1"></span>    <span class="n">Connection</span> <span class="n">connections</span><span class="p">[];</span>   <span class="c1">// array of connections
+</span></span></span><span class="line"><span class="ln">9</span><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span></code></pre></div><h3 id="the-connections">The Connections</h3>
+<p>The 2nd new concept being added to the network model is the introduction of <code>Connections</code>.
+In my previous network <code>Weights</code> were attached directly to a <code>Node</code> because each node had exactly 1 weight.
+And the <em>target</em> <code>Node</code> to which a certain node is connectd to could be easily derived from the weight's id.
+For example, the 1st weight of each node in the hidden layer is applied to the 1st node in the input layer.
+Thus, these 2 nodes are connected.
+The 2nd weight of each node in the hidden layer is applied to the 2nd node in the input layer.
+And again, these 2 nodes become connected.</p>
+<p>That's simple.
+For convolutional networks, things get more complicated.
+First, weights are shared, i.e. the same weight will be used from (i.e. applied to) multiple nodes.
+Second, each node in the hidden layer is connected to different nodes in the previous layer.
+Therefore, we cannot simply assume weight 1 connects to node 1, weight 2 connects to node 2, etc.
+Instead, for each node in the hidden (convolutional) layer we need to keep track of what nodes in the previous layer (= <em>target</em> <code>Nodes</code>) it connects to.</p>
+<p>Looking at biology, I introduced a new object <code>Connections</code> (similar to synapses) to the model.
+A connection is a structure simply storing 2 pointers: a pointer to a target node and a pointer to a weight.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln">1</span><span class="cl"><span class="k">struct</span> <span class="n">Connection</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">    <span class="n">Node</span> <span class="o">*</span><span class="n">nodePtr</span><span class="p">;</span>              <span class="c1">// pointer to the target node
+</span></span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="c1"></span>    <span class="n">Weight</span> <span class="o">*</span><span class="n">weightPtr</span><span class="p">;</span>          <span class="c1">// pointer to a weight that is applied to this connection
+</span></span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span></code></pre></div><h3 id="the-weights-block">The Weights Block</h3>
+<p>The most important component of a neural network is still missing in all of the above: the weights.
+The <code>Connection</code> structure only contains a pointer to a weight.
+But where is the actual weight?</p>
+<p>The answer is I removed the weights from the nodes and instead put all together in a <em>weights block</em> located at the end of the <code>Network</code> structure, just after the last <code>Layer</code>.
+This design has several advantages: first, the weights are kept together with the rest of the network inside the same memory block.
+Second, the separation of weights from the nodes allows for convenient weight sharing.</p>
+<p>The following drawing shows how all of the above components fit together to create the <code>Network</code> structure.</p>
+<p><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_internal image_unprocessed"
+        src="dnn_network_struct_design.png"
+      
+      
+    />
+
+    </picture>
+</figure>
+</p>
+<h3 id="network-definition">Network Definition</h3>
+<p>To build a network one first has to define a model. How many layers shall the network have, how may nodes are inside each layer, etc.
+To do so I introduced a new structure called <code>LayerDefinition</code> that holds the key definition parameters of each layer and that will be attached to the respective layer structure via a pointer.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln">1</span><span class="cl"><span class="k">struct</span> <span class="n">LayerDefinition</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">    <span class="n">LayerType</span> <span class="n">layerType</span><span class="p">;</span>        <span class="c1">// what kind of layer is this (INP,CONV,FC,OUT)
+</span></span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="c1"></span>    <span class="n">ActFctType</span> <span class="n">activationType</span><span class="p">;</span>  <span class="c1">// what activation function is applied
+</span></span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="c1"></span>    <span class="n">Volume</span> <span class="n">nodeMap</span><span class="p">;</span>             <span class="c1">// what is the width/height/depth of this layer
+</span></span></span><span class="line"><span class="ln">5</span><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">filter</span><span class="p">;</span>                 <span class="c1">// size of the filter window (conv layers only)
+</span></span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span></code></pre></div><p>To create a network you first create a variable number of these <code>LayerDefinition</code>s and then pass them all together into the <code>setLayerDefinitions</code> function which returns an array pointer for easier reference throughout the rest of the code.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">    <span class="c1">// Define how many layers
+</span></span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">numberOfLayers</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="c1">// Define details of each layer
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="c1"></span>    <span class="n">LayerDefinition</span> <span class="n">inputLayer</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">        <span class="p">.</span><span class="n">layerType</span>       <span class="o">=</span> <span class="n">INPUT</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">        <span class="p">.</span><span class="n">nodeMap</span>         <span class="o">=</span> <span class="p">(</span><span class="n">Volume</span><span class="p">){.</span><span class="n">width</span><span class="o">=</span><span class="n">MNIST_IMG_WIDTH</span><span class="p">,</span> <span class="p">.</span><span class="n">height</span><span class="o">=</span><span class="n">MNIST_IMG_HEIGHT</span><span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    <span class="n">LayerDefinition</span> <span class="n">hiddenLayer1</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">        <span class="p">.</span><span class="n">layerType</span>       <span class="o">=</span> <span class="n">CONVOLUTIONAL</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">        <span class="p">.</span><span class="n">activationType</span>  <span class="o">=</span> <span class="n">RELU</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">        <span class="p">.</span><span class="n">nodeMap</span>         <span class="o">=</span> <span class="p">(</span><span class="n">Volume</span><span class="p">){.</span><span class="n">width</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="p">.</span><span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="p">.</span><span class="n">depth</span><span class="o">=</span><span class="mi">5</span><span class="p">},</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">        <span class="p">.</span><span class="n">filter</span>          <span class="o">=</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">    
+</span></span><span class="line"><span class="ln">18</span><span class="cl">    <span class="n">LayerDefinition</span> <span class="n">hiddenLayer2</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">        <span class="p">.</span><span class="n">layerType</span>       <span class="o">=</span> <span class="n">CONVOLUTIONAL</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">        <span class="p">.</span><span class="n">activationType</span>  <span class="o">=</span> <span class="n">RELU</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">        <span class="p">.</span><span class="n">nodeMap</span>         <span class="o">=</span> <span class="p">(</span><span class="n">Volume</span><span class="p">){.</span><span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="p">.</span><span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="p">.</span><span class="n">depth</span><span class="o">=</span><span class="mi">5</span><span class="p">},</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">        <span class="p">.</span><span class="n">filter</span>          <span class="o">=</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">    
+</span></span><span class="line"><span class="ln">25</span><span class="cl">    <span class="n">LayerDefinition</span> <span class="n">outputLayer</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">        <span class="p">.</span><span class="n">layerType</span>       <span class="o">=</span> <span class="n">OUTPUT</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">        <span class="p">.</span><span class="n">activationType</span>  <span class="o">=</span> <span class="n">RELU</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">        <span class="p">.</span><span class="n">nodeMap</span>         <span class="o">=</span> <span class="p">(</span><span class="n">Volume</span><span class="p">){.</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">}</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">    
+</span></span><span class="line"><span class="ln">31</span><span class="cl">    <span class="n">LayerDefinition</span> <span class="o">*</span><span class="n">layerDefs</span> <span class="o">=</span> <span class="n">setLayerDefinitions</span><span class="p">(</span><span class="n">numberOfLayers</span><span class="p">,</span> <span class="n">inputLayer</span><span class="p">,</span> <span class="n">hiddenLayer1</span><span class="p">,</span> <span class="n">hiddenLayer2</span><span class="p">,</span> <span class="n">outputLayer</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">    
+</span></span></code></pre></div><p>Above example defines the model for a 4-layer network, consisting of 2 hidden convolutional layers in addition to the input and the output layer.
+The 1st convolutional layer is defined as having 13 x 13 nodes over 5 feature maps, resulting in 845 nodes in total.
+The 2nd convolutional layer is defined as having 6 x 6 nodes over 5 feature maps, resulting in 180 nodes in total.</p>
+<p>I added some code to output the network's characteristics to the console for easier reference.</p>
+<p><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_internal image_unprocessed"
+        src="dnn_net_model_stats.png"
+      
+      
+    />
+
+    </picture>
+</figure>
+</p>
+<p>You can see that the network resulting from this model has a total of 2,150 weights and only uses 1.2 MB of memory.</p>
+<h3 id="layer-types">Layer Types</h3>
+<p>The code currently supports the following <em>types</em> of layers:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln">1</span><span class="cl">
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="k">typedef</span> <span class="k">enum</span> <span class="n">LayerType</span> <span class="p">{</span><span class="n">INPUT</span><span class="p">,</span> <span class="n">CONVOLUTIONAL</span><span class="p">,</span> <span class="n">FULLY_CONNECTED</span><span class="p">,</span> <span class="n">OUTPUT</span><span class="p">}</span> <span class="n">LayerType</span><span class="p">;</span>
+</span></span></code></pre></div><p>The idea here is that based on the type of layer certain rules are applied, for example, the connections between nodes are created differently.</p>
+<p>Moving forward I want to expand this further to include other layer types, for example Hierarchical Temporal Memory (HTM) layers for sequentiell learning.</p>
+<h3 id="activation-function">Activation Function</h3>
+<p>The code currently supports below 3 activation functions:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln">1</span><span class="cl">
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="k">typedef</span> <span class="k">enum</span> <span class="n">ActFctType</span> <span class="p">{</span><span class="n">SIGMOID</span><span class="p">,</span> <span class="n">TANH</span><span class="p">,</span> <span class="n">RELU</span><span class="p">}</span> <span class="n">ActFctType</span><span class="p">;</span>
+</span></span></code></pre></div><p>Each layer can define its own activation function which is applied during feed forward (<em>activation</em>) as well as during error <em>back propagation</em>.
+In theory, you can design a network using different activation functions for different layers.
+In practive, however, this does not improve the network performance.</p>
+<p>It's also important to note that other parameters, most significantly the  <em>learning rate</em>, depend on what activation function is used.
+Hence, both of these two hyper-parameters should always be considered in tandem.</p>
+<h2 id="create-the-network">Create the Network</h2>
+<p>Once the network and its layers have been defined via the above <em>setLayerDefinitions</em> function you can create the actual network object via the <code>createNetwork</code> function</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln">1</span><span class="cl">
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="n">Network</span> <span class="o">*</span><span class="n">nn</span> <span class="o">=</span> <span class="n">createNetwork</span><span class="p">(</span><span class="n">numberOfLayers</span><span class="p">,</span> <span class="n">layerDefs</span><span class="p">);</span>
+</span></span></code></pre></div><p>which automatically allocates the required memory for this network, initializes its internal structures (see below) and returns a pointer for reference.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="n">Network</span> <span class="o">*</span><span class="nf">createNetwork</span><span class="p">(</span><span class="kt">int</span> <span class="n">layerCount</span><span class="p">,</span> <span class="n">LayerDefinition</span> <span class="o">*</span><span class="n">layerDefs</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="c1">// Calculate network size
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="c1"></span>    <span class="n">ByteSize</span> <span class="n">netSize</span> <span class="o">=</span> <span class="n">getNetworkSize</span><span class="p">(</span><span class="n">layerCount</span><span class="p">,</span> <span class="n">layerDefs</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    <span class="c1">// Allocate memory block for the network
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="c1"></span>    <span class="n">Network</span> <span class="o">*</span><span class="n">nn</span> <span class="o">=</span> <span class="p">(</span><span class="n">Network</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">netSize</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    <span class="c1">// Set network&#39;s default values
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="c1"></span>    <span class="n">setNetworkDefaults</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">layerCount</span><span class="p">,</span> <span class="n">layerDefs</span><span class="p">,</span> <span class="n">netSize</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">
+</span></span><span class="line"><span class="ln">13</span><span class="cl">    <span class="c1">// Initialize the network&#39;s layers, nodes, connections and weights
+</span></span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="c1"></span>    <span class="n">initNetwork</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">layerCount</span><span class="p">,</span> <span class="n">layerDefs</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">    
+</span></span><span class="line"><span class="ln">16</span><span class="cl">    <span class="c1">// Init all weights -- located in the network&#39;s weights block after the last layer
+</span></span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="c1"></span>    <span class="n">initNetworkWeights</span><span class="p">(</span><span class="n">nn</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">    
+</span></span><span class="line"><span class="ln">19</span><span class="cl">    <span class="k">return</span> <span class="n">nn</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="calculate-the-networks-memory">Calculate the Network's Memory</h3>
+<p>To create the network we first need to calculate how much memory it needs.
+Obviously, this depends on many different parameters, such as the number of layers, the number of nodes per layer, the size of the filter in a convolutional layer, etc.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="n">ByteSize</span> <span class="nf">getNetworkSize</span><span class="p">(</span><span class="kt">int</span> <span class="n">layerCount</span><span class="p">,</span> <span class="n">LayerDefinition</span> <span class="o">*</span><span class="n">layerDefs</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="n">ByteSize</span> <span class="n">size</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Network</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">layerCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">        <span class="n">ByteSize</span> <span class="n">lsize</span> <span class="o">=</span><span class="n">getLayerSize</span><span class="p">(</span><span class="n">layerDefs</span><span class="o">+</span><span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">        <span class="n">size</span> <span class="o">+=</span> <span class="n">lsize</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    <span class="c1">// get size of weight memory block (located within network, after layers)
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="c1"></span>    <span class="n">ByteSize</span> <span class="n">weightBlockSize</span> <span class="o">=</span> <span class="n">getNetworkWeightBlockSize</span><span class="p">(</span><span class="n">layerCount</span><span class="p">,</span> <span class="n">layerDefs</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">    
+</span></span><span class="line"><span class="ln">14</span><span class="cl">    <span class="c1">// add weight block size to the network
+</span></span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="c1"></span>    <span class="n">size</span> <span class="o">+=</span> <span class="n">weightBlockSize</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">    
+</span></span><span class="line"><span class="ln">17</span><span class="cl">    <span class="k">return</span> <span class="n">size</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>To calculate the network size, we need to calculate each layer's size which in return requires to calculate each column's size which depends on each node's size which depends on the number of connections, ... and so on. You get the idea. Sounds complicated at first, but it's actually pretty straight forward.
+So, I'm going to skip a review of all the sub functions here. You can review them in the code (see link below).</p>
+<h2 id="initialize-the-network">Initialize the Network</h2>
+<p>In the above <code>createNetwork</code> function we saw that in addition to setting some default values for the network, we need to <em>initialize</em> the network and set random weights.</p>
+<p>Now, what do I mean by <em>initializing</em> the network?
+Don't forget, until now the network is simply a block of memory with some unknown content inside.
+We need to insert our desired structure into this memory block so that it mirrors our design as outlined above: a network that holds layers that hold columns that hold nodes that hold connections which point to other nodes and weights. Let's see how this is done.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kt">void</span> <span class="nf">initNetwork</span><span class="p">(</span><span class="n">Network</span> <span class="o">*</span><span class="n">nn</span><span class="p">,</span> <span class="kt">int</span> <span class="n">layerCount</span><span class="p">,</span> <span class="n">LayerDefinition</span> <span class="o">*</span><span class="n">layerDefs</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="c1">// Init the network&#39;s layers including their backward connections
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="c1"></span>    <span class="c1">// Backward connections point to target nodes in the PREVIOUS layer and are used during FEED FORWARD
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="c1"></span>    <span class="c1">// (i.e. during calculating node outputs = node activation)
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">l</span><span class="o">&lt;</span><span class="n">layerCount</span><span class="p">;</span> <span class="n">l</span><span class="o">++</span><span class="p">)</span> <span class="n">initNetworkLayer</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">layerDefs</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="c1">// Init the network&#39;s forward connections
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="c1"></span>    <span class="c1">// Forward connections point to target nodes in the FOLLOWING layer that point back to this node, and
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="c1"></span>    <span class="c1">// and are used during BACK PROPAGATION (to speed-up calculating the proportional error)
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">l</span><span class="o">&lt;</span><span class="n">layerCount</span><span class="p">;</span> <span class="n">l</span><span class="o">++</span><span class="p">)</span> <span class="n">initNetworkForwardConnections</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">l</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">    
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>First, we loop through all layers and initialize them one by one. After that, we loop again to set up each layer's forward connections.
+The reason why we need 2 loops here is that in order for the <code>initNetworkForwardConnections</code> function to work, each layer's following layer must have been initialized already.</p>
+<p>The background is simple: <code>initNetworkForwardConnections</code> checks which nodes in the following layer point back to a node in this layer and then creates forward connections mirroring these backward connections.
+Obviously, if the following layer hadn't been setup yet, there wouldn't be any forward connections in this layer. Hence, 2 loops.</p>
+<p>Now, let's see what actually happens inside the <code>initNetworkLayer</code> function:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kt">void</span> <span class="nf">initNetworkLayer</span><span class="p">(</span><span class="n">Network</span> <span class="o">*</span><span class="n">nn</span><span class="p">,</span> <span class="kt">int</span> <span class="n">layerId</span><span class="p">,</span> <span class="n">LayerDefinition</span> <span class="o">*</span><span class="n">layerDefs</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="n">LayerDefinition</span> <span class="o">*</span><span class="n">layerDef</span> <span class="o">=</span> <span class="n">layerDefs</span> <span class="o">+</span> <span class="n">layerId</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="c1">// Calculate the layer&#39;s position by moving a single byte pointer forward
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="c1"></span>    <span class="c1">// by the total sizes of all previous layers
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="c1"></span>    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">sbptr1</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span> <span class="n">nn</span><span class="o">-&gt;</span><span class="n">layers</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">l</span><span class="o">&lt;</span><span class="n">layerId</span><span class="p">;</span> <span class="n">l</span><span class="o">++</span><span class="p">)</span> <span class="n">sbptr1</span> <span class="o">+=</span> <span class="n">getLayerSize</span><span class="p">(</span><span class="n">layerDefs</span><span class="o">+</span><span class="n">l</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    <span class="n">Layer</span> <span class="o">*</span><span class="n">layer</span> <span class="o">=</span> <span class="p">(</span><span class="n">Layer</span><span class="o">*</span><span class="p">)</span> <span class="n">sbptr1</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    
+</span></span><span class="line"><span class="ln">12</span><span class="cl">    <span class="c1">// Calculate the position of this layer&#39;s weights block
+</span></span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="c1"></span>    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">sbptr2</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span> <span class="n">nn</span><span class="o">-&gt;</span><span class="n">weightsPtr</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">l</span><span class="o">&lt;</span><span class="n">layerId</span><span class="p">;</span> <span class="n">l</span><span class="o">++</span><span class="p">)</span> <span class="n">sbptr2</span> <span class="o">+=</span> <span class="n">getLayerWeightBlockSize</span><span class="p">(</span><span class="n">layerDefs</span><span class="o">+</span><span class="n">l</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">    <span class="n">Weight</span> <span class="o">*</span><span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">Weight</span><span class="o">*</span><span class="p">)</span> <span class="n">sbptr2</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">    
+</span></span><span class="line"><span class="ln">17</span><span class="cl">    <span class="c1">// Set default values for this layer
+</span></span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="c1"></span>    <span class="n">layer</span><span class="o">-&gt;</span><span class="n">id</span>              <span class="o">=</span> <span class="n">layerId</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">    <span class="n">layer</span><span class="o">-&gt;</span><span class="n">layerDef</span>        <span class="o">=</span> <span class="n">layerDef</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">    <span class="n">layer</span><span class="o">-&gt;</span><span class="n">weightsPtr</span>      <span class="o">=</span> <span class="n">w</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">    <span class="n">layer</span><span class="o">-&gt;</span><span class="n">size</span>            <span class="o">=</span> <span class="n">getLayerSize</span><span class="p">(</span><span class="n">layerDef</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">    <span class="n">layer</span><span class="o">-&gt;</span><span class="n">columnCount</span>     <span class="o">=</span> <span class="n">getColumnCount</span><span class="p">(</span><span class="n">layerDef</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">    
+</span></span><span class="line"><span class="ln">24</span><span class="cl">    <span class="c1">// Initialize all columns inside this layer
+</span></span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="c1"></span>    <span class="n">initNetworkColumns</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">layerId</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">    
+</span></span><span class="line"><span class="ln">27</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>In order to <em>initialize</em> a layer, we first need to know where each layer starts.
+Remember, since each layer has a different size, I cannot use a simple array reference such as <code>network.layer[1]</code> to locate a layer.
+Instead, I point a <em>single byte pointer</em> to the start of the network's layers <em>nn-&gt;layers</em> and move it forward by exactly the size of each layer.</p>
+<p>Then, I define for each layer some basics such as its <code>id</code>, its <code>weightPtr</code>, etc., and add a reference to its original <code>LayerDefinition</code>.
+This will become handy because througout the code we will need to access a layer's definition quite often.</p>
+<p>Now, we've setup the <em>head</em> of the layer.
+What's missing is the structure underneath, i.e. the columns inside this layer.
+So that's what's next.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kt">void</span> <span class="nf">initNetworkColumns</span><span class="p">(</span><span class="n">Network</span> <span class="o">*</span><span class="n">nn</span><span class="p">,</span> <span class="kt">int</span> <span class="n">layerId</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="n">Layer</span> <span class="o">*</span><span class="n">layer</span> <span class="o">=</span> <span class="n">getNetworkLayer</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">layerId</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="kt">int</span> <span class="n">backwardConnCount</span> <span class="o">=</span> <span class="n">getNodeBackwardConnectionCount</span><span class="p">(</span><span class="n">layer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    <span class="kt">int</span> <span class="n">forwardConnCount</span>  <span class="o">=</span> <span class="n">getNodeForwardConnectionCount</span><span class="p">(</span><span class="n">layer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="n">ByteSize</span> <span class="n">columnSize</span> <span class="o">=</span> <span class="n">getColumnSize</span><span class="p">(</span><span class="n">layer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    <span class="c1">// Init all columns attached to this layer
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">c</span><span class="o">&lt;</span><span class="n">layer</span><span class="o">-&gt;</span><span class="n">columnCount</span><span class="p">;</span> <span class="n">c</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">        
+</span></span><span class="line"><span class="ln">14</span><span class="cl">        <span class="c1">// Set pointer to the respective column position (using a single byte pointer)
+</span></span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="c1"></span>        <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">sbptr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span> <span class="n">layer</span><span class="o">-&gt;</span><span class="n">columns</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">        <span class="n">sbptr</span> <span class="o">+=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">columnSize</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">        
+</span></span><span class="line"><span class="ln">18</span><span class="cl">        <span class="n">Column</span> <span class="o">*</span><span class="n">column</span> <span class="o">=</span> <span class="p">(</span><span class="n">Column</span><span class="o">*</span><span class="p">)</span> <span class="n">sbptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">        
+</span></span><span class="line"><span class="ln">20</span><span class="cl">        <span class="c1">// Set default values of a node
+</span></span></span><span class="line"><span class="ln">21</span><span class="cl"><span class="c1"></span>        <span class="n">column</span><span class="o">-&gt;</span><span class="n">size</span>     <span class="o">=</span> <span class="n">columnSize</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">        <span class="n">column</span><span class="o">-&gt;</span><span class="n">nodeCount</span><span class="o">=</span> <span class="n">layer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="o">-&gt;</span><span class="n">nodeMap</span><span class="p">.</span><span class="n">depth</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">        <span class="n">column</span><span class="o">-&gt;</span><span class="n">maxConnCountPerNode</span> <span class="o">=</span> <span class="n">backwardConnCount</span><span class="o">+</span><span class="n">forwardConnCount</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">        
+</span></span><span class="line"><span class="ln">25</span><span class="cl">        <span class="c1">// Initialize all nodes of a column
+</span></span></span><span class="line"><span class="ln">26</span><span class="cl"><span class="c1"></span>        <span class="n">initNetworkNodes</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">layerId</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">        
+</span></span><span class="line"><span class="ln">28</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">    
+</span></span><span class="line"><span class="ln">30</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Again, the same logic as above applies.
+Since the size of a column structure is variable I use a single byte pointer to determine the starting point of each column inside this layer.
+Once I've done that, I continue to intitialize all of the <em>nodes</em> inside this column.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kt">void</span> <span class="nf">initNetworkNodes</span><span class="p">(</span><span class="n">Network</span> <span class="o">*</span><span class="n">nn</span><span class="p">,</span> <span class="kt">int</span> <span class="n">layerId</span><span class="p">,</span> <span class="kt">int</span> <span class="n">columnId</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="n">Layer</span> <span class="o">*</span><span class="n">thisLayer</span>    <span class="o">=</span> <span class="n">getNetworkLayer</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">layerId</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="n">Layer</span> <span class="o">*</span><span class="n">prevLayer</span>    <span class="o">=</span> <span class="n">getNetworkLayer</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">layerId</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="n">Column</span> <span class="o">*</span><span class="n">column</span>      <span class="o">=</span> <span class="n">getLayerColumn</span><span class="p">(</span><span class="n">thisLayer</span><span class="p">,</span> <span class="n">columnId</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    <span class="n">ByteSize</span> <span class="n">nodeSize</span>   <span class="o">=</span> <span class="n">getNodeSize</span><span class="p">(</span><span class="n">thisLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">sbptr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span> <span class="n">column</span><span class="o">-&gt;</span><span class="n">nodes</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    <span class="c1">// Create a vector containing the ids of the target columns (conv layers only)
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="c1"></span>    <span class="n">Vector</span> <span class="o">*</span><span class="n">filterColIds</span> <span class="o">=</span> <span class="n">createFilterColumnIds</span><span class="p">(</span><span class="n">thisLayer</span><span class="p">,</span> <span class="n">columnId</span><span class="p">,</span> <span class="n">prevLayer</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">    
+</span></span><span class="line"><span class="ln">14</span><span class="cl">    <span class="c1">// Init all nodes attached to this column
+</span></span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">n</span><span class="o">&lt;</span><span class="n">column</span><span class="o">-&gt;</span><span class="n">nodeCount</span><span class="p">;</span> <span class="n">n</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">    
+</span></span><span class="line"><span class="ln">17</span><span class="cl">        <span class="c1">// Set pointer to the respective node position (using a single byte pointer)
+</span></span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="c1"></span>        <span class="n">Node</span> <span class="o">*</span><span class="n">node</span> <span class="o">=</span> <span class="p">(</span><span class="n">Node</span><span class="o">*</span><span class="p">)</span> <span class="n">sbptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">        <span class="n">sbptr</span> <span class="o">+=</span> <span class="n">nodeSize</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">
+</span></span><span class="line"><span class="ln">21</span><span class="cl">        <span class="c1">// Reset node&#39;s defaults
+</span></span></span><span class="line"><span class="ln">22</span><span class="cl"><span class="c1"></span>        <span class="n">setNetworkNodeDefaults</span><span class="p">(</span><span class="n">thisLayer</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nn</span><span class="o">-&gt;</span><span class="n">nullWeight</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">        
+</span></span><span class="line"><span class="ln">24</span><span class="cl">        <span class="c1">// Initialize backward connections of fully-connected layer node
+</span></span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">thisLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="o">-&gt;</span><span class="n">layerType</span><span class="o">==</span><span class="n">FULLY_CONNECTED</span> <span class="o">||</span> <span class="n">thisLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="o">-&gt;</span><span class="n">layerType</span><span class="o">==</span><span class="n">OUTPUT</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">            
+</span></span><span class="line"><span class="ln">27</span><span class="cl">            <span class="kt">int</span> <span class="n">nodeId</span> <span class="o">=</span> <span class="p">(</span><span class="n">columnId</span> <span class="o">*</span> <span class="n">column</span><span class="o">-&gt;</span><span class="n">nodeCount</span><span class="p">)</span> <span class="o">+</span> <span class="n">n</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">
+</span></span><span class="line"><span class="ln">29</span><span class="cl">            <span class="c1">// @attention When calculating the weightsId, only consider backwardConnections
+</span></span></span><span class="line"><span class="ln">30</span><span class="cl"><span class="c1"></span>            <span class="kt">int</span> <span class="n">layerWeightsId</span> <span class="o">=</span> <span class="n">nodeId</span> <span class="o">*</span> <span class="n">getNodeBackwardConnectionCount</span><span class="p">(</span><span class="n">thisLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">            <span class="n">Weight</span> <span class="o">*</span><span class="n">nodeWeight</span> <span class="o">=</span> <span class="n">thisLayer</span><span class="o">-&gt;</span><span class="n">weightsPtr</span> <span class="o">+</span> <span class="n">layerWeightsId</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">            
+</span></span><span class="line"><span class="ln">33</span><span class="cl">            <span class="n">initNetworkBackwardConnectionsFCNode</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">prevLayer</span><span class="p">,</span> <span class="n">nodeWeight</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">34</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl">        
+</span></span><span class="line"><span class="ln">36</span><span class="cl">        <span class="c1">// Initialize backward conections of convolutional layer node
+</span></span></span><span class="line"><span class="ln">37</span><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">thisLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="o">-&gt;</span><span class="n">layerType</span><span class="o">==</span><span class="n">CONVOLUTIONAL</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">38</span><span class="cl">            <span class="c1">// @attention Nodes on the same level share the same weight block
+</span></span></span><span class="line"><span class="ln">39</span><span class="cl"><span class="c1"></span>            <span class="n">initNetworkBackwardConnectionsConvNode</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">thisLayer</span><span class="o">-&gt;</span><span class="n">weightsPtr</span><span class="p">,</span> <span class="n">prevLayer</span><span class="p">,</span> <span class="n">filterColIds</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nn</span><span class="o">-&gt;</span><span class="n">nullWeight</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">40</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">41</span><span class="cl">    
+</span></span><span class="line"><span class="ln">42</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">43</span><span class="cl">
+</span></span><span class="line"><span class="ln">44</span><span class="cl">    <span class="n">free</span><span class="p">(</span><span class="n">filterColIds</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">45</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="create-backward-connections">Create Backward Connections</h3>
+<p>This function is central to the network's initialization process.
+In addition to setting some default values for all nodes, it's preparing the creation of backward connections of each node to the previous layer.
+The way in which these backward connections are constructed is obviously different for <em>fully connected</em> and for <em>convolutional</em> layers.
+Hence there are 2 different sub functions, <code>initNetworkBackwardConnectionsFCNode</code> for fully connected nodes and <code>initNetworkBackwardConnectionsConvNode</code> for convolutional nodes.</p>
+<h4 id="backward-connections-for-fully-connected-layers">Backward Connections for Fully Connected Layers</h4>
+<p>Let's look at the easier of the 2 first, the <em>fully connected</em> node:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kt">void</span> <span class="nf">initNetworkBackwardConnectionsFCNode</span><span class="p">(</span><span class="n">Node</span> <span class="o">*</span><span class="n">thisNode</span><span class="p">,</span> <span class="n">Layer</span> <span class="o">*</span><span class="n">prevLayer</span><span class="p">,</span> <span class="n">Weight</span> <span class="o">*</span><span class="n">nodeWeightPtr</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="kt">int</span> <span class="n">connId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="kt">int</span> <span class="n">nodeWeightId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    <span class="n">ByteSize</span> <span class="n">columnSize</span> <span class="o">=</span> <span class="n">getColumnSize</span><span class="p">(</span><span class="n">prevLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">sbptr_column</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span> <span class="n">prevLayer</span><span class="o">-&gt;</span><span class="n">columns</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">col</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">col</span><span class="o">&lt;</span><span class="n">prevLayer</span><span class="o">-&gt;</span><span class="n">columnCount</span><span class="p">;</span><span class="n">col</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">        
+</span></span><span class="line"><span class="ln">13</span><span class="cl">        <span class="n">Column</span> <span class="o">*</span><span class="n">column</span> <span class="o">=</span> <span class="p">(</span><span class="n">Column</span> <span class="o">*</span><span class="p">)</span><span class="n">sbptr_column</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">        
+</span></span><span class="line"><span class="ln">15</span><span class="cl">        <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">sbptr_node</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span> <span class="n">column</span><span class="o">-&gt;</span><span class="n">nodes</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">
+</span></span><span class="line"><span class="ln">17</span><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">n</span><span class="o">&lt;</span><span class="n">column</span><span class="o">-&gt;</span><span class="n">nodeCount</span><span class="p">;</span> <span class="n">n</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">
+</span></span><span class="line"><span class="ln">19</span><span class="cl">            <span class="n">Connection</span> <span class="o">*</span><span class="n">conn</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">thisNode</span><span class="o">-&gt;</span><span class="n">connections</span><span class="p">[</span><span class="n">connId</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">            
+</span></span><span class="line"><span class="ln">21</span><span class="cl">            <span class="n">conn</span><span class="o">-&gt;</span><span class="n">weightPtr</span> <span class="o">=</span> <span class="n">nodeWeightPtr</span> <span class="o">+</span> <span class="n">nodeWeightId</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">            
+</span></span><span class="line"><span class="ln">23</span><span class="cl">            <span class="n">conn</span><span class="o">-&gt;</span><span class="n">nodePtr</span> <span class="o">=</span> <span class="p">(</span><span class="n">Node</span> <span class="o">*</span><span class="p">)</span><span class="n">sbptr_node</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">            
+</span></span><span class="line"><span class="ln">25</span><span class="cl">            <span class="n">sbptr_node</span> <span class="o">+=</span> <span class="n">getNodeSize</span><span class="p">(</span><span class="n">prevLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">
+</span></span><span class="line"><span class="ln">27</span><span class="cl">            <span class="n">connId</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">            <span class="n">nodeWeightId</span><span class="o">++</span><span class="p">;</span>   
+</span></span><span class="line"><span class="ln">29</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">        <span class="n">sbptr_column</span> <span class="o">+=</span> <span class="n">columnSize</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>The function loops through the previous layer's nodes and creates a connection from the current node to <strong>each</strong> node in the previous layer (hence <strong>fully</strong> connected).
+Remember, since nodes are structured in columns we need to loop through the columns first and then through the nodes inside each column.</p>
+<p>So far so good. That was the easier of the two. Now, let's look at how the wiring (building connections) works for <em>convolutional</em> nodes.</p>
+<h4 id="backward-connections-for-convolutional-layers">Backward Connections for Convolutional Layers</h4>
+<p>As outlined above, a convolutional node is connected to a selected group of neighboring nodes, located within a quadratic region of <code>filter</code> size.
+This quadratic region (the filter) needs to be calculated.
+It depends on a number of parameters and changes as the filter is moved across the target layer.</p>
+<p>Example: Let's say our network consists of 3 layers, the input layer containing the MNIST image, a convolutional layer and the output layer.
+We know that the MNIST image has 28*28 pixels, hence the input layer has 784 columns. Each column only has 1 node (the <code>depth</code> of the input layer is 1) therefore there are also exactly 728 nodes. And let's assume our convolutional layer has dimensions of [24 * 24 * 10], i.e. there are 24 * 24 = 576 columns and each column has 10 nodes. And let's assume we defined a <code>filter</code> of 5 for this layer.</p>
+<p>Now we start wiring up the 1st node in the convolutional layer. We need to create connections to a region of 5 x 5 (<code>filter</code> * <code>filter</code> size) columns located at the top left of the target (in this case = input) layer. The respective ids of these columns would be:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">[   0,   1,   2,   3,   4,
+</span></span><span class="line"><span class="ln">2</span><span class="cl">   28,  29,  30,  31,  32,
+</span></span><span class="line"><span class="ln">3</span><span class="cl">   56,  57,  58,  59,  60,
+</span></span><span class="line"><span class="ln">4</span><span class="cl">   84,  85,  86,  87,  88,
+</span></span><span class="line"><span class="ln">5</span><span class="cl">  112, 113, 114, 115, 116]
+</span></span></code></pre></div><p>Then we move on to the 2nd node in the convolutional layer. Again, we create connections to a 5 x 5 region, but the region now moved to right along with the convolutional (<em>source</em>) node itself. Hence, the target column ids of the 2nd node in the convolutional layer would be:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">[   1,   2,   3,   4,   5,
+</span></span><span class="line"><span class="ln">2</span><span class="cl">   29,  30,  31,  32,  33,
+</span></span><span class="line"><span class="ln">3</span><span class="cl">   57,  58,  59,  60,  61,
+</span></span><span class="line"><span class="ln">4</span><span class="cl">   85,  86,  87,  88,  89,
+</span></span><span class="line"><span class="ln">5</span><span class="cl">  113, 114, 115, 116, 117]
+</span></span></code></pre></div><p>Above calculation is done by the <code>calcFilterColumnIds</code> function below.
+I trust you'll be able to walk through it, using the logic introduce in the example above.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kt">void</span> <span class="nf">calcFilterColumnIds</span><span class="p">(</span><span class="n">Layer</span> <span class="o">*</span><span class="n">srcLayer</span><span class="p">,</span> <span class="kt">int</span> <span class="n">srcColId</span><span class="p">,</span> <span class="n">Layer</span> <span class="o">*</span><span class="n">tgtLayer</span><span class="p">,</span> <span class="n">Vector</span> <span class="o">*</span><span class="n">filterColIds</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="kt">int</span> <span class="n">srcWidth</span>  <span class="o">=</span> <span class="n">srcLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="o">-&gt;</span><span class="n">nodeMap</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="kt">int</span> <span class="n">tgtWidth</span>  <span class="o">=</span> <span class="n">tgtLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="o">-&gt;</span><span class="n">nodeMap</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="kt">int</span> <span class="n">tgtHeight</span> <span class="o">=</span> <span class="n">tgtLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="o">-&gt;</span><span class="n">nodeMap</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    <span class="kt">int</span> <span class="n">filter</span> <span class="o">=</span> <span class="n">srcLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="o">-&gt;</span><span class="n">filter</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="kt">int</span> <span class="n">stride</span> <span class="o">=</span> <span class="n">calcStride</span><span class="p">(</span><span class="n">tgtWidth</span><span class="p">,</span> <span class="n">filter</span><span class="p">,</span> <span class="n">srcWidth</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    <span class="kt">int</span> <span class="n">startX</span> <span class="o">=</span> <span class="p">(</span><span class="n">srcColId</span> <span class="o">%</span> <span class="n">srcWidth</span><span class="p">)</span> <span class="o">*</span> <span class="n">stride</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">    <span class="kt">int</span> <span class="n">startY</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="kt">double</span><span class="p">)</span><span class="n">srcColId</span><span class="o">/</span><span class="n">srcWidth</span><span class="p">)</span> <span class="o">*</span> <span class="n">stride</span><span class="p">;</span>    
+</span></span><span class="line"><span class="ln">13</span><span class="cl">    <span class="kt">int</span> <span class="n">id</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">
+</span></span><span class="line"><span class="ln">15</span><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">y</span><span class="o">&lt;</span><span class="n">filter</span><span class="p">;</span> <span class="n">y</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">        
+</span></span><span class="line"><span class="ln">17</span><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">x</span><span class="o">&lt;</span><span class="n">filter</span><span class="p">;</span> <span class="n">x</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">            
+</span></span><span class="line"><span class="ln">19</span><span class="cl">            <span class="kt">int</span> <span class="n">colId</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">startY</span><span class="o">+</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">tgtWidth</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">startX</span><span class="o">+</span><span class="n">x</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">            
+</span></span><span class="line"><span class="ln">21</span><span class="cl">            <span class="c1">// Check whether target columnId is still within the target node range
+</span></span></span><span class="line"><span class="ln">22</span><span class="cl"><span class="c1"></span>            <span class="c1">// If NOT then assign a dummy ID (&#34;OUT_OF_RANGE&#34;) that is later checked for
+</span></span></span><span class="line"><span class="ln">23</span><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">                <span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">colId</span> <span class="o">/</span> <span class="n">tgtWidth</span><span class="p">)</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">startY</span><span class="o">+</span><span class="n">y</span><span class="p">))</span> <span class="o">||</span>  <span class="c1">// filter exceeds nodeMap on the right
+</span></span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="c1"></span>                <span class="p">(</span><span class="n">colId</span> <span class="o">&gt;=</span> <span class="n">tgtWidth</span> <span class="o">*</span> <span class="n">tgtHeight</span><span class="p">)</span>            <span class="c1">// filter exceeds nodeMap on the bottom
+</span></span></span><span class="line"><span class="ln">26</span><span class="cl"><span class="c1"></span>                <span class="p">)</span> <span class="n">colId</span> <span class="o">=</span> <span class="n">OUT_OF_RANGE</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">                
+</span></span><span class="line"><span class="ln">28</span><span class="cl">            <span class="n">filterColIds</span><span class="o">-&gt;</span><span class="n">vals</span><span class="p">[</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">colId</span><span class="p">;</span>            
+</span></span><span class="line"><span class="ln">29</span><span class="cl">            <span class="n">id</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Once we calculated this vector of <code>targetColumnIds</code> we pass it into our <code>initNetworkBackwardConnectionsConvNode</code> function which then creates connections from the source node to the target nodes specified in the vector.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kt">void</span> <span class="nf">initNetworkBackwardConnectionsConvNode</span><span class="p">(</span><span class="n">Node</span> <span class="o">*</span><span class="n">node</span><span class="p">,</span> <span class="kt">int</span> <span class="n">srcLevel</span><span class="p">,</span> <span class="n">Weight</span> <span class="o">*</span><span class="n">srcLayerWeightPtr</span><span class="p">,</span> <span class="n">Layer</span> <span class="o">*</span><span class="n">targetLayer</span><span class="p">,</span> <span class="n">Vector</span> <span class="o">*</span><span class="n">filterColIds</span><span class="p">,</span> <span class="n">Weight</span> <span class="o">*</span><span class="n">nullWeight</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    <span class="kt">int</span> <span class="n">filterSize</span> <span class="o">=</span> <span class="n">filterColIds</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="kt">int</span> <span class="n">tgtDepth</span>   <span class="o">=</span> <span class="n">targetLayer</span><span class="o">-&gt;</span><span class="n">layerDef</span><span class="o">-&gt;</span><span class="n">nodeMap</span><span class="p">.</span><span class="n">depth</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">posInsideFilter</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">posInsideFilter</span><span class="o">&lt;</span><span class="n">filterSize</span><span class="p">;</span> <span class="n">posInsideFilter</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">        
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">        <span class="kt">int</span> <span class="n">targetColId</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">filterColIds</span><span class="o">-&gt;</span><span class="n">vals</span><span class="p">[</span><span class="n">posInsideFilter</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">        
+</span></span><span class="line"><span class="ln">10</span><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">tgtLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">tgtLevel</span><span class="o">&lt;</span><span class="n">tgtDepth</span><span class="p">;</span> <span class="n">tgtLevel</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">            
+</span></span><span class="line"><span class="ln">12</span><span class="cl">            <span class="n">Connection</span> <span class="o">*</span><span class="n">conn</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">connections</span><span class="p">[</span> <span class="p">(</span><span class="n">tgtLevel</span><span class="o">*</span><span class="n">filterSize</span><span class="p">)</span><span class="o">+</span><span class="n">posInsideFilter</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">            
+</span></span><span class="line"><span class="ln">14</span><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">targetColId</span><span class="o">!=</span><span class="n">OUT_OF_RANGE</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">                
+</span></span><span class="line"><span class="ln">16</span><span class="cl">                <span class="kt">int</span> <span class="n">weightPosition</span> <span class="o">=</span> <span class="p">(</span><span class="n">srcLevel</span><span class="o">*</span><span class="p">(</span><span class="n">tgtDepth</span><span class="o">*</span><span class="n">filterSize</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">tgtLevel</span><span class="o">*</span><span class="n">filterSize</span><span class="p">)</span> <span class="o">+</span> <span class="n">posInsideFilter</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">                
+</span></span><span class="line"><span class="ln">18</span><span class="cl">                <span class="n">Weight</span> <span class="o">*</span><span class="n">tgtWeight</span> <span class="o">=</span> <span class="n">srcLayerWeightPtr</span> <span class="o">+</span> <span class="n">weightPosition</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">                
+</span></span><span class="line"><span class="ln">20</span><span class="cl">                <span class="n">Node</span> <span class="o">*</span><span class="n">tgtNode</span> <span class="o">=</span> <span class="n">getNetworkNode</span><span class="p">(</span><span class="n">targetLayer</span><span class="p">,</span> <span class="n">targetColId</span><span class="p">,</span> <span class="n">tgtLevel</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">                
+</span></span><span class="line"><span class="ln">22</span><span class="cl">                <span class="n">conn</span><span class="o">-&gt;</span><span class="n">nodePtr</span>   <span class="o">=</span> <span class="n">tgtNode</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">                <span class="n">conn</span><span class="o">-&gt;</span><span class="n">weightPtr</span> <span class="o">=</span> <span class="n">tgtWeight</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">            <span class="p">}</span>    
+</span></span><span class="line"><span class="ln">25</span><span class="cl">            <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">            <span class="c1">// if filter pixel is out of range of the target nodes then point to NODES if THIS layer
+</span></span></span><span class="line"><span class="ln">27</span><span class="cl"><span class="c1"></span>            <span class="c1">// this kind of pointer needs to be captured later i.e. should NOT be CALCULATED/ACTIVATED
+</span></span></span><span class="line"><span class="ln">28</span><span class="cl"><span class="c1"></span>            <span class="n">conn</span><span class="o">-&gt;</span><span class="n">nodePtr</span>   <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">            <span class="n">conn</span><span class="o">-&gt;</span><span class="n">weightPtr</span> <span class="o">=</span> <span class="n">nullWeight</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">33</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Depending on how many nodes we defined in our convolutional layer, some of the nodes in the target (=previous) layer are purposely skipped.
+This is called the <code>stride</code>. A <code>stride</code> of 2 means that every other node in the target layer is skipped.
+The idea is to <em>downsize</em> the original image layer by layer, and have each following layer represent some higher level feature of the previous layer.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln">1</span><span class="cl"><span class="kt">int</span> <span class="nf">calcStride</span><span class="p">(</span><span class="kt">int</span> <span class="n">tgtWidth</span><span class="p">,</span> <span class="kt">int</span> <span class="n">filter</span><span class="p">,</span> <span class="kt">int</span> <span class="n">srcWidth</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">  <span class="k">return</span> <span class="n">ceil</span><span class="p">(((</span><span class="kt">double</span><span class="p">)</span><span class="n">tgtWidth</span> <span class="o">-</span> <span class="n">filter</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">srcWidth</span><span class="o">-</span><span class="mi">1</span><span class="p">));</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="create-forward-connections">Create Forward Connections</h3>
+<p>What are forward connections and why do we need them? Let's revisit some of the above. A connection links 2 nodes and applies a weight during the <em>feed forward</em> process.
+Then, during the <em>back propagation</em> process, the same connection is traversed in opposite direction to pass the partial error of a node back to the connected node in the previous layer.
+It's the latter that triggered the need for <em>forward</em> connections.</p>
+<p>How? C pointers are one-directional. Variable A points to variable B but variable B does not know who points to it.
+Therefore, I cannot simply traverse a connection between nodes in opposite direction.
+So instead, I create additional connections from the target back to the source.</p>
+<p>Both types of connections, backward and forward, serve different purposes:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">Backward connections are used during feed forward. 
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">Forward connections are used during back propagation.
+</span></span></code></pre></div><p>Yes, that's no typo. The above may sound counter-intuitive at first, but makes sense when you think about it.</p>
+<p>During <em>feed forward</em> you need to calculate the output of a node. To do so, you need to loop through all of its <strong>incoming</strong> (=backward) nodes to calculate the vector product and apply an activation function to the output.</p>
+<p>During <em>back propagation</em> you need to calculate the error of a node. To do so, you need to loop through all its <strong>outgoing</strong> (=forward) nodes to obtain the partial error from this node and apply a derivative function.</p>
+<p>So, here's the function for initializing the network's forward connection:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kt">void</span> <span class="nf">initNetworkForwardConnections</span><span class="p">(</span><span class="n">Network</span> <span class="o">*</span><span class="n">nn</span><span class="p">,</span> <span class="kt">int</span> <span class="n">layerId</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    <span class="c1">// Skip the first=INPUT and the last=OUTPUT layer because they don&#39;t have forward connections
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">layerId</span><span class="o">==</span><span class="mi">0</span> <span class="o">||</span> <span class="n">layerId</span><span class="o">==</span><span class="n">nn</span><span class="o">-&gt;</span><span class="n">layerCount</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="n">Layer</span> <span class="o">*</span><span class="n">thisLayer</span> <span class="o">=</span> <span class="n">getNetworkLayer</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">layerId</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    <span class="n">Layer</span> <span class="o">*</span><span class="n">nextLayer</span> <span class="o">=</span> <span class="n">getNetworkLayer</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">layerId</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">c</span><span class="o">&lt;</span><span class="n">thisLayer</span><span class="o">-&gt;</span><span class="n">columnCount</span><span class="p">;</span> <span class="n">c</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">        
+</span></span><span class="line"><span class="ln">11</span><span class="cl">        <span class="n">Column</span> <span class="o">*</span><span class="n">column</span> <span class="o">=</span> <span class="n">getLayerColumn</span><span class="p">(</span><span class="n">thisLayer</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">        
+</span></span><span class="line"><span class="ln">13</span><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">n</span><span class="o">&lt;</span><span class="n">column</span><span class="o">-&gt;</span><span class="n">nodeCount</span><span class="p">;</span> <span class="n">n</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">            <span class="n">Node</span> <span class="o">*</span><span class="n">node</span> <span class="o">=</span> <span class="n">getColumnNode</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">            <span class="n">initNetworkForwardConnectionsAnyNode</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">nextLayer</span><span class="p">);</span>   
+</span></span><span class="line"><span class="ln">16</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>It simply loops through all layers and their respective columns and calls the <code>initNetworkForwardConnectionsAnyNode</code> function which does the actual wiring:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kt">void</span> <span class="nf">initNetworkForwardConnectionsAnyNode</span><span class="p">(</span><span class="n">Node</span> <span class="o">*</span><span class="n">thisNode</span><span class="p">,</span> <span class="n">Layer</span> <span class="o">*</span><span class="n">nextLayer</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    <span class="kt">int</span> <span class="n">maxForwardConnCount</span> <span class="o">=</span> <span class="n">thisNode</span><span class="o">-&gt;</span><span class="n">forwardConnCount</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="kt">int</span> <span class="n">forwardConnStart</span> <span class="o">=</span> <span class="n">thisNode</span><span class="o">-&gt;</span><span class="n">backwardConnCount</span><span class="p">;</span>    
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="kt">int</span> <span class="n">forwardConnCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">o</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">o</span><span class="o">&lt;</span><span class="n">nextLayer</span><span class="o">-&gt;</span><span class="n">columnCount</span><span class="p">;</span><span class="n">o</span><span class="o">++</span><span class="p">){</span>        
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">n</span><span class="o">&lt;</span><span class="n">nextLayer</span><span class="o">-&gt;</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">nodeCount</span><span class="p">;</span> <span class="n">n</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">
+</span></span><span class="line"><span class="ln">10</span><span class="cl">            <span class="n">Node</span> <span class="o">*</span><span class="n">nextLayerNode</span> <span class="o">=</span> <span class="n">getNetworkNode</span><span class="p">(</span><span class="n">nextLayer</span><span class="p">,</span><span class="n">o</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">c</span><span class="o">&lt;</span><span class="n">nextLayerNode</span><span class="o">-&gt;</span><span class="n">backwardConnCount</span><span class="p">;</span><span class="n">c</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">
+</span></span><span class="line"><span class="ln">13</span><span class="cl">                <span class="c1">// If the connection of the node in the next layer points back to this node
+</span></span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="c1"></span>                <span class="c1">// then store this nextNode as a target in the forwardConnections of this node
+</span></span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="c1"></span>                <span class="c1">// and point the connection to the same weight
+</span></span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="c1"></span>                <span class="k">if</span> <span class="p">(</span><span class="n">nextLayerNode</span><span class="o">-&gt;</span><span class="n">connections</span><span class="p">[</span><span class="n">c</span><span class="p">].</span><span class="n">nodePtr</span> <span class="o">==</span> <span class="n">thisNode</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">                    <span class="n">thisNode</span><span class="o">-&gt;</span><span class="n">connections</span><span class="p">[</span><span class="n">forwardConnStart</span> <span class="o">+</span> <span class="n">forwardConnCount</span><span class="p">].</span><span class="n">nodePtr</span> <span class="o">=</span> <span class="n">nextLayerNode</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">                    <span class="n">thisNode</span><span class="o">-&gt;</span><span class="n">connections</span><span class="p">[</span><span class="n">forwardConnStart</span> <span class="o">+</span> <span class="n">forwardConnCount</span><span class="p">].</span><span class="n">weightPtr</span> <span class="o">=</span> <span class="n">nextLayerNode</span><span class="o">-&gt;</span><span class="n">connections</span><span class="p">[</span><span class="n">c</span><span class="p">].</span><span class="n">weightPtr</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">                    <span class="n">forwardConnCount</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="n">forwardConnCount</span><span class="o">&gt;</span><span class="n">maxForwardConnCount</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">                        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Maximum forward connections exceeded! ABORT!</span><span class="se">\n\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">                        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">    <span class="n">thisNode</span><span class="o">-&gt;</span><span class="n">forwardConnCount</span> <span class="o">=</span> <span class="n">forwardConnCount</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="initialize-weights">Initialize Weights</h3>
+<p>Now that we've fully setup all of the connections between the nodes and from the nodes to their weights, we still need to initialize the weights.
+Remember, all weights are located in a big weight block at the end of the <code>Network</code> structure.</p>
+<p>All we need to do is initialize each weight with a random value from 0-1.
+For better performance I found that it helps to reduce the value to a random number smaller than 0.5 or 0.4 and also to make every other weight negative.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kt">void</span> <span class="nf">initNetworkWeights</span><span class="p">(</span><span class="n">Network</span> <span class="o">*</span><span class="n">nn</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    <span class="c1">// Init weights in the weight block
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">nn</span><span class="o">-&gt;</span><span class="n">weightCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">        <span class="n">Weight</span> <span class="o">*</span><span class="n">w</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">nn</span><span class="o">-&gt;</span><span class="n">weightsPtr</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">        <span class="o">*</span><span class="n">w</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="p">(</span><span class="n">Weight</span><span class="p">)</span><span class="n">rand</span><span class="p">()</span> <span class="o">/</span> <span class="n">RAND_MAX</span><span class="p">;</span>   <span class="c1">// multiplying by a number &lt;0 results in better performance
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">%</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span><span class="n">w</span> <span class="o">=</span> <span class="o">-*</span><span class="n">w</span><span class="p">;</span>                      <span class="c1">// make half of the weights negative (for better performance)
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    <span class="c1">// Init weights in the nodes&#39; bias
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">l</span><span class="o">&lt;</span><span class="n">nn</span><span class="o">-&gt;</span><span class="n">layerCount</span><span class="p">;</span><span class="n">l</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">        <span class="n">Layer</span> <span class="o">*</span><span class="n">layer</span> <span class="o">=</span> <span class="n">getNetworkLayer</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">l</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">c</span><span class="o">&lt;</span><span class="n">layer</span><span class="o">-&gt;</span><span class="n">columnCount</span><span class="p">;</span> <span class="n">c</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">            <span class="n">Column</span> <span class="o">*</span><span class="n">column</span> <span class="o">=</span> <span class="n">getLayerColumn</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">n</span><span class="o">&lt;</span><span class="n">column</span><span class="o">-&gt;</span><span class="n">nodeCount</span><span class="p">;</span> <span class="n">n</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">                <span class="c1">// init bias weight
+</span></span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="c1"></span>                <span class="n">Node</span> <span class="o">*</span><span class="n">node</span> <span class="o">=</span> <span class="n">getColumnNode</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">                <span class="n">node</span><span class="o">-&gt;</span><span class="n">bias</span> <span class="o">=</span> <span class="p">(</span><span class="n">Weight</span><span class="p">)</span><span class="n">rand</span><span class="p">()</span><span class="o">/</span><span class="p">(</span><span class="n">RAND_MAX</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">n</span><span class="o">%</span><span class="mi">2</span><span class="p">)</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">bias</span> <span class="o">=</span> <span class="o">-</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">bias</span><span class="p">;</span>  <span class="c1">// make half of the bias weights negative
+</span></span></span><span class="line"><span class="ln">20</span><span class="cl"><span class="c1"></span>            <span class="p">}</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="train-the-network">Train the Network</h2>
+<p>Once the network has been fully setup and initialized, we can train it in exactly the same manner as described in my previous post:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">
+</span></span><span class="line"><span class="ln">2</span><span class="cl">1. read an image
+</span></span><span class="line"><span class="ln">3</span><span class="cl">2. feed it into the input layer of the network
+</span></span><span class="line"><span class="ln">4</span><span class="cl">3. feed all layers forward applying an activation function each time
+</span></span><span class="line"><span class="ln">5</span><span class="cl">4. backpropagate the error through all layers and update its weights
+</span></span></code></pre></div><p>To obtain some indication of the network's progress during the training process we can count the number of correct classifications versus the total number of images and calculate an ongoing accuracy rate.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kt">void</span> <span class="nf">trainNetwork</span><span class="p">(</span><span class="n">Network</span> <span class="o">*</span><span class="n">nn</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    <span class="c1">// open MNIST files
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="c1"></span>    <span class="n">FILE</span> <span class="o">*</span><span class="n">imageFile</span><span class="p">,</span> <span class="o">*</span><span class="n">labelFile</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="n">imageFile</span> <span class="o">=</span> <span class="n">openMNISTImageFile</span><span class="p">(</span><span class="n">MNIST_TRAINING_SET_IMAGE_FILE_NAME</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="n">labelFile</span> <span class="o">=</span> <span class="n">openMNISTLabelFile</span><span class="p">(</span><span class="n">MNIST_TRAINING_SET_LABEL_FILE_NAME</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    <span class="kt">int</span> <span class="n">errCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    <span class="c1">// Loop through all images in the file
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">imgCount</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">imgCount</span><span class="o">&lt;</span><span class="n">MNIST_MAX_TRAINING_IMAGES</span><span class="p">;</span> <span class="n">imgCount</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">        
+</span></span><span class="line"><span class="ln">13</span><span class="cl">        <span class="c1">// Reading next image and its corresponding label
+</span></span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="c1"></span>        <span class="n">MNIST_Image</span> <span class="n">img</span> <span class="o">=</span> <span class="n">getImage</span><span class="p">(</span><span class="n">imageFile</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">        <span class="n">MNIST_Label</span> <span class="n">lbl</span> <span class="o">=</span> <span class="n">getLabel</span><span class="p">(</span><span class="n">labelFile</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">        
+</span></span><span class="line"><span class="ln">17</span><span class="cl">        <span class="c1">// Convert the MNIST image to a standardized vector format and feed into the network
+</span></span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="c1"></span>        <span class="n">Vector</span> <span class="o">*</span><span class="n">inpVector</span> <span class="o">=</span> <span class="n">getVectorFromImage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">        <span class="n">feedInput</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">inpVector</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">
+</span></span><span class="line"><span class="ln">21</span><span class="cl">        <span class="c1">// Feed forward all layers (from input to hidden to output) calculating all nodes&#39; output
+</span></span></span><span class="line"><span class="ln">22</span><span class="cl"><span class="c1"></span>        <span class="n">feedForwardNetwork</span><span class="p">(</span><span class="n">nn</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">
+</span></span><span class="line"><span class="ln">24</span><span class="cl">        <span class="c1">// Back propagate the error and adjust weights in all layers accordingly
+</span></span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="c1"></span>        <span class="n">backPropagateNetwork</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">lbl</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">
+</span></span><span class="line"><span class="ln">27</span><span class="cl">        <span class="c1">// Classify image by choosing output cell with highest output
+</span></span></span><span class="line"><span class="ln">28</span><span class="cl"><span class="c1"></span>        <span class="kt">int</span> <span class="n">classification</span> <span class="o">=</span> <span class="n">getNetworkClassification</span><span class="p">(</span><span class="n">nn</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">classification</span><span class="o">!=</span><span class="n">lbl</span><span class="p">)</span> <span class="n">errCount</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">    <span class="c1">// Close files
+</span></span></span><span class="line"><span class="ln">32</span><span class="cl"><span class="c1"></span>    <span class="n">fclose</span><span class="p">(</span><span class="n">imageFile</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">33</span><span class="cl">    <span class="n">fclose</span><span class="p">(</span><span class="n">labelFile</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">34</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Once the network has been trained on the the 50,000 images in the training set (no distinction between training and validation set is made), we stop training and run the network on the 10,000 images in the testing set.</p>
+<h2 id="test-the-network">Test the Network</h2>
+<p>The process during testing is exactly the same as during training, the only difference is that we switch off the <em>learning</em>, i.e. we don't back propagate the error and don't update any weights.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kt">void</span> <span class="nf">testNetwork</span><span class="p">(</span><span class="n">Network</span> <span class="o">*</span><span class="n">nn</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    <span class="c1">// open MNIST files
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="c1"></span>    <span class="n">FILE</span> <span class="o">*</span><span class="n">imageFile</span><span class="p">,</span> <span class="o">*</span><span class="n">labelFile</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="n">imageFile</span> <span class="o">=</span> <span class="n">openMNISTImageFile</span><span class="p">(</span><span class="n">MNIST_TESTING_SET_IMAGE_FILE_NAME</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="n">labelFile</span> <span class="o">=</span> <span class="n">openMNISTLabelFile</span><span class="p">(</span><span class="n">MNIST_TESTING_SET_LABEL_FILE_NAME</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    <span class="kt">int</span> <span class="n">errCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    <span class="c1">// Loop through all images in the file
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">imgCount</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">imgCount</span><span class="o">&lt;</span><span class="n">MNIST_MAX_TESTING_IMAGES</span><span class="p">;</span> <span class="n">imgCount</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">        
+</span></span><span class="line"><span class="ln">13</span><span class="cl">        <span class="c1">// Reading next image and its corresponding label
+</span></span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="c1"></span>        <span class="n">MNIST_Image</span> <span class="n">img</span> <span class="o">=</span> <span class="n">getImage</span><span class="p">(</span><span class="n">imageFile</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">        <span class="n">MNIST_Label</span> <span class="n">lbl</span> <span class="o">=</span> <span class="n">getLabel</span><span class="p">(</span><span class="n">labelFile</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">        
+</span></span><span class="line"><span class="ln">17</span><span class="cl">        <span class="c1">// Convert the MNIST image to a standardized vector format and feed into the network
+</span></span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="c1"></span>        <span class="n">Vector</span> <span class="o">*</span><span class="n">inpVector</span> <span class="o">=</span> <span class="n">getVectorFromImage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">        <span class="n">feedInput</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">inpVector</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">        
+</span></span><span class="line"><span class="ln">21</span><span class="cl">        <span class="c1">// Feed forward all layers (from input to hidden to output) calculating all nodes&#39; output
+</span></span></span><span class="line"><span class="ln">22</span><span class="cl"><span class="c1"></span>        <span class="n">feedForwardNetwork</span><span class="p">(</span><span class="n">nn</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">        
+</span></span><span class="line"><span class="ln">24</span><span class="cl">        <span class="c1">// Classify image by choosing output cell with highest output
+</span></span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="c1"></span>        <span class="kt">int</span> <span class="n">classification</span> <span class="o">=</span> <span class="n">getNetworkClassification</span><span class="p">(</span><span class="n">nn</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">classification</span><span class="o">!=</span><span class="n">lbl</span><span class="p">)</span> <span class="n">errCount</span><span class="o">++</span><span class="p">;</span>   
+</span></span><span class="line"><span class="ln">27</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">    <span class="c1">// Close files
+</span></span></span><span class="line"><span class="ln">29</span><span class="cl"><span class="c1"></span>    <span class="n">fclose</span><span class="p">(</span><span class="n">imageFile</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">    <span class="n">fclose</span><span class="p">(</span><span class="n">labelFile</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="output-classification">Output Classification</h3>
+<p>In case you wondered how the <em>classification</em> of an image in the output layer is done:
+I'm not using a <em>softmax</em> or similar function.
+Instead, I'm simply comparing all outputs of the 10 nodes in the output layer with each other and take the highest. :-)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kt">int</span> <span class="nf">getNetworkClassification</span><span class="p">(</span><span class="n">Network</span> <span class="o">*</span><span class="n">nn</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    <span class="n">Layer</span> <span class="o">*</span><span class="n">l</span> <span class="o">=</span> <span class="n">getNetworkLayer</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">nn</span><span class="o">-&gt;</span><span class="n">layerCount</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>   <span class="c1">// get output layer
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="c1"></span>    
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="n">Weight</span> <span class="n">maxOut</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="kt">int</span> <span class="n">maxInd</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">l</span><span class="o">-&gt;</span><span class="n">columnCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>   
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">        <span class="n">Node</span> <span class="o">*</span><span class="n">on</span> <span class="o">=</span> <span class="n">getNetworkNode</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span> <span class="c1">// the output layer always has a depth of 1 
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">on</span><span class="o">-&gt;</span><span class="n">output</span> <span class="o">&gt;</span> <span class="n">maxOut</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">            <span class="n">maxOut</span> <span class="o">=</span> <span class="n">on</span><span class="o">-&gt;</span><span class="n">output</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">            <span class="n">maxInd</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">    <span class="k">return</span> <span class="n">maxInd</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>That's it. Now that we've done all the coding, let's look at performance.</p>
+<h2 id="network-performance">Network Performance</h2>
+<p>To assess the performance of the network let's look at its accuracy as well as its speed.
+Here's a summary of the different network designs that I tried and their respective best results:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln"> 1</span><span class="cl">TEST RESULTS
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">| Network     | # of Nodes     | Act.Fct | L-Rate | # Trains | Speed* | Accuracy || Compare** |
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">| ----------- |----------------|---------|--------|----------|--------|----------||-----------|
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">| 1-l   FC NN |      10 output | SIGMOID | 0.0125 |  900,000 |   228s |   91.09% ||    88.00% |     
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">| 2-l   FC NN |     300 hidden | SIGMOID | 0.0700 |  120,000 |   697s |   94.67% ||    96.40% |     
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">| 3-l   FC NN | 500+150 hidden | SIGMOID | 0.0050 |  180,000 | 2,510s |   93.64% ||    97.05% |     
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">| 3-l ConvNet | 13x13x5, 6x6x5 |  RELU   | 0.0004 |  525,000 |   908s |   88.40% ||    98.90% |     
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">
+</span></span><span class="line"><span class="ln">10</span><span class="cl"> * total run-time in seconds, including training and testing, on a 2010 MacBook Pro
+</span></span><span class="line"><span class="ln">11</span><span class="cl">** best accuracies listed on http://yann.lecun.com/exdb/mnist/ (without pre-processing)
+</span></span></code></pre></div><p>As you can see from the above my network is doing well for smaller models but not so much for larger, deeper structures.
+This is not due to wrong coding. It's because I haven't used the most efficient parameters during the training.</p>
+<p>This leads us to the most difficult part of machine learning: How to find the hyper-parameters that achieve the best results?</p>
+<h2 id="hyper-parameter-optimization">Hyper-parameter Optimization</h2>
+<p>Surprisingly, optimizing hyper-parameters such as the learning rate or the number of nodes is still mostly a manual process.
+Based on my reading it seems that techniques such as <em>grid search</em> or <em>Bayesian Optimization</em> work equally good or bad than a <em>Random Search</em> does.</p>
+<p>Therefore, I plan to dedicate my next post to the topic of network parameter fine tuning and build my own optimization tool to get some bettter results from my network.
+Stay tuned! :)</p>
+<hr>
+<h2 id="code--documentation">Code &amp; Documentation</h2>
+<p>As always you can find all the code for this exercise on my <a href="https://github.com/mmlind/mnist-dnn/">Github project page</a>, including full <a href="https://rawgit.com/mmlind/mnist-dnn/master/doc/html/index.html">code documentation</a>.</p>
+<p>Happy Hacking!</p>
+<p><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_internal image_unprocessed"
+        src="mnist_logo.png"
+      
+      
+    />
+
+    </picture>
+</figure>
+</p>
+
+    </div>
+<div class="post_comments">
+  
+  
+    
+ <script src="https://utteranc.es/client.js"
+         repo="https://github.com/mmlind/mmlind.github.io"
+         issue-term="pathname"
+         theme="github-dark"
+         
+         label="blog comments ✨💬✨"
+         
+         crossorigin="anonymous"
+         async>
+ </script>
+ 
+  
+  
+</div>
+
+
+
+
+  </article>
+<aside class="sidebar">
+  <section class="sidebar_inner">
+    <br>
+    
+  
+  <div class="search">
+    <input type="search" class="search_field form_field" placeholder='Search...' id="find" autocomplete="off" data-scope='post'>
+    <label for="find" class="search_label"><svg class="icon">
+  <title>search</title>
+  <use xlink:href="#search"></use>
+</svg>
+
+    </label>
+    
+    <div class="search_results results"></div>
+  </div>
+
+        <h2>Matt Lind</h2>
+      <div class="author_bio">
+        Tech geek, command-line aficionado, AI enthusiast, life-long learner.
+      </div>
+      <a href='https://mmlind.github.io/about/' class="button mt-1" role="button" title='Read More'>Read More</a>
+
+    
+    
+    <h2 class="mt-4">Featured Posts</h2>
+    <ul>
+      <li>
+        <a href="https://mmlind.github.io/post/2023-05-14-how_to_make_chatgpt_work_with_your_own_data/" class="nav-link" title="How to make ChatGPT work with your own data">How to make ChatGPT work with your own data</a>
+      </li>
+    </ul>
+    <h2 class="mt-4">Recent Posts</h2>
+    <ul class="flex-column">
+      <li>
+        <a href="https://mmlind.github.io/post/2020-10-16-reading_all_of_wikipedia_in_6_seconds_how_to_utilize_multiple_cores_to_process_very_large_text_files/" class="nav-link" title="Reading all of Wikipedia in 6 seconds: how to utilize multiple cores to process very large text files">Reading all of Wikipedia in 6 seconds: how to utilize multiple cores to process very large text files</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2020-10-05-how_to_simultaneously_write_to_shared_memory_with_multiple_processes/" class="nav-link" title="How to simultaneously write to shared memory with multiple processes">How to simultaneously write to shared memory with multiple processes</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2020-09-29-migrating_my_github-pages_blog_from_jekyl_to_hugo/" class="nav-link" title="Migrating my GitHub pages blog from Jekyl to Hugo">Migrating my GitHub pages blog from Jekyl to Hugo</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2017-12-26-using_logistic_regression_to_classify_images/" class="nav-link" title="Using logistic regression to classify images">Using logistic regression to classify images</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2017-03-05-understanding_linear_regression/" class="nav-link" title="Understanding linear regression">Understanding linear regression</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2016-02-12-deep_neural_network_for_mnist_handwriting_recognition/" class="nav-link" title="Deep Neural Network for MNIST Handwriting Recognition">Deep Neural Network for MNIST Handwriting Recognition</a>
+      </li>
+      <li>
+        <a href="https://mmlind.github.io/post/2015-08-09-simple_3-layer_neural_network_for_mnist_handwriting_recognition/" class="nav-link" title="Simple 3-Layer Neural Network for MNIST Handwriting Recognition">Simple 3-Layer Neural Network for MNIST Handwriting Recognition</a>
+      </li>
+    </ul>
+    <div>
+      <h2 class="mt-4 taxonomy" id="tags-section">Tags</h2>
+      <nav class="tags_nav">
+        <a href='https://mmlind.github.io/tags/machine-learning/' class="post_tag button button_translucent" title="machine-learning">
+          MACHINE-LEARNING
+          <span class="button_tally">6</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/computer-vision/' class="post_tag button button_translucent" title="computer-vision">
+          COMPUTER-VISION
+          <span class="button_tally">4</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/blogging/' class="post_tag button button_translucent" title="blogging">
+          BLOGGING
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/c/' class="post_tag button button_translucent" title="c">
+          C
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/math/' class="post_tag button button_translucent" title="math">
+          MATH
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/multiprocessing/' class="post_tag button button_translucent" title="multiprocessing">
+          MULTIPROCESSING
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/natural-language-processing/' class="post_tag button button_translucent" title="natural-language-processing">
+          NATURAL-LANGUAGE-PROCESSING
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/nlp/' class="post_tag button button_translucent" title="nlp">
+          NLP
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/python/' class="post_tag button button_translucent" title="python">
+          PYTHON
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://mmlind.github.io/tags/chat-gpt/' class="post_tag button button_translucent" title="chat-gpt">
+          CHAT-GPT
+          <span class="button_tally">1</span>
+        </a>
+        
+        
+      </nav>
+    </div>
+  </section>
+</aside>
+
+  
+</div>
+    </main><svg width="0" height="0" class="hidden">
+  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook">
+    <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.001 18.001" id="twitter">
+    <path d="M15.891 4.013c.808-.496 1.343-1.173 1.605-2.034a8.68 8.68 0 0 1-2.351.861c-.703-.756-1.593-1.14-2.66-1.14-1.043 0-1.924.366-2.643 1.078a3.56 3.56 0 0 0-1.076 2.605c0 .309.039.585.117.819-3.076-.105-5.622-1.381-7.628-3.837-.34.601-.51 1.213-.51 1.846 0 1.301.549 2.332 1.645 3.089-.625-.053-1.176-.211-1.645-.47 0 .929.273 1.705.82 2.388a3.623 3.623 0 0 0 2.115 1.291c-.312.08-.641.118-.979.118-.312 0-.533-.026-.664-.083.23.757.664 1.371 1.291 1.841a3.652 3.652 0 0 0 2.152.743C4.148 14.173 2.625 14.69.902 14.69c-.422 0-.721-.006-.902-.038 1.697 1.102 3.586 1.649 5.676 1.649 2.139 0 4.029-.542 5.674-1.626 1.645-1.078 2.859-2.408 3.639-3.974a10.77 10.77 0 0 0 1.172-4.892v-.468a7.788 7.788 0 0 0 1.84-1.921 8.142 8.142 0 0 1-2.11.593z"
+      ></path>
+  </symbol>
+  <symbol aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="mail">
+    <path  d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="calendar">
+    <path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916 0 100v352c0 33.084 26.916 60 60 60h392c33.084 0 60-26.916 60-60V100c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028 0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028 0 20 8.972 20 20v48z"></path>
+    <path d="M76 230h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 310h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 390h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80-80h40v40h-40z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="github">
+    <path d="M255.968 5.329C114.624 5.329 0 120.401 0 262.353c0 113.536 73.344 209.856 175.104 243.872 12.8 2.368 17.472-5.568 17.472-12.384 0-6.112-.224-22.272-.352-43.712-71.2 15.52-86.24-34.464-86.24-34.464-11.616-29.696-28.416-37.6-28.416-37.6-23.264-15.936 1.728-15.616 1.728-15.616 25.696 1.824 39.2 26.496 39.2 26.496 22.848 39.264 59.936 27.936 74.528 21.344 2.304-16.608 8.928-27.936 16.256-34.368-56.832-6.496-116.608-28.544-116.608-127.008 0-28.064 9.984-51.008 26.368-68.992-2.656-6.496-11.424-32.64 2.496-68 0 0 21.504-6.912 70.4 26.336 20.416-5.696 42.304-8.544 64.096-8.64 21.728.128 43.648 2.944 64.096 8.672 48.864-33.248 70.336-26.336 70.336-26.336 13.952 35.392 5.184 61.504 2.56 68 16.416 17.984 26.304 40.928 26.304 68.992 0 98.72-59.84 120.448-116.864 126.816 9.184 7.936 17.376 23.616 17.376 47.584 0 34.368-.32 62.08-.32 70.496 0 6.88 4.608 14.88 17.6 12.352C438.72 472.145 512 375.857 512 262.353 512 120.401 397.376 5.329 255.968 5.329z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212" id="gitlab">
+    <path d="M12.3 74.7h54L43.3 3c-1-3.6-6.4-3.6-7.6 0L12.3 74.8z" />
+    <path d="M12.3 74.7L.5 111c-1 3.2 0 6.8 3 8.8l101.6 74-92.5-119z"/>
+    <path d="M105 193.7l-38.6-119h-54l92.7 119z"/>
+    <path d="M105 193.7l38.7-119H66.4l38.7 119z"/>
+    <path d="M105 193.7l38.7-119H198l-93 119z"/>
+    <path d="M198 74.7l11.6 36.2c1 3 0 6.6-3 8.6l-101.5 74 93-119z"/>
+    <path d="M198 74.7h-54.3L167 3c1.2-3.6 6.4-3.6 7.6 0L198 74.8z"/>
+  </symbol>
+  <symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="rss">
+    <circle cx="3.429" cy="20.571" r="3.429"></circle>
+    <path d="M11.429 24h4.57C15.999 15.179 8.821 8.001 0 8v4.572c6.302.001 11.429 5.126 11.429 11.428z"></path>
+    <path d="M24 24C24 10.766 13.234 0 0 0v4.571c10.714 0 19.43 8.714 19.43 19.429z"></path>
+  </symbol>
+  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="linkedin">
+    <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h362c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zM181 406h-60V196h60zm0-240h-60v-60h60zm210 240h-60V286c0-16.54-13.46-30-30-30s-30 13.46-30 30v120h-60V196h60v11.309C286.719 202.422 296.93 196 316 196c40.691.043 75 36.547 75 79.688zm0 0"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" id="to-top">
+    <path d="M604.501 440.509L325.398 134.956c-5.331-5.357-12.423-7.627-19.386-7.27-6.989-.357-14.056 1.913-19.387 7.27L7.499 440.509c-9.999 10.024-9.999 26.298 0 36.323s26.223 10.024 36.222 0l262.293-287.164L568.28 476.832c9.999 10.024 26.222 10.024 36.221 0 9.999-10.023 9.999-26.298 0-36.323z"></path>
+  </symbol>
+  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="carly">
+    <path d="M504.971 239.029L448 182.059V84c0-46.317-37.682-84-84-84h-44c-13.255 0-24 10.745-24 24s10.745 24 24 24h44c19.851 0 36 16.149 36 36v108c0 6.365 2.529 12.47 7.029 16.971L454.059 256l-47.029 47.029A24.002 24.002 0 0 0 400 320v108c0 19.851-16.149 36-36 36h-44c-13.255 0-24 10.745-24 24s10.745 24 24 24h44c46.318 0 84-37.683 84-84v-98.059l56.971-56.971c9.372-9.372 9.372-24.568 0-33.941zM112 192V84c0-19.851 16.149-36 36-36h44c13.255 0 24-10.745 24-24S205.255 0 192 0h-44c-46.318 0-84 37.683-84 84v98.059l-56.971 56.97c-9.373 9.373-9.373 24.568 0 33.941L64 329.941V428c0 46.317 37.682 84 84 84h44c13.255 0 24-10.745 24-24s-10.745-24-24-24h-44c-19.851 0-36-16.149-36-36V320c0-6.365-2.529-12.47-7.029-16.971L57.941 256l47.029-47.029A24.002 24.002 0 0 0 112 192z"></path>
+  </symbol>
+  <symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="copy">
+    <path d="M23 2.75A2.75 2.75 0 0 0 20.25 0H8.75A2.75 2.75 0 0 0 6 2.75v13.5A2.75 2.75 0 0 0 8.75 19h11.5A2.75 2.75 0 0 0 23 16.25zM18.25 14.5h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5zm0-3h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5zm0-3h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5z"></path>
+    <path d="M8.75 20.5a4.255 4.255 0 0 1-4.25-4.25V2.75c0-.086.02-.166.025-.25H3.75A2.752 2.752 0 0 0 1 5.25v16A2.752 2.752 0 0 0 3.75 24h12a2.752 2.752 0 0 0 2.75-2.75v-.75z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001" id="closeme">
+    <path d="M284.286 256.002L506.143 34.144c7.811-7.811 7.811-20.475 0-28.285-7.811-7.81-20.475-7.811-28.285 0L256 227.717 34.143 5.859c-7.811-7.811-20.475-7.811-28.285 0-7.81 7.811-7.811 20.475 0 28.285l221.857 221.857L5.858 477.859c-7.811 7.811-7.811 20.475 0 28.285a19.938 19.938 0 0 0 14.143 5.857 19.94 19.94 0 0 0 14.143-5.857L256 284.287l221.857 221.857c3.905 3.905 9.024 5.857 14.143 5.857s10.237-1.952 14.143-5.857c7.811-7.811 7.811-20.475 0-28.285L284.286 256.002z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="open-menu">
+    <path d="M492 236H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20zm0-160H20C8.954 76 0 84.954 0 96s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20zm0 320H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="instagram">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id=youtube>
+    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="stackoverflow">
+    <path d="M21 27v-8h3v11H0V19h3v8h18z"></path><path d="M17.1.2L15 1.8l7.9 10.6 2.1-1.6L17.1.2zm3.7 14.7L10.6 6.4l1.7-2 10.2 8.5-1.7 2zM7.2 12.3l12 5.6 1.1-2.4-12-5.6-1.1 2.4zm-1.8 6.8l13.56 1.96.17-2.38-13.26-2.55-.47 2.97zM19 25H5v-3h14v3z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="xing">
+    <path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 71 55" id="discord">
+    <path d="M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.471 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6202 41.8354 49.6202 53.3179 44.3151C53.3935 44.2785 53.4831 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978ZM23.7259 37.3253C20.2276 37.3253 17.3451 34.1136 17.3451 30.1693C17.3451 26.225 20.1717 23.0133 23.7259 23.0133C27.308 23.0133 30.1626 26.2532 30.1066 30.1693C30.1066 34.1136 27.28 37.3253 23.7259 37.3253ZM47.3178 37.3253C43.8196 37.3253 40.9371 34.1136 40.9371 30.1693C40.9371 26.225 43.7636 23.0133 47.3178 23.0133C50.9 23.0133 53.7545 26.2532 53.6986 30.1693C53.6986 34.1136 50.9 37.3253 47.3178 37.3253Z"/>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 18" id="mastodon">
+    <path
+    fill="#ffffff"
+    d="m 15.054695,9.8859583 c -0.22611,1.1632697 -2.02517,2.4363497 -4.09138,2.6830797 -1.0774504,0.12856 -2.1382704,0.24673 -3.2694704,0.19484 -1.84996,-0.0848 -3.30971,-0.44157 -3.30971,-0.44157 0,0.1801 0.0111,0.35157 0.0333,0.51194 0.24051,1.82571 1.81034,1.93508 3.29737,1.98607 1.50088,0.0514 2.8373104,-0.37004 2.8373104,-0.37004 l 0.0617,1.35686 c 0,0 -1.0498104,0.56374 -2.9199404,0.66742 -1.03124,0.0567 -2.3117,-0.0259 -3.80308,-0.42069 -3.23454998,-0.85613 -3.79081998,-4.304 -3.87592998,-7.8024197 -0.026,-1.03871 -0.01,-2.01815 -0.01,-2.83732 0,-3.57732 2.34385998,-4.62587996 2.34385998,-4.62587996 1.18184,-0.54277 3.20976,-0.77101 5.318,-0.7882499985409 h 0.0518 C 9.8267646,0.01719834 11.856025,0.24547834 13.037775,0.78824834 c 0,0 2.34377,1.04855996 2.34377,4.62587996 0,0 0.0294,2.63937 -0.32687,4.47183"/>
+ <path
+    fill="#000000"
+    d="m 12.616925,5.6916583 v 4.3315297 h -1.71607 V 5.8189683 c 0,-0.88624 -0.37289,-1.33607 -1.1187604,-1.33607 -0.82467,0 -1.23799,0.53361 -1.23799,1.58875 v 2.30122 h -1.70594 v -2.30122 c 0,-1.05514 -0.4134,-1.58875 -1.23808,-1.58875 -0.74587,0 -1.11876,0.44983 -1.11876,1.33607 v 4.2042197 h -1.71607 V 5.6916583 c 0,-0.88527 0.22541,-1.58876 0.67817,-2.10922 0.46689,-0.52047 1.07833,-0.78727 1.83735,-0.78727 0.87816,0 1.54317,0.33752 1.98288,1.01267 l 0.42744,0.71655 0.42753,-0.71655 c 0.43961,-0.67515 1.10463,-1.01267 1.9828704,-1.01267 0.75893,0 1.37037,0.2668 1.83735,0.78727 0.45268,0.52046 0.67808,1.22395 0.67808,2.10922"/>
+  </symbol>
+</svg>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+<footer class="footer">
+  <div class="footer_inner wrap pale">
+    <img src='https://mmlind.github.io/icons/cli.png' class="icon icon_2 transparent" alt="Matt&#39;s Tech Blog">
+    <p>Copyright&nbsp;2015-&nbsp;<span class="year"></span>&nbsp;MATT&#39;S TECH BLOG. All Rights Reserved</p><a class="to_top" href="#documentTop">
+  <svg class="icon">
+  <title>to-top</title>
+  <use xlink:href="#to-top"></use>
+</svg>
+
+</a>
+
+  </div>
+</footer>
+
+<script type="text/javascript" src="https://mmlind.github.io/en/js/bundle.f4da32c64ece1e7d5a836039ceed09b7e4f3592da2a593a2c0e74dd8b24aef5d873eea6fcf180b171a60c193c271d3f845628a40d93531f8e49a553ed23162cd.js" integrity="sha512-9Noyxk7OHn1ag2A5zu0Jt&#43;TzWS2ipZOiwOdN2LJK712HPupvzxgLFxpgwZPCcdP4RWKKQNk1MfjkmlU&#43;0jFizQ==" crossorigin="anonymous"></script>
+
+  <script src="https://mmlind.github.io/js/search.min.441534ebca8f29b72ee98c817c1d9c475fc24ae0a88f1c2eb4deacb203fccebce3c0eee3c758545c399671772a0bc025c7e45b2b1396a19a6dff7ead9c73f066.js"></script>
+
+  </body>
+</html>

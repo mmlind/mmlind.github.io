@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>NLP on Matt&#39;s Tech Blog</title>
+    <link>https://mmlind.github.io/tags/nlp/</link>
+    <description>Recent content in NLP on Matt&#39;s Tech Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 14 May 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://mmlind.github.io/tags/nlp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to make ChatGPT work with your own data</title>
+      <link>https://mmlind.github.io/post/2023-05-14-how_to_make_chatgpt_work_with_your_own_data/</link>
+      <pubDate>Sun, 14 May 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/post/2023-05-14-how_to_make_chatgpt_work_with_your_own_data/</guid>
+      <description>
+        
+          
+            TLDR: I&#39;m going through a simple POC (Proof of Concept) how companies can setup their own ChatGPT-like professional agents without sending their confidential data to OpenAI or to any other online service. After a general introduction to how LLMs are trained, I show how you can use Dolly (a publicly available and commercially usable fine-tuned language model) and Langchain (an open-source NLP library) to make your own data sources (e.g. from documents, databases, other systems) accessible via natural language using vector data stores and semantic search.
+          
+          
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Reading all of Wikipedia in 6 seconds: how to utilize multiple cores to process very large text files</title>
+      <link>https://mmlind.github.io/post/2020-10-16-reading_all_of_wikipedia_in_6_seconds_how_to_utilize_multiple_cores_to_process_very_large_text_files/</link>
+      <pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mmlind.github.io/post/2020-10-16-reading_all_of_wikipedia_in_6_seconds_how_to_utilize_multiple_cores_to_process_very_large_text_files/</guid>
+      <description>
+        
+          
+            I was about to do some basic natural language processing (NLP) task on a large text file: create a dictionary of unique words and count how many times each word occurs. Easy peasy. This should only take me a minute. So I thought. While coding did not take more than 2 zips of coffee, I needed to wait almost an hour for the task to complete. That was unacceptable. There must be a way to accelerate this process.
+          
+          
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>
